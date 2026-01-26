@@ -18,7 +18,7 @@
 // --------------------- 2222222222222222 ---------------------
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:wio_doctor/features/bottom_nav_bar/bottom_nav_bar.dart';
+import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 
 void main() {
