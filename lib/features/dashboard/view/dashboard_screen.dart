@@ -67,7 +67,7 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         Text(
                           "Dr. Alex Riveira",
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.exo(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -76,14 +76,14 @@ class DashboardScreen extends StatelessWidget {
                         SizedBox(height: 4),
                         Text(
                           "Cardiologist",
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.exo(
                             fontSize: 14,
                             color: Colors.white.withOpacity(0.9),
                           ),
                         ),
                         Text(
                           "WIO ID: XXXXXXXXX",
-                          style: GoogleFonts.inter(
+                          style: GoogleFonts.exo(
                             fontSize: 14,
                             color: Colors.white.withOpacity(0.9),
                           ),
@@ -144,8 +144,8 @@ class DashboardScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Today's Appointments",
-                  style: GoogleFonts.inter(
+                  "Today's Patient Roaster",
+                  style: GoogleFonts.exo(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: isDark ? Colors.white : Color(0xFF1F2937),
@@ -155,7 +155,7 @@ class DashboardScreen extends StatelessWidget {
                   onPressed: () {},
                   child: Text(
                     "See All",
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.exo(
                       fontSize: 14,
                       color: Color(0xFF0D9488),
                       fontWeight: FontWeight.w600,

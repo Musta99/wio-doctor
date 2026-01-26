@@ -50,7 +50,7 @@ class AppointmentStateCard extends StatelessWidget {
           SizedBox(height: 12),
           Text(
             count,
-            style: GoogleFonts.inter(
+            style: GoogleFonts.exo(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: isDark ? Colors.white : Color(0xFF1F2937),
@@ -59,7 +59,7 @@ class AppointmentStateCard extends StatelessWidget {
           SizedBox(height: 2),
           Text(
             label,
-            style: GoogleFonts.inter(
+            style: GoogleFonts.exo(
               fontSize: 12,
               color: isDark ? Color(0xFF94A3B8) : Color(0xFF6B7280),
             ),

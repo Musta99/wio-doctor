@@ -51,7 +51,7 @@ class PatientCard extends StatelessWidget {
               child: Center(
                 child: Text(
                   name[0],
-                  style: GoogleFonts.inter(
+                  style: GoogleFonts.exo(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: isDark ? Colors.white : Color(0xFF0D9488),
@@ -66,7 +66,7 @@ class PatientCard extends StatelessWidget {
                 children: [
                   Text(
                     name,
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.exo(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: isDark ? Colors.white : Color(0xFF1F2937),
