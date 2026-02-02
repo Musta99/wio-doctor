@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/view/dashboard_screen.dart';
+import 'package:wio_doctor/features/profile/view/profile_screen.dart';
+import 'package:wio_doctor/features/schedule/view/schedule_screen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -12,6 +14,12 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _currentIndex = 0;
+
+  List screens = [
+    const DashboardScreen(),
+    const ScheduleScreen(),
+    const ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +65,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
         ],
       ),
-      body: DashboardScreen(),
+      body: screens[_currentIndex],
     );
   }
 }
