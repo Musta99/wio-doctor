@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
 
@@ -9,8 +11,26 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeProvider = ThemeProvider.of(context);
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Wio Doctor'),
+        actions: [
+          // Theme switcher button - toggles between light and dark
+          IconButton(
+            icon: Icon(
+              themeProvider.isDarkMode ? LucideIcons.sun : LucideIcons.moon,
+            ),
+            onPressed: () {
+              // Toggle between light and dark mode
+              themeProvider.setThemeMode(
+                themeProvider.isDarkMode ? ThemeMode.light : ThemeMode.dark,
+              );
+            },
+          ),
+        ],
+      ),
       backgroundColor: isDark ? Colors.black : Color(0xFFF8FAFC),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),

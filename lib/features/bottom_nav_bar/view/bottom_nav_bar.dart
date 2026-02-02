@@ -26,23 +26,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
     final themeProvider = ThemeProvider.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Wio Doctor'),
-        actions: [
-          // Theme switcher button - toggles between light and dark
-          IconButton(
-            icon: Icon(
-              themeProvider.isDarkMode ? LucideIcons.sun : LucideIcons.moon,
-            ),
-            onPressed: () {
-              // Toggle between light and dark mode
-              themeProvider.setThemeMode(
-                themeProvider.isDarkMode ? ThemeMode.light : ThemeMode.dark,
-              );
-            },
-          ),
-        ],
-      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
