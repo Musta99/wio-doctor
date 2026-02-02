@@ -142,6 +142,93 @@ class ScheduleScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+
+                // Update weekly Availability
+                ShadCard(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    spacing: 16,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Update Weekly Availability",
+                        style: GoogleFonts.exo(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Service offered",
+                            style: GoogleFonts.exo(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Checkbox(value: false, onChanged: (val) {}),
+                              Row(
+                                spacing: 5,
+                                children: [
+                                  Icon(LucideIcons.video, size: 25),
+                                  Text(
+                                    "Instant video Consultations",
+                                    style: GoogleFonts.exo(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          Row(
+                            children: [
+                              Checkbox(value: false, onChanged: (val) {}),
+                              Row(
+                                spacing: 5,
+                                children: [
+                                  Icon(LucideIcons.calendar, size: 25),
+                                  Text(
+                                    "Online Appointment",
+                                    style: GoogleFonts.exo(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          Row(
+                            children: [
+                              Checkbox(value: false, onChanged: (val) {}),
+                              Row(
+                                spacing: 5,
+                                children: [
+                                  Icon(LucideIcons.building, size: 25),
+                                  Text(
+                                    "In Clinic Appointment",
+                                    style: GoogleFonts.exo(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
