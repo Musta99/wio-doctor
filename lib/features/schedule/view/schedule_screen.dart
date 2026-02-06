@@ -1082,34 +1082,27 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           ],
                         ),
 
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 36),
 
                         // CTA Button -> New screen
-                        SizedBox(
+                        ShadButton(
                           width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder:
-                                      (_) =>
-                                          const UpdateWeeklyAvailabilityScreen(),
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              elevation: 6,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
+                          height: 46,
+                          backgroundColor: Colors.teal,
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (_) =>
+                                        const UpdateWeeklyAvailabilityScreen(),
                               ),
-                            ),
-                            child: Text(
-                              "Update weekly availability",
-                              style: GoogleFonts.exo(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w900,
-                              ),
+                            );
+                          },
+                          child: Text(
+                            "Update weekly availability",
+                            style: GoogleFonts.exo(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ),
