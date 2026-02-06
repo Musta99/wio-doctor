@@ -742,6 +742,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/schedule/view/update_weekly_availability_screen.dart';
 
 /// SCREEN 1 (KEEP ONLY): Current Availability
 class ScheduleScreen extends StatefulWidget {
@@ -1088,11 +1089,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () {
-                              // Navigator.of(context).push(
-                              //   MaterialPageRoute(
-                              //     builder: (_) => const UpdateWeeklyAvailabilityScreen(),
-                              //   ),
-                              // );
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) =>
+                                          const UpdateWeeklyAvailabilityScreen(),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(vertical: 14),
