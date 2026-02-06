@@ -81,8 +81,8 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _currentIndex = 0;
 
-  // This value changes on every tab switch to re-trigger the animation
-  int _animTick = 0;
+  // ✅ only this index will animate
+  int _animateIndex = 0;
 
   final screens = const [
     DashboardScreen(),
@@ -132,8 +132,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _NavItemRotateBack(
+                index: 0,
                 active: _currentIndex == 0,
-                animTick: _animTick,
+                animateIndex: _animateIndex,
                 icon: LucideIcons.layoutDashboard,
                 label: "Dashboard",
                 selectedColor: selected,
@@ -141,8 +142,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 onTap: () => _onTab(0),
               ),
               _NavItemRotateBack(
+                index: 1,
                 active: _currentIndex == 1,
-                animTick: _animTick,
+                animateIndex: _animateIndex,
                 icon: LucideIcons.calendar,
                 label: "Schedule",
                 selectedColor: selected,
@@ -150,8 +152,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 onTap: () => _onTab(1),
               ),
               _NavItemRotateBack(
+                index: 2,
                 active: _currentIndex == 2,
-                animTick: _animTick,
+                animateIndex: _animateIndex,
                 icon: LucideIcons.stethoscope,
                 label: "Appointment",
                 selectedColor: selected,
@@ -159,8 +162,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 onTap: () => _onTab(2),
               ),
               _NavItemRotateBack(
+                index: 3,
                 active: _currentIndex == 3,
-                animTick: _animTick,
+                animateIndex: _animateIndex,
                 icon: LucideIcons.user,
                 label: "Profile",
                 selectedColor: selected,
@@ -179,16 +183,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
     setState(() {
       _currentIndex = index;
-      _animTick++; // ✅ triggers rotate-and-return on all icons
+      _animateIndex = index; // ✅ only selected item will animate
     });
   }
 }
 
-/// Icon rotates and returns to 0 every time animTick changes.
-/// (No staying rotated)
+/// Only animates when animateIndex == this item's index
 class _NavItemRotateBack extends StatefulWidget {
+  final int index;
+  final int animateIndex;
+
   final bool active;
-  final int animTick;
   final IconData icon;
   final String label;
   final Color selectedColor;
@@ -196,8 +201,9 @@ class _NavItemRotateBack extends StatefulWidget {
   final VoidCallback onTap;
 
   const _NavItemRotateBack({
+    required this.index,
+    required this.animateIndex,
     required this.active,
-    required this.animTick,
     required this.icon,
     required this.label,
     required this.selectedColor,
@@ -212,8 +218,7 @@ class _NavItemRotateBack extends StatefulWidget {
 class _NavItemRotateBackState extends State<_NavItemRotateBack>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
-
-  late final Animation<double> _rot; // 0 -> +angle -> 0
+  late final Animation<double> _rot;
 
   @override
   void initState() {
@@ -223,7 +228,6 @@ class _NavItemRotateBackState extends State<_NavItemRotateBack>
       duration: const Duration(milliseconds: 320),
     );
 
-    // rotate to 18 degrees and come back
     _rot = TweenSequence<double>([
       TweenSequenceItem(
         tween: Tween(
@@ -246,8 +250,12 @@ class _NavItemRotateBackState extends State<_NavItemRotateBack>
   void didUpdateWidget(covariant _NavItemRotateBack oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    // Trigger animation whenever the bar changes (animTick changes)
-    if (oldWidget.animTick != widget.animTick) {
+    // ✅ animate ONLY when THIS item becomes the animateIndex
+    final becameAnimated =
+        oldWidget.animateIndex != widget.animateIndex &&
+        widget.animateIndex == widget.index;
+
+    if (becameAnimated) {
       _ctrl.forward(from: 0);
     }
   }
@@ -291,7 +299,12 @@ class _NavItemRotateBackState extends State<_NavItemRotateBack>
               curve: Curves.easeOutCubic,
               style: TextStyle(
                 fontSize: 11,
-                fontWeight: widget.active ? FontWeight.w800 : FontWeight.w600,
+                fontWeight:
+                    widget.active
+                        ? FontWeight.w800
+                        : widget.active
+                        ? FontWeight.w700
+                        : FontWeight.w600,
                 color: color,
               ),
               child: Text(widget.label),
