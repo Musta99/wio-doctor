@@ -319,58 +319,47 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        elevation: 6,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                      ),
-                      child: Text(
-                        status.toLowerCase().contains("pending")
-                            ? "Approve"
-                            : "Manage",
-                        style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(14),
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.05)
-                                : const Color(0xFFF3F4F8),
-                        border: Border.all(color: borderColor),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(LucideIcons.messageSquare, size: 18),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Message",
+              status.toLowerCase().contains("pending")
+                  ? Row(
+                    children: [
+                      Expanded(
+                        child: ShadButton(
+                          width: double.infinity,
+                          backgroundColor: Colors.green,
+
+                          onPressed: () {},
+                          child: Text(
+                            "Approve",
+
                             style: GoogleFonts.exo(fontWeight: FontWeight.w900),
                           ),
-                        ],
+                        ),
                       ),
+
+                      Expanded(
+                        child: ShadButton(
+                          width: double.infinity,
+                          backgroundColor: Colors.red,
+
+                          onPressed: () {},
+                          child: Text(
+                            "Reject",
+
+                            style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                  : ShadButton(
+                    width: double.infinity,
+                    backgroundColor: Colors.teal,
+                    onPressed: () {},
+                    child: Text(
+                      "Manage",
+                      style: GoogleFonts.exo(fontWeight: FontWeight.w900),
                     ),
                   ),
-                ],
-              ),
             ],
           ),
         ),
