@@ -192,7 +192,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
 class _NavItemRotateBack extends StatefulWidget {
   final int index;
   final int animateIndex;
-
   final bool active;
   final IconData icon;
   final String label;

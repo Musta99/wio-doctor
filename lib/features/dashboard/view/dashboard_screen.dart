@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
+import 'package:wio_doctor/features/patient/view/patient_details_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -197,7 +198,12 @@ class DashboardScreen extends StatelessWidget {
                   sex: "F",
                   age: "50 y",
                   reason: "Hypertension",
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => PatientDetailsScreen()),
+                    );
+                  },
                 );
               },
             ),
