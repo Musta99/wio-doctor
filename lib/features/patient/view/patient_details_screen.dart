@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/patient/view/add_patient_vital.dart';
 
 class PatientDetailsScreen extends StatefulWidget {
   const PatientDetailsScreen({super.key});
@@ -784,10 +785,12 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                     ShadButton(
                       backgroundColor: Colors.teal,
                       onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (_) => const AddVitalsScreen()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AddVitalsScreen(),
+                          ),
+                        );
                       },
                       child: Text(
                         "Add",
