@@ -644,8 +644,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   videoCard(v),
                   const SizedBox(height: 12),
                 ],
-
-                const SizedBox(height: 24),
               ],
             ),
           ),
