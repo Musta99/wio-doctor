@@ -100,9 +100,9 @@ class PatientCard extends StatelessWidget {
                         : [
                           const Color.fromARGB(
                             255,
-                            105,
-                            173,
-                            241,
+                            19,
+                            102,
+                            102,
                           ), // light glass base (slightly gray)
                           const Color.fromARGB(
                             255,
