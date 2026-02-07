@@ -8,6 +8,7 @@ class PatientCard extends StatelessWidget {
   final String age;
   final String reason;
   final VoidCallback onPressed;
+
   const PatientCard({
     super.key,
     required this.name,
@@ -20,146 +21,183 @@ class PatientCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        decoration: BoxDecoration(
-          color: isDark ? Color(0xFF1E293B) : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border:
-              isDark ? Border.all(color: Color(0xFF334155), width: 1) : null,
 
-          boxShadow: [
-            BoxShadow(
-              color:
-                  isDark ? Colors.transparent : Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: Offset(0, 4),
+    final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
+
+    final borderColor =
+        isDark
+            ? Colors.white.withOpacity(0.08)
+            : Colors.black.withOpacity(0.06);
+
+    final subtleText =
+        isDark
+            ? Colors.white.withOpacity(0.72)
+            : Colors.black.withOpacity(0.65);
+
+    Widget infoChip(String text, IconData icon) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color:
+              isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF3F4F8),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: borderColor),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 12, color: subtleText),
+            const SizedBox(width: 6),
+            Text(
+              text,
+              style: GoogleFonts.exo(
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                color:
+                    isDark
+                        ? Colors.white.withOpacity(0.9)
+                        : Colors.black.withOpacity(0.75),
+              ),
             ),
           ],
         ),
-        padding: EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: isDark ? Color(0xFF0F766E) : Color(0xFFE0F2F1),
-                borderRadius: BorderRadius.circular(12),
+      );
+    }
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: borderColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(isDark ? 0.35 : 0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          /// Avatar block with glow
+          Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+
+              // ✅ Better contrast glass (visible in light theme too)
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors:
+                    isDark
+                        ? [
+                          Colors.white.withOpacity(0.10),
+                          Colors.white.withOpacity(0.03),
+                        ]
+                        : [
+                          const Color.fromARGB(
+                            255,
+                            105,
+                            173,
+                            241,
+                          ), // light glass base (slightly gray)
+                          const Color.fromARGB(
+                            255,
+                            193,
+                            214,
+                            242,
+                          ), // subtle depth
+                        ],
               ),
-              child: Center(
-                child: Text(
-                  name[0],
-                  style: GoogleFonts.exo(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Color(0xFF0D9488),
-                  ),
+
+              // ✅ Stronger border in light theme
+              border: Border.all(
+                color:
+                    isDark
+                        ? Colors.white.withOpacity(0.18)
+                        : Colors.black.withOpacity(0.08),
+              ),
+
+              boxShadow: [
+                // outer soft shadow (gives visibility in light theme)
+                BoxShadow(
+                  color: Colors.black.withOpacity(isDark ? 0.40 : 0.10),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
                 ),
-              ),
+
+                // subtle highlight
+                BoxShadow(
+                  color: Colors.white.withOpacity(isDark ? 0.05 : 0.65),
+                  blurRadius: 10,
+                  offset: const Offset(-2, -2),
+                ),
+              ],
             ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: GoogleFonts.exo(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : Color(0xFF1F2937),
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    spacing: 12,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isDark ? Color(0xFF713F12) : Color(0xFFFEF3C7),
-
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          sex,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color:
-                                isDark ? Color(0xFFFDE68A) : Color(0xFF92400E),
-
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isDark ? Color(0xFF713F12) : Color(0xFFFEF3C7),
-
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          age,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color:
-                                isDark ? Color(0xFFFDE68A) : Color(0xFF92400E),
-
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isDark ? Color(0xFF713F12) : Color(0xFFFEF3C7),
-
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          reason,
-                          style: GoogleFonts.inter(
-                            fontSize: 11,
-                            color:
-                                isDark ? Color(0xFFFDE68A) : Color(0xFF92400E),
-
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            ShadButton(
-              onPressed: onPressed,
-              backgroundColor: Colors.teal,
+            child: Center(
               child: Text(
-                "View",
-                style: GoogleFonts.exo2(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
+                name.isNotEmpty ? name[0].toUpperCase() : "?",
+                style: GoogleFonts.exo(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
                   color: Colors.white,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+
+          const SizedBox(width: 14),
+
+          /// Patient info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.exo(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    infoChip(sex, LucideIcons.user),
+                    infoChip(age, LucideIcons.clock),
+                    infoChip(reason, LucideIcons.heartPulse),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          /// Action button
+          ShadButton(
+            backgroundColor: Colors.teal,
+            onPressed: onPressed,
+            child: Text(
+              "View",
+              style: GoogleFonts.exo(
+                fontSize: 13,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
