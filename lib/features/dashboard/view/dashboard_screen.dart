@@ -368,13 +368,7 @@ class DashboardScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        // _CircleIconButton(
-                        //   onTap: () {
-                        //     // TODO: search
-                        //   },
-                        //   icon: LucideIcons.search,
-                        //   isDarkHeader: true,
-                        // ),
+
                         const SizedBox(width: 10),
                         _CircleIconButton(
                           onTap: () {
@@ -396,6 +390,15 @@ class DashboardScreen extends StatelessWidget {
                               themeProvider.isDarkMode
                                   ? LucideIcons.sun
                                   : LucideIcons.moon,
+                          isDarkHeader: true,
+                        ),
+                        const SizedBox(width: 10),
+
+                        _CircleIconButton(
+                          onTap: () {
+                            // TODO: search
+                          },
+                          icon: LucideIcons.menu,
                           isDarkHeader: true,
                         ),
                       ],
