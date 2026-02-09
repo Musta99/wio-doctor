@@ -5,6 +5,7 @@ import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
 import 'package:wio_doctor/features/patient/view/patient_details_screen.dart';
+import 'package:wio_doctor/features/patient_access/view/patient_access_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -635,6 +636,10 @@ class _DashboardEndDrawer extends StatelessWidget {
                 title: "Patient Access",
                 onTap: () {
                   // TODO: navigate
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PatientAccessScreen()),
+                  );
                 },
               ),
               const SizedBox(height: 10),
