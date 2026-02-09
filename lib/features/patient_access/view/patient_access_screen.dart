@@ -170,6 +170,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                     ShadButton(
                       width: double.infinity,
                       backgroundColor: Colors.teal,
+                      pressedBackgroundColor: Colors.teal,
                       onPressed: () {
                         // TODO: perform search
                         FocusScope.of(context).unfocus();
