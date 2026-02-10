@@ -663,7 +663,6 @@ class _DashboardEndDrawer extends StatelessWidget {
                 icon: LucideIcons.stethoscope,
                 title: "Clinical Review",
                 onTap: () {
-                  // TODO: navigate
                   Navigator.push(
                     context,
                     MaterialPageRoute(
