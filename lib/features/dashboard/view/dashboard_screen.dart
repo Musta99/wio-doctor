@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/clinical_review/view/clinical_review_screen.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
 import 'package:wio_doctor/features/digital_prescription/view/digital_prescription_screen.dart';
@@ -663,6 +664,12 @@ class _DashboardEndDrawer extends StatelessWidget {
                 title: "Clinical Review",
                 onTap: () {
                   // TODO: navigate
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ClinicalReviewScreen(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 10),
