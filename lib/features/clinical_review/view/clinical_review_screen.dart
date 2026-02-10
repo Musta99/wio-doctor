@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 
 /// ===============================
 /// 1) CLINICAL REVIEW SCREEN
@@ -318,17 +319,19 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                       InkWell(
                         borderRadius: BorderRadius.circular(18),
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => PatientHealthDashboardScreen(
-                          //       patientName: selectedPatient!.split(" (").first,
-                          //       doctorName: "Dr. Alex Riveira",
-                          //       reportDate: r.date,
-                          //       reportTitle: r.title,
-                          //     ),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => PatientHealthDashboardScreen(
+                                    patientName:
+                                        selectedPatient!.split(" (").first,
+                                    doctorName: "Dr. Alex Riveira",
+                                    reportDate: r.date,
+                                    reportTitle: r.title,
+                                  ),
+                            ),
+                          );
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 10),
