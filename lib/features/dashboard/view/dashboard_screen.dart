@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
+import 'package:wio_doctor/features/digital_prescription/view/digital_prescription_screen.dart';
 import 'package:wio_doctor/features/patient/view/patient_details_screen.dart';
 import 'package:wio_doctor/features/patient_access/view/patient_access_screen.dart';
 
@@ -648,6 +649,12 @@ class _DashboardEndDrawer extends StatelessWidget {
                 title: "Digital Prescriber",
                 onTap: () {
                   // TODO: navigate
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DigitalPrescriberScreen(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 10),
