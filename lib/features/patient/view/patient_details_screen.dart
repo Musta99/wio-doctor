@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/patient/view/add_patient_vital.dart';
+import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 
 class PatientDetailsScreen extends StatefulWidget {
   const PatientDetailsScreen({super.key});
@@ -758,7 +759,20 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                           ),
                           ShadButton(
                             backgroundColor: Colors.teal,
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => PatientHealthDashboardScreen(
+                                        patientName: "",
+                                        doctorName: "doctorName",
+                                        reportDate: "",
+                                        reportTitle: "",
+                                      ),
+                                ),
+                              );
+                            },
                             child: Text(
                               "Details",
                               style: GoogleFonts.exo(
