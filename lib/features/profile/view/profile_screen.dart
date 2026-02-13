@@ -460,10 +460,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                headerCard(),
-                const SizedBox(height: 14),
                 // Virtual Wio Card
                 VirtualWioCard(),
+                const SizedBox(height: 14),
+                headerCard(),
                 const SizedBox(height: 14),
 
                 // 2) Basic Information
