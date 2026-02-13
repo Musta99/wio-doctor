@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/profile/widget/virtual_wio_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -460,6 +461,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               children: [
                 headerCard(),
+                const SizedBox(height: 14),
+                // Virtual Wio Card
+                VirtualWioCard(),
                 const SizedBox(height: 14),
 
                 // 2) Basic Information
