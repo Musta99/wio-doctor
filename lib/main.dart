@@ -18,6 +18,7 @@
 // --------------------- 2222222222222222 ---------------------
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/features/auth/view/login_screen.dart';
 import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 
@@ -52,7 +53,7 @@ class AppContent extends StatelessWidget {
         brightness: Brightness.dark,
         colorScheme: const ShadZincColorScheme.dark(),
       ),
-      home: const BottomNavBar(),
+      home: const LoginScreen(),
     );
   }
 }
