@@ -3,9 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
 
-/// ===============================
-/// 2) SIGNUP SCREEN
-/// ===============================
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -20,6 +17,11 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool hidePass = true;
   bool hideConfirm = true;
+
+  Future doctorSignUp() async {
+    try {} catch (err) {
+    } finally {}
+  }
 
   @override
   void dispose() {

@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"wio-care","appId":"1:945647869344:android:0a81e4ed4843d3125b98c5","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"wio-care","configurations":{"android":"1:945647869344:android:0a81e4ed4843d3125b98c5","ios":"1:945647869344:ios:220dedc16666788a5b98c5"}}}}}}

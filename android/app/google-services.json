@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "945647869344",
+    "project_id": "wio-care",
+    "storage_bucket": "wio-care.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945647869344:android:0a81e4ed4843d3125b98c5",
+        "android_client_info": {
+          "package_name": "com.mobile.wio_doctor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945647869344-s6uaola6p5e120j5frn1nacanfq8m278.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA33lHWWCwNO2ReP1my_EEeu5kNd9b1xuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945647869344-s6uaola6p5e120j5frn1nacanfq8m278.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "945647869344-p58k550p2outp99j2udh5e4p8hpe96sp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.wiocare"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945647869344:android:4c3dfb553e668b6e5b98c5",
+        "android_client_info": {
+          "package_name": "com.wiocare.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945647869344-b4hrr40rb9ctt2gtph2gqhugdm3c13fc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.wiocare.mobile",
+            "certificate_hash": "b652b95635d6eb991a90b3acdaced950fc35596d"
+          }
+        },
+        {
+          "client_id": "945647869344-s6uaola6p5e120j5frn1nacanfq8m278.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA33lHWWCwNO2ReP1my_EEeu5kNd9b1xuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945647869344-s6uaola6p5e120j5frn1nacanfq8m278.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "945647869344-p58k550p2outp99j2udh5e4p8hpe96sp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.wiocare"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

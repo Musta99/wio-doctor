@@ -16,13 +16,16 @@
 // }
 
 // --------------------- 2222222222222222 ---------------------
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
-import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
+
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

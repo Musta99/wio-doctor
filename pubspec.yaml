@@ -42,6 +42,14 @@ dependencies:
   google_fonts: ^6.3.2
   #pretty_qr_code
   pretty_qr_code: ^3.6.0
+  #FIrebase Core
+  firebase_core: ^4.4.0
+  #Firebase Auth
+  firebase_auth: ^6.1.4
+  #Firebase Firestore
+  cloud_firestore: ^6.1.2
+  #Provider
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

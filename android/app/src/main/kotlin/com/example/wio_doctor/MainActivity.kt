@@ -1,4 +1,4 @@
-package com.example.wio_doctor
+package com.mobile.wio_doctor
 
 import io.flutter.embedding.android.FlutterActivity
 
