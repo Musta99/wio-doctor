@@ -14,14 +14,10 @@ class _SignupScreenState extends State<SignupScreen> {
   final emailCtrl = TextEditingController();
   final passCtrl = TextEditingController();
   final confirmCtrl = TextEditingController();
+  final nameCtrl = TextEditingController();
 
   bool hidePass = true;
   bool hideConfirm = true;
-
-  Future doctorSignUp() async {
-    try {} catch (err) {
-    } finally {}
-  }
 
   @override
   void dispose() {
@@ -167,6 +163,18 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text("Name", style: titleStyle(13.5)),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: nameCtrl,
+                        keyboardType: TextInputType.name,
+                        style: bodyStyle(14),
+                        decoration: inputDec(
+                          hint: "Enter your full name",
+                          icon: LucideIcons.user,
+                        ),
+                      ),
+
                       Text("Email", style: titleStyle(13.5)),
                       const SizedBox(height: 8),
                       TextField(
