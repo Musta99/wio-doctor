@@ -18,10 +18,12 @@
 // --------------------- 2222222222222222 ---------------------
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
 
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,18 +47,25 @@ class AppContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = ThemeProvider.of(context);
 
-    return ShadApp(
-      debugShowCheckedModeBanner: false,
-      themeMode: themeProvider.themeMode,
-      theme: ShadThemeData(
-        brightness: Brightness.light,
-        colorScheme: const ShadZincColorScheme.light(),
-      ),
-      darkTheme: ShadThemeData(
-        brightness: Brightness.dark,
-        colorScheme: const ShadZincColorScheme.dark(),
-      ),
-      home: const LoginScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => SignupViewModel()),
+      ],
+      builder: (context, child) {
+        return ShadApp(
+          debugShowCheckedModeBanner: false,
+          themeMode: themeProvider.themeMode,
+          theme: ShadThemeData(
+            brightness: Brightness.light,
+            colorScheme: const ShadZincColorScheme.light(),
+          ),
+          darkTheme: ShadThemeData(
+            brightness: Brightness.dark,
+            colorScheme: const ShadZincColorScheme.dark(),
+          ),
+          home: const LoginScreen(),
+        );
+      },
     );
   }
 }
