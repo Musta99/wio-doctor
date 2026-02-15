@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
+import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -239,19 +242,46 @@ class _SignupScreenState extends State<SignupScreen> {
 
                       const SizedBox(height: 14),
 
-                      ShadButton(
-                        width: double.infinity,
-                        backgroundColor: Colors.teal,
-                        onPressed: () {
-                          // TODO: Signup
+                      Consumer<SignupViewModel>(
+                        builder: (context, signupVM, child) {
+                          return ShadButton(
+                            width: double.infinity,
+                            backgroundColor: Colors.teal,
+                            onPressed: () async {
+                              if (nameCtrl.text.isEmpty ||
+                                  emailCtrl.text.isEmpty ||
+                                  passCtrl.text.isEmpty ||
+                                  confirmCtrl.text.isEmpty) {
+                                Fluttertoast.showToast(
+                                  backgroundColor: Colors.red,
+                                  gravity: ToastGravity.CENTER,
+                                  msg: "Please fill in all fields.",
+                                  fontSize: 16,
+                                );
+                              } else if (passCtrl.text != confirmCtrl.text) {
+                                Fluttertoast.showToast(
+                                  backgroundColor: Colors.red,
+                                  gravity: ToastGravity.CENTER,
+                                  msg: "Passwords do not match.",
+                                  fontSize: 15,
+                                );
+                              } else {
+                                await signupVM.doctorSignUp(
+                                  emailCtrl.text.trim(),
+                                  passCtrl.text.trim(),
+                                  nameCtrl.text.trim(),
+                                );
+                              }
+                            },
+                            child: Text(
+                              "Sign Up",
+                              style: GoogleFonts.exo(
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
                         },
-                        child: Text(
-                          "Sign Up",
-                          style: GoogleFonts.exo(
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                          ),
-                        ),
                       ),
 
                       const SizedBox(height: 12),
