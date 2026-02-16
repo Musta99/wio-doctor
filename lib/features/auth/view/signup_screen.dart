@@ -271,15 +271,35 @@ class _SignupScreenState extends State<SignupScreen> {
                                   passCtrl.text.trim(),
                                   nameCtrl.text.trim(),
                                 );
+                                // Clear input fields after successful signup
+
+                                nameCtrl.clear();
+                                emailCtrl.clear();
+                                passCtrl.clear();
+
+                                // Navigate to login screen after successful signup
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginScreen(),
+                                  ),
+                                );
                               }
                             },
-                            child: Text(
-                              "Sign Up",
-                              style: GoogleFonts.exo(
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                              ),
-                            ),
+                            child:
+                                signupVM.isSignupLoading
+                                    ? Icon(
+                                      LucideIcons.loader,
+                                      color: Colors.white,
+                                      size: 18,
+                                    )
+                                    : Text(
+                                      "Sign Up",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                           );
                         },
                       ),

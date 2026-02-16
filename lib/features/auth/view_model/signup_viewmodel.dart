@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,16 +21,20 @@ class SignupViewModel extends ChangeNotifier {
       if (user.user!.uid == null) {
         throw Exception("User ID is null");
       } else {
-        final String signUpEndPoint = "https://wiocare.com/api/auth/signup";
+        final String signUpEndPoint = "https://www.wiocare.com/api/auth/signup";
         final response = await http.post(
           Uri.parse(signUpEndPoint),
-          body: {
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: jsonEncode({
             "uid": user.user!.uid,
             "email": email,
             "name": name,
             "role": "doctor",
             "termsAccepted": true,
-          },
+          }),
         );
 
         if (response.statusCode == 200) {
@@ -39,10 +45,14 @@ class SignupViewModel extends ChangeNotifier {
             fontSize: 16,
           );
         } else {
+          print(
+            "Failed to create account on server: ${response.statusCode} - ${response.body}",
+          );
           throw Exception("Failed to create account. Please try again.");
         }
       }
     } catch (err) {
+      print("Signup error: $err");
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         gravity: ToastGravity.CENTER,
