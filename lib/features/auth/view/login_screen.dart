@@ -216,38 +216,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: Colors.teal,
                             onPressed: () async {
                               if (loginVM.isLoginLoading) return;
-                              if (emailCtrl.text.isEmpty ||
-                                  passCtrl.text.isEmpty) {
-                                Fluttertoast.showToast(
-                                  msg: "Please fill in all fields",
-                                  backgroundColor: Colors.red,
-                                  gravity: ToastGravity.CENTER,
-                                );
-                                return;
-                              } else {
-                                await loginVM.login(
-                                  emailCtrl.text,
-                                  passCtrl.text,
-                                );
 
-                                Fluttertoast.showToast(
-                                  msg: "Login successful",
-                                  backgroundColor: Colors.green,
-                                  gravity: ToastGravity.CENTER,
-                                );
+                              await loginVM.login(
+                                emailCtrl.text,
+                                passCtrl.text,
+                                context,
+                              );
 
-                                // clear the text fields after login attempt
-                                emailCtrl.clear();
-                                passCtrl.clear();
-
-                                // Navigate to home screen if login successful
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BottomNavBar(),
-                                  ),
-                                );
-                              }
+                              // clear the text fields after login attempt
+                              emailCtrl.clear();
+                              passCtrl.clear();
                             },
                             child: Text(
                               "Login",

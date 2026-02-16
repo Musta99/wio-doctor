@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 
 class LoginViewmodel extends ChangeNotifier {
   bool isLoginLoading = false;
@@ -33,22 +35,57 @@ class LoginViewmodel extends ChangeNotifier {
     }
   }
 
-  Future<bool> login(String email, String password) async {
-    _setLoading(true);
-    _setError(null);
+  Future login(String email, String password, BuildContext context) async {
+    if (email.trim().isEmpty || password.isEmpty) {
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        gravity: ToastGravity.CENTER,
+        msg: "Please enter both email and password.",
+        fontSize: 16,
+      );
+      return;
+    }
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      _setLoading(true);
+      _setError(null);
+      final cred = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
-      return true; // ✅ success
+
+      if (cred.user!.uid == null) {
+        throw Exception("User ID is null");
+      }
+
+      // Navigate to home screen if login successful
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => BottomNavBar()),
+      );
+
+      Fluttertoast.showToast(
+        msg: "Login successful",
+        backgroundColor: Colors.green,
+        gravity: ToastGravity.CENTER,
+      );
+
+      print("Login successful: ${cred.user?.uid}");
     } on FirebaseAuthException catch (e) {
-      _setError(_friendlyFirebaseError(e));
-      return false;
-    } catch (_) {
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        gravity: ToastGravity.CENTER,
+        msg: _friendlyFirebaseError(e),
+        fontSize: 16,
+      );
+    } catch (err) {
+      Fluttertoast.showToast(
+        backgroundColor: Colors.red,
+        gravity: ToastGravity.CENTER,
+        msg: "Something went wrong. Please try again.$err",
+        fontSize: 16,
+      );
       _setError("Something went wrong. Please try again.");
-      return false;
     } finally {
       _setLoading(false);
     }
