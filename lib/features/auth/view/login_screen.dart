@@ -228,6 +228,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   emailCtrl.text,
                                   passCtrl.text,
                                 );
+
+                                // clear the text fields after login attempt
+                                emailCtrl.clear();
+                                passCtrl.clear();
                               }
                             },
                             child: Text(
