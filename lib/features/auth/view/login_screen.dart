@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/auth/view/signup_screen.dart';
 import 'package:wio_doctor/features/auth/view_model/login_viewmodel.dart';
+import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -240,6 +241,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 passCtrl.clear();
 
                                 // Navigate to home screen if login successful
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BottomNavBar(),
+                                  ),
+                                );
                               }
                             },
                             child: Text(
