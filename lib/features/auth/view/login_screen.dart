@@ -227,13 +227,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               emailCtrl.clear();
                               passCtrl.clear();
                             },
-                            child: Text(
-                              "Login",
-                              style: GoogleFonts.exo(
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                              ),
-                            ),
+                            child:
+                                loginVM.isLoginLoading
+                                    ? Icon(
+                                      LucideIcons.loader,
+                                      size: 18,
+                                      color: Colors.white,
+                                    )
+                                    : Text(
+                                      "Login",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                           );
                         },
                       ),
