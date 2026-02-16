@@ -23,6 +23,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
 
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/auth/view_model/login_viewmodel.dart';
 import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
 
 void main() async {
@@ -50,6 +51,7 @@ class AppContent extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SignupViewModel()),
+        ChangeNotifierProvider(create: (context) => LoginViewmodel()),
       ],
       builder: (context, child) {
         return ShadApp(

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/auth/view/signup_screen.dart';
+import 'package:wio_doctor/features/auth/view_model/login_viewmodel.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -205,19 +207,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       const SizedBox(height: 6),
 
-                      ShadButton(
-                        width: double.infinity,
-                        backgroundColor: Colors.teal,
-                        onPressed: () {
-                          // TODO: Login
+                      Consumer<LoginViewmodel>(
+                        builder: (context, loginVM, child) {
+                          return ShadButton(
+                            width: double.infinity,
+                            backgroundColor: Colors.teal,
+                            onPressed: () {
+                              if (loginVM.isLoginLoading) return;
+                            },
+                            child: Text(
+                              "Login",
+                              style: GoogleFonts.exo(
+                                fontWeight: FontWeight.w900,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
                         },
-                        child: Text(
-                          "Login",
-                          style: GoogleFonts.exo(
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                          ),
-                        ),
                       ),
 
                       const SizedBox(height: 12),
