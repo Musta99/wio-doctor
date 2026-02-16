@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -212,8 +213,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           return ShadButton(
                             width: double.infinity,
                             backgroundColor: Colors.teal,
-                            onPressed: () {
+                            onPressed: () async {
                               if (loginVM.isLoginLoading) return;
+                              if (emailCtrl.text.isEmpty ||
+                                  passCtrl.text.isEmpty) {
+                                Fluttertoast.showToast(
+                                  msg: "Please fill in all fields",
+                                  backgroundColor: Colors.red,
+                                  gravity: ToastGravity.CENTER,
+                                );
+                                return;
+                              } else {
+                                await loginVM.login(
+                                  emailCtrl.text,
+                                  passCtrl.text,
+                                );
+                              }
                             },
                             child: Text(
                               "Login",
