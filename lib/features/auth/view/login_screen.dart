@@ -229,9 +229,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                   passCtrl.text,
                                 );
 
+                                Fluttertoast.showToast(
+                                  msg: "Login successful",
+                                  backgroundColor: Colors.green,
+                                  gravity: ToastGravity.CENTER,
+                                );
+
                                 // clear the text fields after login attempt
                                 emailCtrl.clear();
                                 passCtrl.clear();
+
+                                // Navigate to home screen if login successful
                               }
                             },
                             child: Text(
