@@ -73,11 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }) {
       return InputDecoration(
         hintText: hint,
-        hintStyle: GoogleFonts.exo(
-          color: subtleText,
-          fontWeight: FontWeight.w700,
-          fontSize: 13,
-        ),
+        hintStyle: GoogleFonts.exo(color: subtleText, fontSize: 13),
         prefixIcon: Icon(icon, size: 18),
         suffixIcon: suffix,
         filled: true,
