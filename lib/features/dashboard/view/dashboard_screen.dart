@@ -264,13 +264,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ),
                           ),
                           const SizedBox(width: 10),
-                          Text(
-                            "Cardiologist • WIO ID: XXXXXXXXX",
-                            style: GoogleFonts.exo(
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.w800,
-                              color: onHeader,
-                            ),
+                          Consumer<DashboardViewModel>(
+                            builder: (context, dashboardVm, child) {
+                              return Text(
+                                "${dashboardVm.specialization == null || dashboardVm.specialization!.isEmpty ? "Cardiologist" : dashboardVm.wioId} • WIO ID: ${dashboardVm.wioId == null || dashboardVm.wioId!.isEmpty ? "XXXXXXX" : dashboardVm.wioId}",
+                                style: GoogleFonts.exo(
+                                  fontSize: 12.5,
+                                  fontWeight: FontWeight.w800,
+                                  color: onHeader,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
