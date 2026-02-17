@@ -25,6 +25,7 @@ import 'package:wio_doctor/features/auth/view/login_screen.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/auth/view_model/login_viewmodel.dart';
 import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
+import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +53,7 @@ class AppContent extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => SignupViewModel()),
         ChangeNotifierProvider(create: (context) => LoginViewmodel()),
+        ChangeNotifierProvider(create: (context) => DashboardViewModel()),
       ],
       builder: (context, child) {
         return ShadApp(

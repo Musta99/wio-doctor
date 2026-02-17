@@ -9,9 +9,14 @@ import 'package:wio_doctor/features/digital_prescription/view/digital_prescripti
 import 'package:wio_doctor/features/patient/view/patient_details_screen.dart';
 import 'package:wio_doctor/features/patient_access/view/patient_access_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
   _HeaderPalette _paletteForNow(bool isDark) {
     final hour = DateTime.now().hour;
 
@@ -49,6 +54,14 @@ class DashboardScreen extends StatelessWidget {
                 : const [Color(0xFF2B5876), Color(0xFF4E4376)],
       );
     }
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    
   }
 
   @override
