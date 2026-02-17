@@ -76,4 +76,44 @@ class DashboardViewModel extends ChangeNotifier {
     } catch (err) {
     } finally {}
   }
+
+
+  //  Patient Roaster
+  bool isLoadingPatientRoaster = false;
+  List roasterPatients = [];
+  Future fetchPatientRoaster() async {
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? doctorId = prefs.getString("doctorId");
+
+ 
+
+
+    try{
+      
+
+      isLoadingPatientRoaster = true;
+      notifyListeners();
+
+      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("patientAccess").where("doctorId", isEqualTo: doctorId).get();
+
+      print("Roastered Patient: ${querySnapshot.docs}");
+      roasterPatients = querySnapshot.docs;
+      notifyListeners();
+
+
+     
+
+
+    }catch(err){
+
+    }finally{
+      isLoadingPatientRoaster = false;
+      notifyListeners();
+    }
+
+
+
+
+  }
 }

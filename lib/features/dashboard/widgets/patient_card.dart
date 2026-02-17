@@ -6,7 +6,7 @@ class PatientCard extends StatelessWidget {
   final String name;
   final String sex;
   final String age;
-  final String reason;
+  final String status;
   final VoidCallback onPressed;
 
   const PatientCard({
@@ -14,7 +14,7 @@ class PatientCard extends StatelessWidget {
     required this.name,
     required this.sex,
     required this.age,
-    required this.reason,
+    required this.status,
     required this.onPressed,
   });
 
@@ -175,7 +175,7 @@ class PatientCard extends StatelessWidget {
                   children: [
                     infoChip(sex, LucideIcons.user),
                     infoChip(age, LucideIcons.clock),
-                    infoChip(reason, LucideIcons.heartPulse),
+                    infoChip(status, LucideIcons.heartPulse),
                   ],
                 ),
               ],

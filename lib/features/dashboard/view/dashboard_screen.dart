@@ -63,6 +63,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // TODO: implement initState
     super.initState();
     Provider.of<DashboardViewModel>(context, listen: false).fetchDoctorData();
+    Provider.of<DashboardViewModel>(
+      context,
+      listen: false,
+    ).fetchPatientRoaster();
   }
 
   @override
@@ -468,24 +472,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
 
                   // Patient List (kept as-is)
-                  ListView.builder(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 6,
-                    itemBuilder: (context, index) {
-                      return PatientCard(
-                        name: "Sarah Jenkins",
-                        sex: "F",
-                        age: "50 y",
-                        reason: "Hypertension",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const PatientDetailsScreen(),
-                            ),
-                          );
+                  Consumer<DashboardViewModel>(
+                    builder: (context, dashboardVM, child) {
+                      return ListView.builder(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: dashboardVM.roasterPatients.length,
+                        itemBuilder: (context, index) {
+                          final patientDetails =
+                              dashboardVM.roasterPatients[index];
+                          return dashboardVM.isLoadingPatientRoaster
+                              ? Icon(LucideIcons.loader)
+                              : PatientCard(
+                                name: patientDetails["patientName"],
+                                sex: "F",
+                                age: "50 y",
+                                status: patientDetails["status"],
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => const PatientDetailsScreen(),
+                                    ),
+                                  );
+                                },
+                              );
                         },
                       );
                     },
