@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/clinical_review/view/clinical_review_screen.dart';
+import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
 import 'package:wio_doctor/features/digital_prescription/view/digital_prescription_screen.dart';
@@ -61,7 +63,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    
+    Provider.of<DashboardViewModel>(context,listen: false).fetchDoctorData();
   }
 
   @override
