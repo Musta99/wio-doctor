@@ -58,12 +58,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<DashboardViewModel>(context,listen: false).fetchDoctorData();
+    Provider.of<DashboardViewModel>(context, listen: false).fetchDoctorData();
   }
 
   @override
@@ -143,11 +142,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ],
                           ),
-                          child: const CircleAvatar(
-                            radius: 22,
-                            backgroundImage: NetworkImage(
-                              "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                            ),
+                          child: Consumer<DashboardViewModel>(
+                            builder: (context, dashboardVM, child) {
+                              return CircleAvatar(
+                                radius: 22,
+                                backgroundColor: Colors.white,
+                                backgroundImage:
+                                    dashboardVM.photo == null ||
+                                            dashboardVM.photo!.isEmpty
+                                        ? AssetImage(
+                                          "assets/icons/user-icon.png",
+                                        )
+                                        : AssetImage(dashboardVM.photo!),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -165,15 +173,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                               const SizedBox(height: 2),
-                              Text(
-                                "Dr. Alex Riveira",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.exo(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w900,
-                                  color: onHeader,
-                                ),
+                              Consumer<DashboardViewModel>(
+                                builder: (context, dashboardVM, child) {
+                                  return Text(
+                                    dashboardVM.name == null ||
+                                            dashboardVM.name!.isEmpty
+                                        ? "Dr. Alex Riveira"
+                                        : dashboardVM.name!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.exo(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w900,
+                                      color: onHeader,
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
