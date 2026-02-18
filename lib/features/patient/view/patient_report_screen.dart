@@ -310,10 +310,35 @@ class _PatientHealthDashboardScreenState
                                 ).copyWith(color: subtleText),
                               ),
                               const SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  chip(text: majorIssue, accent: Colors.red),
-                                ],
+                              // Extract majorIssues list safely
+                              Builder(
+                                builder: (_) {
+                                  final majorIssues =
+                                      (patientDetailsVM
+                                              .reportDetails?["analysis"]?["majorIssues"]
+                                          as List?) ??
+                                      [];
+                                  return majorIssues.isEmpty
+                                      ? chip(
+                                        text: "No Major issues found",
+                                        accent: Colors.grey,
+                                      )
+                                      : Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children:
+                                            majorIssues
+                                                .map(
+                                                  (issue) => chip(
+                                                    text:
+                                                        (issue as Map)?["en"] ??
+                                                        "-",
+                                                    accent: Colors.red,
+                                                  ),
+                                                )
+                                                .toList(),
+                                      );
+                                },
                               ),
                               const SizedBox(height: 12),
                               Text(
@@ -323,10 +348,35 @@ class _PatientHealthDashboardScreenState
                                 ).copyWith(color: subtleText),
                               ),
                               const SizedBox(height: 6),
-                              Row(
-                                children: [
-                                  chip(text: minorIssue, accent: Colors.orange),
-                                ],
+                              // Extract minorIssues list safely
+                              Builder(
+                                builder: (_) {
+                                  final minorIssues =
+                                      (patientDetailsVM
+                                              .reportDetails?["analysis"]?["minorIssues"]
+                                          as List?) ??
+                                      [];
+                                  return minorIssues.isEmpty
+                                      ? chip(
+                                        text: "No Major issues found",
+                                        accent: Colors.grey,
+                                      )
+                                      : Wrap(
+                                        spacing: 8,
+                                        runSpacing: 8,
+                                        children:
+                                            minorIssues
+                                                .map(
+                                                  (issue) => chip(
+                                                    text:
+                                                        (issue as Map)?["en"] ??
+                                                        "-",
+                                                    accent: Colors.orange,
+                                                  ),
+                                                )
+                                                .toList(),
+                                      );
+                                },
                               ),
                             ],
                           ),
