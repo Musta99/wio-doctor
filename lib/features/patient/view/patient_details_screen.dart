@@ -753,96 +753,116 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                 // =========================================================
                 Text("Reports", style: sectionStyle(18)),
                 const SizedBox(height: 10),
-
-                if (reports.isEmpty)
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Text(
-                        "No reports available.",
-                        style: bodyStyle(13).copyWith(color: subtleText),
-                      ),
-                    ),
-                  ),
-
-                for (final r in reports) ...[
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Row(
-                        children: [
+                Consumer<PatientViewModel>(
+                  builder: (context, patientDetailsVM, child) {
+                    return Column(
+                      children: [
+                        // Empty state
+                        if (patientDetailsVM
+                            .patientDetailsData["reports"]
+                            .isEmpty)
                           Container(
-                            height: 42,
-                            width: 42,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: Colors.blue.withOpacity(
-                                isDark ? 0.14 : 0.10,
-                              ),
-                              border: Border.all(
-                                color: Colors.blue.withOpacity(
-                                  isDark ? 0.25 : 0.18,
-                                ),
+                            decoration: cardDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Text(
+                                "No reports available.",
+                                style: bodyStyle(
+                                  13,
+                                ).copyWith(color: subtleText),
                               ),
                             ),
-                            child: const Icon(
-                              LucideIcons.fileText,
-                              size: 18,
-                              color: Colors.blue,
-                            ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  r["name"] ?? "",
-                                  style: bodyStyle(
-                                    15,
-                                  ).copyWith(fontWeight: FontWeight.w900),
-                                ),
-                                const SizedBox(height: 3),
-                                Text(
-                                  "Date: ${r["date"] ?? "-"}",
-                                  style: bodyStyle(
-                                    12,
-                                  ).copyWith(color: subtleText),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ShadButton(
-                            backgroundColor: Colors.teal,
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => PatientHealthDashboardScreen(
-                                        patientName: "",
-                                        doctorName: "doctorName",
-                                        reportDate: "",
-                                        reportTitle: "",
+
+                        // Report list
+                        for (final r
+                            in patientDetailsVM
+                                .patientDetailsData["reports"]) ...[
+                          Container(
+                            decoration: cardDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 42,
+                                    width: 42,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: Colors.blue.withOpacity(
+                                        isDark ? 0.14 : 0.10,
                                       ),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "Details",
-                              style: GoogleFonts.exo(
-                                fontWeight: FontWeight.w900,
+                                      border: Border.all(
+                                        color: Colors.blue.withOpacity(
+                                          isDark ? 0.25 : 0.18,
+                                        ),
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      LucideIcons.fileText,
+                                      size: 18,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+
+                                  const SizedBox(width: 12),
+
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          r["provider"] ?? "",
+                                          style: bodyStyle(15).copyWith(
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 3),
+                                        Text(
+                                          "Date: ${r["date"] ?? "-"}",
+                                          style: bodyStyle(
+                                            12,
+                                          ).copyWith(color: subtleText),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  ShadButton(
+                                    backgroundColor: Colors.teal,
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) =>
+                                                  PatientHealthDashboardScreen(
+                                                    patientName: "",
+                                                    doctorName: "doctorName",
+                                                    reportDate: "",
+                                                    reportTitle: "",
+                                                  ),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "Details",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
+                          const SizedBox(height: 12),
                         ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
+                      ],
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 16),
 
