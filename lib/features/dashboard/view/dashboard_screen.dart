@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/services/time_formate_service.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/clinical_review/view/clinical_review_screen.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
@@ -481,14 +482,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         itemCount: dashboardVM.roasterPatients.length,
                         itemBuilder: (context, index) {
                           final patientDetails =
-                              dashboardVM.roasterPatients[index];
+                              dashboardVM.roasterPatients[index]
+                                  as Map<String, dynamic>;
+
                           return dashboardVM.isLoadingPatientRoaster
                               ? Icon(LucideIcons.loader)
                               : PatientCard(
-                                name: patientDetails["patientName"],
+                                name: patientDetails["patientName"] ?? "",
                                 sex: "F",
-                                age: "50 y",
-                                status: patientDetails["status"],
+                                // ✅ SAFE ACCESS
+                               lastVisited: patientDetails["lastVisitAt"] != null
+    ? TimeFormateService().formatDate(patientDetails["lastVisitAt"])
+    : "New Visit",
+                                status: patientDetails["status"] ?? "",
                                 onPressed: () {
                                   Navigator.push(
                                     context,

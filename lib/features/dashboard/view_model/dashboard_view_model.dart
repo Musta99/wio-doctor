@@ -98,7 +98,9 @@ class DashboardViewModel extends ChangeNotifier {
       final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("patientAccess").where("doctorId", isEqualTo: doctorId).get();
 
       print("Roastered Patient: ${querySnapshot.docs}");
-      roasterPatients = querySnapshot.docs;
+      roasterPatients = querySnapshot.docs
+    .map((doc) => doc.data() as Map<String, dynamic>)
+    .toList();
       notifyListeners();
 
 

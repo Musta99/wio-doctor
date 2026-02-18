@@ -5,7 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 class PatientCard extends StatelessWidget {
   final String name;
   final String sex;
-  final String age;
+  final String lastVisited;
   final String status;
   final VoidCallback onPressed;
 
@@ -13,7 +13,7 @@ class PatientCard extends StatelessWidget {
     super.key,
     required this.name,
     required this.sex,
-    required this.age,
+    required this.lastVisited,
     required this.status,
     required this.onPressed,
   });
@@ -173,8 +173,8 @@ class PatientCard extends StatelessWidget {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
-                    infoChip(sex, LucideIcons.user),
-                    infoChip(age, LucideIcons.clock),
+                    // infoChip(sex, LucideIcons.user),
+                    infoChip(lastVisited, LucideIcons.calendar),
                     infoChip(status, LucideIcons.heartPulse),
                   ],
                 ),

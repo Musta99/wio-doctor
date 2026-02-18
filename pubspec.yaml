@@ -54,6 +54,8 @@ dependencies:
   http: ^1.6.0
   #flutter_toast
   fluttertoast: ^9.0.0
+  #Intl Package
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:
