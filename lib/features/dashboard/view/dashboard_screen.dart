@@ -490,12 +490,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               : PatientCard(
                                 name: patientDetails["patientName"] ?? "",
                                 sex: "F",
-                                // ✅ SAFE ACCESS
-                               lastVisited: patientDetails["lastVisitAt"] != null
-    ? TimeFormateService().formatDate(patientDetails["lastVisitAt"])
-    : "New Visit",
+                                lastVisited:
+                                    patientDetails["lastVisitAt"] != null
+                                        ? TimeFormateService().formatDate(
+                                          patientDetails["lastVisitAt"],
+                                        )
+                                        : "New Visit",
                                 status: patientDetails["status"] ?? "",
                                 onPressed: () {
+                                  print(patientDetails["patientId"]);
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
