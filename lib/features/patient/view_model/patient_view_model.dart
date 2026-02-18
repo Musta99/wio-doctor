@@ -16,13 +16,11 @@ class PatientViewModel extends ChangeNotifier {
     try {
       isLoadingPatientDetails = true;
       notifyListeners();
-
-      
       final patientDetailsRoute =
           "https://www.wiocare.com/api/patient-data?patientId=${patientId}&doctorId=${doctorId}&dataType=all";
 
       final response = await http.get(Uri.parse(patientDetailsRoute));
-      final data = jsonDecode(response.body); 
+      final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         patientDetailsData = data["data"];
         notifyListeners();
@@ -36,6 +34,33 @@ class PatientViewModel extends ChangeNotifier {
       Fluttertoast.showToast(msg: "Error occured: $err");
     } finally {
       isLoadingPatientDetails = false;
+      notifyListeners();
+    }
+  }
+
+  // Fetch report details
+  bool isLoadingReportFetch = false;
+  Map reportDetails = {};
+  Future fetchReportDetails(String patientId, String reportId) async {
+    try {
+      isLoadingReportFetch = true;
+      notifyListeners();
+
+      final reportFetchRoute =
+          "https://www.wiocare.com/api/patient-data?patientId=${patientId}&dataType=reports&reportId=${reportId}";
+      final response = await http.get(Uri.parse(reportFetchRoute));
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        reportDetails = data;
+        notifyListeners();
+        print("Data: $reportDetails");
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (err) {
+    } finally {
+      isLoadingReportFetch = false;
       notifyListeners();
     }
   }

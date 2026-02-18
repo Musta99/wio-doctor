@@ -544,15 +544,17 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                         ),
                                       ),
                                     ),
-                                    // Text(
-                                    //   patientDetailsVM
-                                    //       .patientDetailsData["prescriptions"]
-                                    //       .length
-                                    //       .toString() ,
-                                    //   style: bodyStyle(
-                                    //     16,
-                                    //   ).copyWith(fontWeight: FontWeight.w900),
-                                    // ),
+                                    Text(
+                                      ((patientDetailsVM
+                                                      .patientDetailsData?["prescriptions"]
+                                                  as List?) ??
+                                              [])
+                                          .length
+                                          .toString(),
+                                      style: bodyStyle(
+                                        16,
+                                      ).copyWith(fontWeight: FontWeight.w900),
+                                    ),
                                   ],
                                 ),
                               ],
