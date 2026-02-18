@@ -319,7 +319,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                           children: [
                             avatarCircle(
                               patientDetaislVM
-                                      .patientDetailsData["profile"]["name"] ??
+                                      .patientDetailsData?["profile"]?["name"] ??
                                   "Patient",
                             ),
                             const SizedBox(width: 14),
@@ -329,7 +329,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                 children: [
                                   Text(
                                     patientDetaislVM
-                                            .patientDetailsData["profile"]["name"] ??
+                                            .patientDetailsData?["profile"]?["name"] ??
                                         "",
                                     style: bodyStyle(
                                       18,
@@ -340,7 +340,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                     children: [
                                       pillChip(
                                         patientDetaislVM
-                                                .patientDetailsData["profile"]["wioId"] ??
+                                                .patientDetailsData?["profile"]?["wioId"] ??
                                             "",
                                         LucideIcons.badgeCheck,
                                         keyColor: "completed",
@@ -538,15 +538,15 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  patientDetailsVM
-                                      .patientDetailsData["prescriptions"]
-                                      .length
-                                      .toString(),
-                                  style: bodyStyle(
-                                    16,
-                                  ).copyWith(fontWeight: FontWeight.w900),
-                                ),
+                                // Text(
+                                //   patientDetailsVM
+                                //       .patientDetailsData["prescriptions"]
+                                //       .length
+                                //       .toString() ,
+                                //   style: bodyStyle(
+                                //     16,
+                                //   ).copyWith(fontWeight: FontWeight.w900),
+                                // ),
                               ],
                             ),
                           ],
@@ -652,97 +652,112 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
 
                 Consumer<PatientViewModel>(
                   builder: (context, patientDetailsVM, child) {
-                    return Column(
-                      children: [
-                        // Show empty message
-                        if (patientDetailsVM
-                            .patientDetailsData["prescriptions"]
-                            .isEmpty)
-                          Container(
-                            decoration: cardDecoration(),
-                            child: Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: Text(
-                                "No prescriptions found.",
-                                style: bodyStyle(
-                                  13,
-                                ).copyWith(color: subtleText),
-                              ),
+                    final prescriptions = (patientDetailsVM.patientDetailsData?["prescriptions"] as List? ?? []);
+                    return patientDetailsVM.isLoadingPatientDetails &&
+                           prescriptions
+                                .isEmpty
+                        ? Container(
+                          decoration: cardDecoration(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Icon(
+                              LucideIcons.loader,
+                              size: 40,
+                              color: Colors.white,
                             ),
                           ),
+                        )
+                        : Column(
+                          children: [
+                            // Show empty message
+                            if (!patientDetailsVM.isLoadingPatientDetails &&
+                                prescriptions.isEmpty)
+                              Container(
+                                decoration: cardDecoration(),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Text(
+                                    "No prescriptions found.",
+                                    style: bodyStyle(
+                                      13,
+                                    ).copyWith(color: subtleText),
+                                  ),
+                                ),
+                              ),
 
-                        // Show prescription list
-                        for (final p
-                            in patientDetailsVM
-                                .patientDetailsData["prescriptions"]) ...[
-                          Container(
-                            decoration: cardDecoration(),
-                            child: Padding(
-                              padding: const EdgeInsets.all(14),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 42,
-                                    width: 42,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: Colors.green.withOpacity(
-                                        isDark ? 0.14 : 0.10,
-                                      ),
-                                      border: Border.all(
-                                        color: Colors.green.withOpacity(
-                                          isDark ? 0.25 : 0.18,
+                            // Show prescription list
+                            for (final p
+                                in prescriptions) ...[
+                              Container(
+                                decoration: cardDecoration(),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: 42,
+                                        width: 42,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                          color: Colors.green.withOpacity(
+                                            isDark ? 0.14 : 0.10,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.green.withOpacity(
+                                              isDark ? 0.25 : 0.18,
+                                            ),
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          LucideIcons.pill,
+                                          size: 18,
+                                          color: Colors.green,
                                         ),
                                       ),
-                                    ),
-                                    child: const Icon(
-                                      LucideIcons.pill,
-                                      size: 18,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
+                                      const SizedBox(width: 12),
 
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          p["doctor"] ?? "",
-                                          style: bodyStyle(15).copyWith(
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              p["doctor"] ?? "",
+                                              style: bodyStyle(15).copyWith(
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Text(
+                                              "Date: ${p["date"] ?? "-"}",
+                                              style: bodyStyle(
+                                                12,
+                                              ).copyWith(color: subtleText),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+
+                                      ShadButton(
+                                        backgroundColor: Colors.teal,
+                                        onPressed: () {},
+                                        child: Text(
+                                          "View details",
+                                          style: GoogleFonts.exo(
                                             fontWeight: FontWeight.w900,
                                           ),
                                         ),
-                                        const SizedBox(height: 3),
-                                        Text(
-                                          "Date: ${p["date"] ?? "-"}",
-                                          style: bodyStyle(
-                                            12,
-                                          ).copyWith(color: subtleText),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  ShadButton(
-                                    backgroundColor: Colors.teal,
-                                    onPressed: () {},
-                                    child: Text(
-                                      "View details",
-                                      style: GoogleFonts.exo(
-                                        fontWeight: FontWeight.w900,
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                        ],
-                      ],
-                    );
+                              const SizedBox(height: 12),
+                            ],
+                          ],
+                        );
                   },
                 ),
 
@@ -755,11 +770,24 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                 const SizedBox(height: 10),
                 Consumer<PatientViewModel>(
                   builder: (context, patientDetailsVM, child) {
-                    return Column(
+                    final reports = (patientDetailsVM.patientDetailsData?["reports"] as List? ?? []);
+                    return patientDetailsVM.isLoadingPatientDetails && reports.isEmpty? Container(
+                          decoration: cardDecoration(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Icon(
+                              LucideIcons.loader,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ) :
+                    
+                    
+                    Column(
                       children: [
                         // Empty state
-                        if (patientDetailsVM
-                            .patientDetailsData["reports"]
+                        if (!patientDetailsVM.isLoadingPatientDetails && reports
                             .isEmpty)
                           Container(
                             decoration: cardDecoration(),
@@ -776,8 +804,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
 
                         // Report list
                         for (final r
-                            in patientDetailsVM
-                                .patientDetailsData["reports"]) ...[
+                            in reports) ...[
                           Container(
                             decoration: cardDecoration(),
                             child: Padding(
@@ -894,10 +921,23 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
 
                 Consumer<PatientViewModel>(
                   builder: (context, patientDetailsVM, child) {
-                    return Column(
+                    final vitals = (patientDetailsVM.patientDetailsData?["vitals"] as List? ?? []);
+                    return 
+                    patientDetailsVM.isLoadingPatientDetails && vitals.isEmpty? Container(
+                          decoration: cardDecoration(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Icon(
+                              LucideIcons.loader,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ) :
+                    
+                    Column(
                       children: [
-                        if (patientDetailsVM
-                            .patientDetailsData["vitals"]
+                        if ( !patientDetailsVM.isLoadingPatientDetails && vitals
                             .isEmpty)
                           Container(
                             decoration: cardDecoration(),
@@ -913,8 +953,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                           ),
 
                         for (final v
-                            in patientDetailsVM
-                                .patientDetailsData["vitals"]) ...[
+                            in vitals) ...[
                           Container(
                             decoration: cardDecoration(),
                             child: Padding(
