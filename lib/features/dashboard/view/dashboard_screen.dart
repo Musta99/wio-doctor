@@ -503,7 +503,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder:
-                                          (_) => const PatientDetailsScreen(),
+                                          (_) =>  PatientDetailsScreen(patientId: patientDetails["patientId"]),
                                     ),
                                   );
                                 },

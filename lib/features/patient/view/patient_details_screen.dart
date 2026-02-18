@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/patient/view/add_patient_vital.dart';
 import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
+import 'package:wio_doctor/features/patient/view_model/patient_view_model.dart';
 
 class PatientDetailsScreen extends StatefulWidget {
-  const PatientDetailsScreen({super.key});
+  final String patientId;
+  const PatientDetailsScreen({super.key, required this.patientId});
 
   @override
   State<PatientDetailsScreen> createState() => _PatientDetailsScreenState();
@@ -73,7 +76,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+Provider.of<PatientViewModel>(context, listen: false).fetchPatientDetails(widget.patientId);
     
   }
 
