@@ -14,6 +14,10 @@ class PatientViewModel extends ChangeNotifier {
     String? doctorId = prefs.getString("doctorId");
 
     try {
+      isLoadingPatientDetails = true;
+      notifyListeners();
+
+      
       final patientDetailsRoute =
           "https://www.wiocare.com/api/patient-data?patientId=${patientId}&doctorId=${doctorId}&dataType=all";
 
