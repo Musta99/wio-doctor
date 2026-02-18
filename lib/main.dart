@@ -28,6 +28,7 @@ import 'package:wio_doctor/features/auth/view_model/login_viewmodel.dart';
 import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
 import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
+import 'package:wio_doctor/features/patient/view_model/patient_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +57,7 @@ class AppContent extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => SignupViewModel()),
         ChangeNotifierProvider(create: (context) => LoginViewmodel()),
         ChangeNotifierProvider(create: (context) => DashboardViewModel()),
+        ChangeNotifierProvider(create: (context) => PatientViewModel()),
       ],
       builder: (context, child) {
         return ShadApp(
@@ -69,10 +71,10 @@ class AppContent extends StatelessWidget {
             brightness: Brightness.dark,
             colorScheme: const ShadZincColorScheme.dark(),
           ),
-          home: 
-          FirebaseAuth.instance.currentUser != null ? BottomNavBar():
-          
-           LoginScreen(),
+          home:
+              FirebaseAuth.instance.currentUser != null
+                  ? BottomNavBar()
+                  : LoginScreen(),
         );
       },
     );

@@ -68,6 +68,15 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
     {"bp": "130/85", "sugar": "7.2 mmol/L", "date": "05 Feb 2026"},
   ];
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    
+  }
+
   @override
   void dispose() {
     _testSearch.dispose();
