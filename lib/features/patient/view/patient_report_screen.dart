@@ -275,7 +275,7 @@ class _PatientHealthDashboardScreenState
 
                   const SizedBox(height: 14),
 
-                  // Key findings
+                  // Key findings ---- Major Issues & Minor Issues
                   Container(
                     decoration: cardDecoration(),
                     padding: const EdgeInsets.all(16),
@@ -412,70 +412,191 @@ class _PatientHealthDashboardScreenState
                           ),
                           child: Column(
                             children: [
-                              for (int i = 0; i < labRows.length; i++)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                    vertical: 12,
+                              // ── Header Row ──
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isDark
+                                          ? Colors.white.withOpacity(0.06)
+                                          : Colors.black.withOpacity(0.04),
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(18),
                                   ),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color:
-                                            i == labRows.length - 1
-                                                ? Colors.transparent
-                                                : borderColor,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                          labRows[i].name,
-                                          style: GoogleFonts.exo(
-                                            fontSize: 13.5,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          labRows[i].value,
-                                          textAlign: TextAlign.right,
-                                          style: GoogleFonts.exo(
-                                            fontSize: 13.5,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          labRows[i].unit,
-                                          textAlign: TextAlign.right,
-                                          style: bodyStyle(
-                                            12.5,
-                                          ).copyWith(color: subtleText),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 10),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                          labRows[i].range,
-                                          textAlign: TextAlign.right,
-                                          style: bodyStyle(
-                                            12.5,
-                                          ).copyWith(color: subtleText),
-                                        ),
-                                      ),
-                                    ],
+                                  border: Border(
+                                    bottom: BorderSide(color: borderColor),
                                   ),
                                 ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        "Test Name",
+                                        style: bodyStyle(12).copyWith(
+                                          color: subtleText,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        "Value",
+                                        textAlign: TextAlign.right,
+                                        style: bodyStyle(12).copyWith(
+                                          color: subtleText,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                        "Unit",
+                                        textAlign: TextAlign.right,
+                                        style: bodyStyle(12).copyWith(
+                                          color: subtleText,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      flex: 3,
+                                      child: Text(
+                                        "Reference",
+                                        textAlign: TextAlign.right,
+                                        style: bodyStyle(12).copyWith(
+                                          color: subtleText,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              // ── Scrollable Data Rows ──
+                              Builder(
+                                builder: (_) {
+                                  final tests =
+                                      (patientDetailsVM
+                                              .reportDetails?["analysis"]?["tests"]
+                                          as List?) ??
+                                      [];
+
+                                  if (tests.isEmpty) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(14),
+                                      child: Text(
+                                        "No lab results available.",
+                                        style: bodyStyle(
+                                          13,
+                                        ).copyWith(color: subtleText),
+                                      ),
+                                    );
+                                  }
+
+                                  // Each row ~48px tall, show 7 rows = ~336px then scroll
+                                  final maxHeight =
+                                      tests.length > 7 ? 336.0 : null;
+
+                                  return SizedBox(
+                                    height: maxHeight,
+                                    child: SingleChildScrollView(
+                                      physics: const BouncingScrollPhysics(),
+                                      child: Column(
+                                        children: [
+                                          for (int i = 0; i < tests.length; i++)
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 14,
+                                                    vertical: 12,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                border: Border(
+                                                  bottom: BorderSide(
+                                                    color:
+                                                        i == tests.length - 1
+                                                            ? Colors.transparent
+                                                            : borderColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Text(
+                                                      (tests[i]["name"] ?? "-")
+                                                          .toString(),
+                                                      style: GoogleFonts.exo(
+                                                        fontSize: 13.5,
+                                                        fontWeight:
+                                                            FontWeight.w900,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      (tests[i]["value"] ?? "-")
+                                                          .toString(),
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: GoogleFonts.exo(
+                                                        fontSize: 13.5,
+                                                        fontWeight:
+                                                            FontWeight.w900,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      (tests[i]["unit"] ?? "-")
+                                                          .toString(),
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: bodyStyle(
+                                                        12.5,
+                                                      ).copyWith(
+                                                        color: subtleText,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Text(
+                                                      (tests[i]["refRange"] ??
+                                                              "-")
+                                                          .toString(),
+                                                      textAlign:
+                                                          TextAlign.right,
+                                                      style: bodyStyle(
+                                                        12.5,
+                                                      ).copyWith(
+                                                        color: subtleText,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
