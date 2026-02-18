@@ -892,111 +892,137 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                 ),
                 const SizedBox(height: 10),
 
-                if (vitalsHistory.isEmpty)
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Text(
-                        "No vitals history yet.",
-                        style: bodyStyle(13).copyWith(color: subtleText),
-                      ),
-                    ),
-                  ),
-
-                for (final v in vitalsHistory) ...[
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Date: ${v["date"] ?? "-"}",
-                            style: bodyStyle(13).copyWith(
-                              color: subtleText,
-                              fontWeight: FontWeight.w800,
+                Consumer<PatientViewModel>(
+                  builder: (context, patientDetailsVM, child) {
+                    return Column(
+                      children: [
+                        if (patientDetailsVM
+                            .patientDetailsData["vitals"]
+                            .isEmpty)
+                          Container(
+                            decoration: cardDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Text(
+                                "No vitals history yet.",
+                                style: bodyStyle(
+                                  13,
+                                ).copyWith(color: subtleText),
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color:
-                                        isDark
-                                            ? Colors.white.withOpacity(0.04)
-                                            : const Color(0xFFF3F4F8),
-                                    border: Border.all(color: borderColor),
+
+                        for (final v
+                            in patientDetailsVM
+                                .patientDetailsData["vitals"]) ...[
+                          Container(
+                            decoration: cardDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Date: ${v["date"] ?? "-"}",
+                                    style: bodyStyle(13).copyWith(
+                                      color: subtleText,
+                                      fontWeight: FontWeight.w800,
+                                    ),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  const SizedBox(height: 10),
+                                  Row(
                                     children: [
-                                      Text(
-                                        "Blood Pressure",
-                                        style: bodyStyle(12).copyWith(
-                                          color: subtleText,
-                                          fontWeight: FontWeight.w800,
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            color:
+                                                isDark
+                                                    ? Colors.white.withOpacity(
+                                                      0.04,
+                                                    )
+                                                    : const Color(0xFFF3F4F8),
+                                            border: Border.all(
+                                              color: borderColor,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Blood Pressure",
+                                                style: bodyStyle(12).copyWith(
+                                                  color: subtleText,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                "${v["bp"] ?? "-"}",
+                                                style: bodyStyle(15).copyWith(
+                                                  fontWeight: FontWeight.w900,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        "${v["bp"] ?? "-"}",
-                                        style: bodyStyle(
-                                          15,
-                                        ).copyWith(fontWeight: FontWeight.w900),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                            color:
+                                                isDark
+                                                    ? Colors.white.withOpacity(
+                                                      0.04,
+                                                    )
+                                                    : const Color(0xFFF3F4F8),
+                                            border: Border.all(
+                                              color: borderColor,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Blood Sugar",
+                                                style: bodyStyle(12).copyWith(
+                                                  color: subtleText,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                "${v["sugar"] ?? "-"}",
+                                                style: bodyStyle(15).copyWith(
+                                                  fontWeight: FontWeight.w900,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color:
-                                        isDark
-                                            ? Colors.white.withOpacity(0.04)
-                                            : const Color(0xFFF3F4F8),
-                                    border: Border.all(color: borderColor),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Blood Sugar",
-                                        style: bodyStyle(12).copyWith(
-                                          color: subtleText,
-                                          fontWeight: FontWeight.w800,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        "${v["sugar"] ?? "-"}",
-                                        style: bodyStyle(
-                                          15,
-                                        ).copyWith(fontWeight: FontWeight.w900),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
+                          const SizedBox(height: 12),
                         ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
+                      ],
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 24),
               ],
