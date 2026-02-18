@@ -416,140 +416,145 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                 // =========================================================
                 Text("Health overview", style: sectionStyle(18)),
                 const SizedBox(height: 10),
-                Consumer(builder: (context, patientDetailsVM, child){
-                  return Container(
-                  decoration: cardDecoration(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      children: [
-                        Row(
+                Consumer<PatientViewModel>(
+                  builder: (context, patientDetailsVM, child) {
+                    return Container(
+                      decoration: cardDecoration(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
                           children: [
-                            Container(
-                              height: 38,
-                              width: 38,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                color: Colors.blue.withOpacity(
-                                  isDark ? 0.14 : 0.10,
-                                ),
-                                border: Border.all(
-                                  color: Colors.blue.withOpacity(
-                                    isDark ? 0.25 : 0.18,
+                            Row(
+                              children: [
+                                Container(
+                                  height: 38,
+                                  width: 38,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color: Colors.blue.withOpacity(
+                                      isDark ? 0.14 : 0.10,
+                                    ),
+                                    border: Border.all(
+                                      color: Colors.blue.withOpacity(
+                                        isDark ? 0.25 : 0.18,
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    LucideIcons.heartPulse,
+                                    size: 18,
+                                    color: Colors.blue,
                                   ),
                                 ),
-                              ),
-                              child: const Icon(
-                                LucideIcons.heartPulse,
-                                size: 18,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "Blood Pressure",
-                                style: bodyStyle(13).copyWith(
-                                  color: subtleText,
-                                  fontWeight: FontWeight.w800,
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Blood Pressure",
+                                    style: bodyStyle(13).copyWith(
+                                      color: subtleText,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Text(
+                                  "RAW",
+                                  style: bodyStyle(
+                                    16,
+                                  ).copyWith(fontWeight: FontWeight.w900),
+                                ),
+                              ],
                             ),
-                            Text(
-                              "${healthCards["bp"]}",
-                              style: bodyStyle(
-                                16,
-                              ).copyWith(fontWeight: FontWeight.w900),
+                            Divider(color: borderColor, height: 18),
+                            Row(
+                              children: [
+                                Container(
+                                  height: 38,
+                                  width: 38,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color: Colors.orange.withOpacity(
+                                      isDark ? 0.14 : 0.10,
+                                    ),
+                                    border: Border.all(
+                                      color: Colors.orange.withOpacity(
+                                        isDark ? 0.25 : 0.18,
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    LucideIcons.droplet,
+                                    size: 18,
+                                    color: Colors.orange,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Blood Sugar",
+                                    style: bodyStyle(13).copyWith(
+                                      color: subtleText,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "RAW",
+                                  style: bodyStyle(
+                                    16,
+                                  ).copyWith(fontWeight: FontWeight.w900),
+                                ),
+                              ],
+                            ),
+                            Divider(color: borderColor, height: 18),
+                            Row(
+                              children: [
+                                Container(
+                                  height: 38,
+                                  width: 38,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color: Colors.green.withOpacity(
+                                      isDark ? 0.14 : 0.10,
+                                    ),
+                                    border: Border.all(
+                                      color: Colors.green.withOpacity(
+                                        isDark ? 0.25 : 0.18,
+                                      ),
+                                    ),
+                                  ),
+                                  child: const Icon(
+                                    LucideIcons.pill,
+                                    size: 18,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Active Prescriptions",
+                                    style: bodyStyle(13).copyWith(
+                                      color: subtleText,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  patientDetailsVM
+                                      .patientDetailsData["prescriptions"]
+                                      .length
+                                      .toString(),
+                                  style: bodyStyle(
+                                    16,
+                                  ).copyWith(fontWeight: FontWeight.w900),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Divider(color: borderColor, height: 18),
-                        Row(
-                          children: [
-                            Container(
-                              height: 38,
-                              width: 38,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                color: Colors.orange.withOpacity(
-                                  isDark ? 0.14 : 0.10,
-                                ),
-                                border: Border.all(
-                                  color: Colors.orange.withOpacity(
-                                    isDark ? 0.25 : 0.18,
-                                  ),
-                                ),
-                              ),
-                              child: const Icon(
-                                LucideIcons.droplet,
-                                size: 18,
-                                color: Colors.orange,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "Blood Sugar",
-                                style: bodyStyle(13).copyWith(
-                                  color: subtleText,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "${healthCards["sugar"]}",
-                              style: bodyStyle(
-                                16,
-                              ).copyWith(fontWeight: FontWeight.w900),
-                            ),
-                          ],
-                        ),
-                        Divider(color: borderColor, height: 18),
-                        Row(
-                          children: [
-                            Container(
-                              height: 38,
-                              width: 38,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                color: Colors.green.withOpacity(
-                                  isDark ? 0.14 : 0.10,
-                                ),
-                                border: Border.all(
-                                  color: Colors.green.withOpacity(
-                                    isDark ? 0.25 : 0.18,
-                                  ),
-                                ),
-                              ),
-                              child: const Icon(
-                                LucideIcons.pill,
-                                size: 18,
-                                color: Colors.green,
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                "Active Prescriptions",
-                                style: bodyStyle(13).copyWith(
-                                  color: subtleText,
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              "${healthCards["prescriptions"]}",
-                              style: bodyStyle(
-                                16,
-                              ).copyWith(fontWeight: FontWeight.w900),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-                }),
+                      ),
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 16),
 
