@@ -319,19 +319,19 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                       InkWell(
                         borderRadius: BorderRadius.circular(18),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) => PatientHealthDashboardScreen(
-                                    patientName:
-                                        selectedPatient!.split(" (").first,
-                                    doctorName: "Dr. Alex Riveira",
-                                    reportDate: r.date,
-                                    reportTitle: r.title,
-                                  ),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder:
+                          //         (_) => PatientHealthDashboardScreen(
+                          //           patientName:
+                          //               selectedPatient!.split(" (").first,
+                          //           doctorName: "Dr. Alex Riveira",
+                          //           reportDate: r.date,
+                          //           reportTitle: r.title,
+                          //         ),
+                          //   ),
+                          // );
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 10),

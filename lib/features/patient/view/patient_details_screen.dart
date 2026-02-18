@@ -873,17 +873,15 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                           ShadButton(
                                             backgroundColor: Colors.teal,
                                             onPressed: () {
+                                              print(r["id"]);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                   builder:
                                                       (context) =>
                                                           PatientHealthDashboardScreen(
-                                                            patientName: "",
-                                                            doctorName:
-                                                                "doctorName",
-                                                            reportDate: "",
-                                                            reportTitle: "",
+                                                           reportId: r["id"],
+                                                           patientId: widget.patientId,
                                                           ),
                                                 ),
                                               );

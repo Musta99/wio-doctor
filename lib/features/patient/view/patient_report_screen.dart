@@ -1,20 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/features/patient/view_model/patient_view_model.dart';
 
-class PatientHealthDashboardScreen extends StatelessWidget {
-  final String patientName;
-  final String doctorName;
-  final String reportDate;
-  final String reportTitle;
+class PatientHealthDashboardScreen extends StatefulWidget {
+  final String patientId;
+  final String reportId;
 
   const PatientHealthDashboardScreen({
     super.key,
-    required this.patientName,
-    required this.doctorName,
-    required this.reportDate,
-    required this.reportTitle,
+    required this.patientId,
+    required this.reportId,
   });
+
+  @override
+  State<PatientHealthDashboardScreen> createState() =>
+      _PatientHealthDashboardScreenState();
+}
+
+class _PatientHealthDashboardScreenState
+    extends State<PatientHealthDashboardScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PatientViewModel>(
+        context,
+        listen: false,
+      ).fetchReportDetails(widget.patientId, widget.reportId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,391 +167,419 @@ class PatientHealthDashboardScreen extends StatelessWidget {
         title: Text("Patient Health Dashboard", style: titleStyle(17)),
         centerTitle: true,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [bgTop, bgBottom],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header section: patient name, doctor name, date
-              Container(
-                decoration: cardDecoration(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    sectionHeader(
-                      icon: LucideIcons.shieldCheck,
-                      title: patientName,
-                      subtitle: "$doctorName • $reportDate",
-                      accent: Colors.teal,
-                    ),
-                    const SizedBox(height: 14),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.04)
-                                : const Color(0xFFF3F4F8),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: borderColor),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            LucideIcons.fileText,
-                            size: 18,
-                            color: subtleText,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              reportTitle,
-                              style: GoogleFonts.exo(
-                                fontSize: 13.5,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+      body: Consumer<PatientViewModel>(
+        builder: (context, patientDetailsVM, child) {
+          if (patientDetailsVM.isLoadingReportFetch) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.teal),
+            );
+          }
+
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [bgTop, bgBottom],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-
-              const SizedBox(height: 14),
-
-              // Summary
-              Container(
-                decoration: cardDecoration(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    sectionHeader(
-                      icon: LucideIcons.alignCenterHorizontal,
-                      title: "Summary",
-                      subtitle: "Short overview of the report.",
-                      accent: Colors.indigo,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      summary,
-                      style: bodyStyle(13.5).copyWith(
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.85)
-                                : Colors.black.withOpacity(0.78),
-                        height: 1.35,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // Key findings
-              Container(
-                decoration: cardDecoration(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    sectionHeader(
-                      icon: LucideIcons.circleCheck,
-                      title: "Key Findings",
-                      subtitle: "Major & minor issues extracted from labs.",
-                      accent: Colors.orange,
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.04)
-                                : const Color(0xFFF3F4F8),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: borderColor),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Major issue",
-                            style: bodyStyle(12.5).copyWith(color: subtleText),
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header section: patient name, doctor name, date
+                  Container(
+                    decoration: cardDecoration(),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        sectionHeader(
+                          icon: LucideIcons.shieldCheck,
+                          title:
+                              patientDetailsVM
+                                  .reportDetails?["analysis"]?["patientName"] ??
+                              "Patient A",
+                          subtitle:
+                              "${patientDetailsVM.reportDetails?["analysis"]?["doctorName"] ?? "Doctor"} • ${patientDetailsVM.reportDetails?["analysis"]?["reportDate"] ?? "Date"}",
+                          accent: Colors.teal,
+                        ),
+                        const SizedBox(height: 14),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.04)
+                                    : const Color(0xFFF3F4F8),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: borderColor),
                           ),
-                          const SizedBox(height: 6),
-                          Row(
+                          child: Row(
                             children: [
-                              chip(text: majorIssue, accent: Colors.red),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            "Minor issue",
-                            style: bodyStyle(12.5).copyWith(color: subtleText),
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              chip(text: minorIssue, accent: Colors.orange),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // Lab results table-like list
-              Container(
-                decoration: cardDecoration(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    sectionHeader(
-                      icon: LucideIcons.flaskConical,
-                      title: "Lab Results",
-                      subtitle: "Test name, value, unit & reference range.",
-                      accent: Colors.teal,
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: borderColor),
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.03)
-                                : const Color(0xFFF3F4F8),
-                      ),
-                      child: Column(
-                        children: [
-                          for (int i = 0; i < labRows.length; i++)
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 14,
-                                vertical: 12,
+                              Icon(
+                                LucideIcons.fileText,
+                                size: 18,
+                                color: subtleText,
                               ),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color:
-                                        i == labRows.length - 1
-                                            ? Colors.transparent
-                                            : borderColor,
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  "Report by ${patientDetailsVM.reportDetails?["provider"] ?? "Provider"}",
+                                  style: GoogleFonts.exo(
+                                    fontSize: 13.5,
+                                    fontWeight: FontWeight.w900,
                                   ),
                                 ),
                               ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      labRows[i].name,
-                                      style: GoogleFonts.exo(
-                                        fontSize: 13.5,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      labRows[i].value,
-                                      textAlign: TextAlign.right,
-                                      style: GoogleFonts.exo(
-                                        fontSize: 13.5,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      labRows[i].unit,
-                                      textAlign: TextAlign.right,
-                                      style: bodyStyle(
-                                        12.5,
-                                      ).copyWith(color: subtleText),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      labRows[i].range,
-                                      textAlign: TextAlign.right,
-                                      style: bodyStyle(
-                                        12.5,
-                                      ).copyWith(color: subtleText),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // Overall interpretation
-              Container(
-                decoration: cardDecoration(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    sectionHeader(
-                      icon: LucideIcons.clipboardCheck,
-                      title: "Overall Interpretation",
-                      subtitle: "Clinical meaning of the report.",
-                      accent: Colors.indigo,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      interpretation,
-                      style: bodyStyle(13.5).copyWith(
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.85)
-                                : Colors.black.withOpacity(0.78),
-                        height: 1.35,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              // Dietary suggestion
-              Container(
-                decoration: cardDecoration(),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    sectionHeader(
-                      icon: LucideIcons.utensils,
-                      title: "Dietary Suggestion",
-                      subtitle: "Foods to favor and foods to limit.",
-                      accent: Colors.teal,
-                    ),
-                    const SizedBox(height: 12),
-
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.04)
-                                : const Color(0xFFF3F4F8),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: borderColor),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Food to favor",
-                            style: bodyStyle(12.5).copyWith(color: subtleText),
+                            ],
                           ),
-                          const SizedBox(height: 8),
-                          for (final f in favorFoods)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 6),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    LucideIcons.circleCheck,
-                                    size: 16,
-                                    color: Colors.teal,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      f,
-                                      style: bodyStyle(13).copyWith(
-                                        color:
-                                            isDark
-                                                ? Colors.white.withOpacity(0.86)
-                                                : Colors.black.withOpacity(
-                                                  0.78,
-                                                ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          const SizedBox(height: 12),
-                          Text(
-                            "Food to limit",
-                            style: bodyStyle(12.5).copyWith(color: subtleText),
-                          ),
-                          const SizedBox(height: 8),
-                          for (final f in limitFoods)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 6),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    LucideIcons.x,
-                                    size: 16,
-                                    color: Colors.redAccent,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      f,
-                                      style: bodyStyle(13).copyWith(
-                                        color:
-                                            isDark
-                                                ? Colors.white.withOpacity(0.86)
-                                                : Colors.black.withOpacity(
-                                                  0.78,
-                                                ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
 
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
+                  const SizedBox(height: 14),
+
+                  // Summary
+                  Container(
+                    decoration: cardDecoration(),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        sectionHeader(
+                          icon: LucideIcons.alignCenterHorizontal,
+                          title: "Summary",
+                          subtitle: "Short overview of the report.",
+                          accent: Colors.indigo,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          patientDetailsVM
+                                  .reportDetails?["analysis"]?["finalSummary"]?["en"] ??
+                              "Summary",
+                          style: bodyStyle(13.5).copyWith(
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.85)
+                                    : Colors.black.withOpacity(0.78),
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Key findings
+                  Container(
+                    decoration: cardDecoration(),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        sectionHeader(
+                          icon: LucideIcons.circleCheck,
+                          title: "Key Findings",
+                          subtitle: "Major & minor issues extracted from labs.",
+                          accent: Colors.orange,
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.04)
+                                    : const Color(0xFFF3F4F8),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: borderColor),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Major issue",
+                                style: bodyStyle(
+                                  12.5,
+                                ).copyWith(color: subtleText),
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  chip(text: majorIssue, accent: Colors.red),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                "Minor issue",
+                                style: bodyStyle(
+                                  12.5,
+                                ).copyWith(color: subtleText),
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  chip(text: minorIssue, accent: Colors.orange),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Lab results table-like list
+                  Container(
+                    decoration: cardDecoration(),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        sectionHeader(
+                          icon: LucideIcons.flaskConical,
+                          title: "Lab Results",
+                          subtitle: "Test name, value, unit & reference range.",
+                          accent: Colors.teal,
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: borderColor),
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.03)
+                                    : const Color(0xFFF3F4F8),
+                          ),
+                          child: Column(
+                            children: [
+                              for (int i = 0; i < labRows.length; i++)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color:
+                                            i == labRows.length - 1
+                                                ? Colors.transparent
+                                                : borderColor,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                          labRows[i].name,
+                                          style: GoogleFonts.exo(
+                                            fontSize: 13.5,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          labRows[i].value,
+                                          textAlign: TextAlign.right,
+                                          style: GoogleFonts.exo(
+                                            fontSize: 13.5,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          labRows[i].unit,
+                                          textAlign: TextAlign.right,
+                                          style: bodyStyle(
+                                            12.5,
+                                          ).copyWith(color: subtleText),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                          labRows[i].range,
+                                          textAlign: TextAlign.right,
+                                          style: bodyStyle(
+                                            12.5,
+                                          ).copyWith(color: subtleText),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Overall interpretation
+                  Container(
+                    decoration: cardDecoration(),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        sectionHeader(
+                          icon: LucideIcons.clipboardCheck,
+                          title: "Overall Interpretation",
+                          subtitle: "Clinical meaning of the report.",
+                          accent: Colors.indigo,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          interpretation,
+                          style: bodyStyle(13.5).copyWith(
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.85)
+                                    : Colors.black.withOpacity(0.78),
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Dietary suggestion
+                  Container(
+                    decoration: cardDecoration(),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        sectionHeader(
+                          icon: LucideIcons.utensils,
+                          title: "Dietary Suggestion",
+                          subtitle: "Foods to favor and foods to limit.",
+                          accent: Colors.teal,
+                        ),
+                        const SizedBox(height: 12),
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.04)
+                                    : const Color(0xFFF3F4F8),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(color: borderColor),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Food to favor",
+                                style: bodyStyle(
+                                  12.5,
+                                ).copyWith(color: subtleText),
+                              ),
+                              const SizedBox(height: 8),
+                              for (final f in favorFoods)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        LucideIcons.circleCheck,
+                                        size: 16,
+                                        color: Colors.teal,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          f,
+                                          style: bodyStyle(13).copyWith(
+                                            color:
+                                                isDark
+                                                    ? Colors.white.withOpacity(
+                                                      0.86,
+                                                    )
+                                                    : Colors.black.withOpacity(
+                                                      0.78,
+                                                    ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              const SizedBox(height: 12),
+                              Text(
+                                "Food to limit",
+                                style: bodyStyle(
+                                  12.5,
+                                ).copyWith(color: subtleText),
+                              ),
+                              const SizedBox(height: 8),
+                              for (final f in limitFoods)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 6),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        LucideIcons.x,
+                                        size: 16,
+                                        color: Colors.redAccent,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Expanded(
+                                        child: Text(
+                                          f,
+                                          style: bodyStyle(13).copyWith(
+                                            color:
+                                                isDark
+                                                    ? Colors.white.withOpacity(
+                                                      0.86,
+                                                    )
+                                                    : Colors.black.withOpacity(
+                                                      0.78,
+                                                    ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
