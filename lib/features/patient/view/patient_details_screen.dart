@@ -650,82 +650,101 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                 Text("Prescriptions", style: sectionStyle(18)),
                 const SizedBox(height: 10),
 
-                if (prescriptions.isEmpty)
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Text(
-                        "No prescriptions found.",
-                        style: bodyStyle(13).copyWith(color: subtleText),
-                      ),
-                    ),
-                  ),
-
-                for (final p in prescriptions) ...[
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Row(
-                        children: [
+                Consumer<PatientViewModel>(
+                  builder: (context, patientDetailsVM, child) {
+                    return Column(
+                      children: [
+                        // Show empty message
+                        if (patientDetailsVM
+                            .patientDetailsData["prescriptions"]
+                            .isEmpty)
                           Container(
-                            height: 42,
-                            width: 42,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(14),
-                              color: Colors.green.withOpacity(
-                                isDark ? 0.14 : 0.10,
-                              ),
-                              border: Border.all(
-                                color: Colors.green.withOpacity(
-                                  isDark ? 0.25 : 0.18,
-                                ),
-                              ),
-                            ),
-                            child: const Icon(
-                              LucideIcons.pill,
-                              size: 18,
-                              color: Colors.green,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  p["name"] ?? "",
-                                  style: bodyStyle(
-                                    15,
-                                  ).copyWith(fontWeight: FontWeight.w900),
-                                ),
-                                const SizedBox(height: 3),
-                                Text(
-                                  "Date: ${p["date"] ?? "-"}",
-                                  style: bodyStyle(
-                                    12,
-                                  ).copyWith(color: subtleText),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ShadButton(
-                            backgroundColor: Colors.teal,
-                            onPressed: () {},
-                            child: Text(
-                              "View details",
-                              style: GoogleFonts.exo(
-                                fontWeight: FontWeight.w900,
+                            decoration: cardDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Text(
+                                "No prescriptions found.",
+                                style: bodyStyle(
+                                  13,
+                                ).copyWith(color: subtleText),
                               ),
                             ),
                           ),
+
+                        // Show prescription list
+                        for (final p
+                            in patientDetailsVM
+                                .patientDetailsData["prescriptions"]) ...[
+                          Container(
+                            decoration: cardDecoration(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 42,
+                                    width: 42,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: Colors.green.withOpacity(
+                                        isDark ? 0.14 : 0.10,
+                                      ),
+                                      border: Border.all(
+                                        color: Colors.green.withOpacity(
+                                          isDark ? 0.25 : 0.18,
+                                        ),
+                                      ),
+                                    ),
+                                    child: const Icon(
+                                      LucideIcons.pill,
+                                      size: 18,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          p["doctor"] ?? "",
+                                          style: bodyStyle(15).copyWith(
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 3),
+                                        Text(
+                                          "Date: ${p["date"] ?? "-"}",
+                                          style: bodyStyle(
+                                            12,
+                                          ).copyWith(color: subtleText),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  ShadButton(
+                                    backgroundColor: Colors.teal,
+                                    onPressed: () {},
+                                    child: Text(
+                                      "View details",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
                         ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                ],
+                      ],
+                    );
+                  },
+                ),
 
                 const SizedBox(height: 16),
 
