@@ -16,6 +16,7 @@
 // }
 
 // --------------------- 2222222222222222 ---------------------
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ import 'package:wio_doctor/features/auth/view/login_screen.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/auth/view_model/login_viewmodel.dart';
 import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
+import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 
 void main() async {
@@ -67,7 +69,10 @@ class AppContent extends StatelessWidget {
             brightness: Brightness.dark,
             colorScheme: const ShadZincColorScheme.dark(),
           ),
-          home: const LoginScreen(),
+          home: 
+          FirebaseAuth.instance.currentUser != null ? BottomNavBar():
+          
+           LoginScreen(),
         );
       },
     );
