@@ -71,13 +71,14 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
     {"bp": "130/85", "sugar": "7.2 mmol/L", "date": "05 Feb 2026"},
   ];
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-Provider.of<PatientViewModel>(context, listen: false).fetchPatientDetails(widget.patientId);
-    
+    Provider.of<PatientViewModel>(
+      context,
+      listen: false,
+    ).fetchPatientDetails(widget.patientId);
   }
 
   @override
@@ -308,86 +309,104 @@ Provider.of<PatientViewModel>(context, listen: false).fetchPatientDetails(widget
                 // =========================================================
                 // 1) User details (Image, name, wio ID)
                 // =========================================================
-                Container(
-                  decoration: cardDecoration(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        avatarCircle(patient["name"] ?? "Patient"),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                patient["name"] ?? "",
-                                style: bodyStyle(
-                                  18,
-                                ).copyWith(fontWeight: FontWeight.w900),
-                              ),
-                              const SizedBox(height: 6),
-                              Row(
+                Consumer<PatientViewModel>(
+                  builder: (context, patientDetaislVM, child) {
+                    return Container(
+                      decoration: cardDecoration(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            avatarCircle(
+                              patientDetaislVM
+                                      .patientDetailsData["profile"]["name"] ??
+                                  "Patient",
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  pillChip(
-                                    patient["wioId"] ?? "",
-                                    LucideIcons.badgeCheck,
-                                    keyColor: "completed",
+                                  Text(
+                                    patientDetaislVM
+                                            .patientDetailsData["profile"]["name"] ??
+                                        "",
+                                    style: bodyStyle(
+                                      18,
+                                    ).copyWith(fontWeight: FontWeight.w900),
                                   ),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          isDark
-                                              ? Colors.white.withOpacity(0.04)
-                                              : const Color(0xFFF3F4F8),
-                                      borderRadius: BorderRadius.circular(999),
-                                      border: Border.all(color: borderColor),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          LucideIcons.shield,
-                                          size: 14,
-                                          color: subtleText,
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      pillChip(
+                                        patientDetaislVM
+                                                .patientDetailsData["profile"]["wioId"] ??
+                                            "",
+                                        LucideIcons.badgeCheck,
+                                        keyColor: "completed",
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 6,
                                         ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          "Verified",
-                                          style: GoogleFonts.exo(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w900,
-                                            color: subtleText,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              isDark
+                                                  ? Colors.white.withOpacity(
+                                                    0.04,
+                                                  )
+                                                  : const Color(0xFFF3F4F8),
+                                          borderRadius: BorderRadius.circular(
+                                            999,
+                                          ),
+                                          border: Border.all(
+                                            color: borderColor,
                                           ),
                                         ),
-                                      ],
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              LucideIcons.shield,
+                                              size: 14,
+                                              color: subtleText,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              "Verified",
+                                              style: GoogleFonts.exo(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w900,
+                                                color: subtleText,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  ShadButton(
+                                    width: double.infinity,
+                                    backgroundColor: Colors.teal,
+                                    onPressed: () {},
+                                    child: Text(
+                                      "Manage",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
-                              ShadButton(
-                                width: double.infinity,
-                                backgroundColor: Colors.teal,
-                                onPressed: () {},
-                                child: Text(
-                                  "Manage",
-                                  style: GoogleFonts.exo(
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 ),
 
                 const SizedBox(height: 14),
@@ -397,7 +416,8 @@ Provider.of<PatientViewModel>(context, listen: false).fetchPatientDetails(widget
                 // =========================================================
                 Text("Health overview", style: sectionStyle(18)),
                 const SizedBox(height: 10),
-                Container(
+                Consumer(builder: (context, patientDetailsVM, child){
+                  return Container(
                   decoration: cardDecoration(),
                   child: Padding(
                     padding: const EdgeInsets.all(14),
@@ -528,7 +548,8 @@ Provider.of<PatientViewModel>(context, listen: false).fetchPatientDetails(widget
                       ],
                     ),
                   ),
-                ),
+                );
+                }),
 
                 const SizedBox(height: 16),
 
