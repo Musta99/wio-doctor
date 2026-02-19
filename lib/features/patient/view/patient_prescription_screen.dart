@@ -119,13 +119,16 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
       body: Consumer<PatientViewModel>(
         builder: (context, vm, child) {
           if (vm.isLoadingPrescriptionFetch) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.teal),
+            );
           }
 
           final data = vm.prescriptionDetails ?? {};
 
           final meds = (data?["analysis"]?["medicines"] as List?) ?? [];
-          final interactions =( data?["analysis"]?["potentialInteractions"] as List?) ?? [];
+          final interactions =
+              (data?["analysis"]?["potentialInteractions"] as List?) ?? [];
           final tests = (data?["analysis"]?["tests"] as List?) ?? [];
 
           return Container(
@@ -278,42 +281,58 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                         interactions.isEmpty
                             ? chip("No interactions found", Colors.green)
                             : Column(
-        children: interactions.map<Widget>((i) {
-          return Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: Colors.red.withOpacity(.08),
-              border: Border.all(color: Colors.red.withOpacity(.3)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// Medicine pair
-                Row(
-                  children: [
-                    chip(i["medicine1"] ?? "-", Colors.orange),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6),
-                      child: Icon(Icons.close, size: 16),
-                    ),
-                    chip(i["medicine2"] ?? "-", Colors.orange),
-                  ],
-                ),
+                              children:
+                                  interactions.map<Widget>((i) {
+                                    return Container(
+                                      margin: const EdgeInsets.only(bottom: 10),
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: Colors.red.withOpacity(.08),
+                                        border: Border.all(
+                                          color: Colors.red.withOpacity(.3),
+                                        ),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          /// Medicine pair
+                                          Row(
+                                            children: [
+                                              chip(
+                                                i["medicine1"] ?? "-",
+                                                Colors.orange,
+                                              ),
+                                              const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 6,
+                                                ),
+                                                child: Icon(
+                                                  Icons.close,
+                                                  size: 16,
+                                                ),
+                                              ),
+                                              chip(
+                                                i["medicine2"] ?? "-",
+                                                Colors.orange,
+                                              ),
+                                            ],
+                                          ),
 
-                const SizedBox(height: 8),
+                                          const SizedBox(height: 8),
 
-                /// Interaction message (English)
-                Text(
-                  i["interaction"]?["en"] ?? "No details",
-                  style: bodyStyle(13),
-                ),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
+                                          /// Interaction message (English)
+                                          Text(
+                                            i["interaction"]?["en"] ??
+                                                "No details",
+                                            style: bodyStyle(13),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                            ),
                       ],
                     ),
                   ),
@@ -369,7 +388,8 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          data["doctorSuggestion"] ?? "No suggestion available",
+                          data?["analysis"]?["suggestions"]?["en"] ??
+                              "No suggestion available",
                           style: bodyStyle(13.5),
                         ),
                       ],

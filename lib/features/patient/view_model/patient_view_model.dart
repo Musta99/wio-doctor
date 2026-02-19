@@ -70,7 +70,7 @@ class PatientViewModel extends ChangeNotifier {
   Map prescriptionDetails = {};
   Future fetchPrescriptionDetails(String patientId, String prescriptionId) async {
     try {
-      isLoadingReportFetch = true;
+      isLoadingPrescriptionFetch = true;
       notifyListeners();
 
       final prescriptionFetchRoute =
@@ -87,7 +87,7 @@ class PatientViewModel extends ChangeNotifier {
       }
     } catch (err) {
     } finally {
-      isLoadingReportFetch = false;
+      isLoadingPrescriptionFetch = false;
       notifyListeners();
     }
   }

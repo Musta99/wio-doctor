@@ -140,13 +140,7 @@ class _PatientHealthDashboardScreenState
       "High-fiber fruits",
     ];
 
-    final limitFoods = const [
-      "Fried foods & trans fats",
-      "Sugary drinks & sweets",
-      "Refined carbs (white bread)",
-      "Processed meats",
-      "Excess salt",
-    ];
+
 
     return Scaffold(
       appBar: AppBar(
