@@ -126,8 +126,14 @@ class PatientViewModel extends ChangeNotifier {
         }),
       );
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print("Succesfully Saved");
+        Fluttertoast.showToast(
+          msg: "Vitals saved successfully",
+          backgroundColor: Colors.green,
+        );
+
+        await fetchPatientDetails(patientId);
       } else {
         print(response.statusCode);
         print(response.body);

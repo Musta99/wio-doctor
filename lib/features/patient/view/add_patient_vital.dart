@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/services/time_formate_service.dart';
+import 'package:wio_doctor/features/patient/view_model/patient_view_model.dart';
+import 'package:wio_doctor/view_model/date_picker_view_model.dart';
 
 class AddVitalsScreen extends StatefulWidget {
-  const AddVitalsScreen({super.key});
+  final String patientId;
+  const AddVitalsScreen({super.key, required this.patientId});
 
   @override
   State<AddVitalsScreen> createState() => _AddVitalsScreenState();
@@ -28,20 +33,6 @@ class _AddVitalsScreenState extends State<AddVitalsScreen> {
     diastolicController.dispose();
     sugarController.dispose();
     super.dispose();
-  }
-
-  Future<void> _pickDate() async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate ?? now,
-      firstDate: DateTime(now.year - 10),
-      lastDate: DateTime(now.year + 2),
-    );
-
-    if (picked != null) {
-      setState(() => selectedDate = picked);
-    }
   }
 
   @override
@@ -155,45 +146,50 @@ class _AddVitalsScreenState extends State<AddVitalsScreen> {
                     const SizedBox(height: 14),
 
                     // ✅ Calendar picker
-                    InkWell(
-                      borderRadius: BorderRadius.circular(14),
-                      onTap: _pickDate,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              isDark
-                                  ? Colors.white.withOpacity(0.04)
-                                  : const Color(0xFFF3F4F8),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: borderColor),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(LucideIcons.calendar, size: 18),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Text(
-                                selectedDate == null
-                                    ? "Select date"
-                                    : selectedDate.toString(),
-                                style: GoogleFonts.exo(
-                                  fontWeight: FontWeight.w800,
-                                  fontSize: 14,
+                    Consumer<DatePickerProvider>(
+                      builder: (context, datePickerVM, child) {
+                        return GestureDetector(
+                          onTap: () async {
+                            await datePickerVM.pickDate(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  isDark
+                                      ? Colors.white.withOpacity(0.04)
+                                      : const Color(0xFFF3F4F8),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: borderColor),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(LucideIcons.calendar, size: 18),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    datePickerVM.selectedDate == null
+                                        ? "Select date"
+                                        : "${datePickerVM.selectedDate!.year}-${datePickerVM.selectedDate!.month}-${datePickerVM.selectedDate!.day}",
+                                    style: GoogleFonts.exo(
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 14,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Icon(
+                                  LucideIcons.chevronDown,
+                                  size: 18,
+                                  color: subtleText,
+                                ),
+                              ],
                             ),
-                            Icon(
-                              LucideIcons.chevronDown,
-                              size: 18,
-                              color: subtleText,
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
 
                     const SizedBox(height: 14),
@@ -225,7 +221,7 @@ class _AddVitalsScreenState extends State<AddVitalsScreen> {
                       ],
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 20),
 
                     // Sugar
                     TextField(
@@ -235,16 +231,51 @@ class _AddVitalsScreenState extends State<AddVitalsScreen> {
 
                     const SizedBox(height: 16),
 
-                    ShadButton(
-                      width: double.infinity,
-                      backgroundColor: Colors.teal,
-                      onPressed: () {
-                        Navigator.pop(context);
+                    Consumer<PatientViewModel>(
+                      builder: (context, patientVM, child) {
+                        return ShadButton(
+                          width: double.infinity,
+                          backgroundColor: Colors.teal,
+                          onPressed: () async {
+                            final selectedDate =
+                                Provider.of<DatePickerProvider>(
+                                  context,
+                                  listen: false,
+                                ).selectedDate;
+                            await patientVM.addNewVitals(
+                              widget.patientId,
+                              "${systolicController.text.trim()}/${diastolicController.text.trim()}",
+                              int.parse(sugarController.text.trim()),
+                              "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}",
+                              "",
+                            );
+                            Provider.of<DatePickerProvider>(
+                              context,
+                              listen: false,
+                            ).clearDate();
+
+                            systolicController.clear();
+                            diastolicController.clear();
+                            sugarController.clear();
+
+                            Navigator.pop(context);
+                          },
+                          child:
+                              patientVM.isPatientVitalsAddLoading
+                                  ? Text(
+                                    "Saving...",
+                                    style: GoogleFonts.exo(
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  )
+                                  : Text(
+                                    "Save",
+                                    style: GoogleFonts.exo(
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                        );
                       },
-                      child: Text(
-                        "Save",
-                        style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                      ),
                     ),
                   ],
                 ),

@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class DatePickerProvider extends ChangeNotifier {
-  DateTime? _selectedDate;
+  DateTime? selectedDate;
 
   /// Set date manually
   void setDate(DateTime date) {
-    _selectedDate = date;
+    selectedDate = date;
     notifyListeners();
   }
 
   /// Reset date
   void clearDate() {
-    _selectedDate = null;
+    selectedDate = null;
     notifyListeners();
   }
 
@@ -21,13 +21,13 @@ class DatePickerProvider extends ChangeNotifier {
 
     final picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? now,
+      initialDate: selectedDate ?? now,
       firstDate: DateTime(now.year - 10),
       lastDate: DateTime(now.year + 2),
     );
 
     if (picked != null) {
-      _selectedDate = picked;
+      selectedDate = picked;
       notifyListeners();
     }
   }

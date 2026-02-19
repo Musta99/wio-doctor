@@ -937,7 +937,9 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const AddVitalsScreen(),
+                                builder: (_) =>  AddVitalsScreen(
+                                  patientId: widget.patientId,
+                                ),
                               ),
                             );
                           },
