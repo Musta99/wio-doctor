@@ -621,7 +621,8 @@ class _PatientHealthDashboardScreenState
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          interpretation,
+                          patientDetailsVM
+                              .reportDetails["analysis"]["overallInterpretation"]["en"],
                           style: bodyStyle(13.5).copyWith(
                             color:
                                 isDark
