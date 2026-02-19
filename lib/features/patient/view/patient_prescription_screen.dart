@@ -124,7 +124,7 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
 
           final data = vm.prescriptionDetails ?? {};
 
-          final meds = data["medications"] ?? [];
+          final meds = data["analysis"]["medicines"] ?? [];
           final interactions = data["interactions"] ?? [];
           final tests = data["recommendedTests"] ?? [];
 
@@ -180,11 +180,79 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                         for (final m in meds)
                           ListTile(
                             contentPadding: EdgeInsets.zero,
-                            title: Text(m["name"] ?? "-", style: bodyStyle(14)),
-                            subtitle: Text(
-                              "Dosage: ${m["dosage"]} • Duration: ${m["duration"]}",
+
+                            /// Medicine Name + Generic Name
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    m["name"] ?? "-",
+                                    style: bodyStyle(14),
+                                  ),
+                                ),
+
+                                /// Verified badge
+                                if (m["isVerified"] == true)
+                                  chip("Verified", Colors.green),
+                              ],
                             ),
-                            trailing: chip(m["frequency"] ?? "", Colors.teal),
+
+                            /// Medicine Details
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 4),
+
+                                /// Generic Name
+                                if (m["genericName"] != null)
+                                  Text(
+                                    "Generic: ${m["genericName"]}",
+                                    style: bodyStyle(12),
+                                  ),
+
+                                /// Strength
+                                if (m["strength"] != null)
+                                  Text(
+                                    "Strength: ${m["strength"]}",
+                                    style: bodyStyle(12),
+                                  ),
+
+                                /// Duration
+                                if (m["duration"] != null)
+                                  Text(
+                                    "Duration: ${m["duration"]}",
+                                    style: bodyStyle(12),
+                                  ),
+
+                                /// Instructions
+                                if (m["instructions"] != null)
+                                  Text(
+                                    "Instruction: ${m["instructions"]}",
+                                    style: bodyStyle(12),
+                                  ),
+
+                                /// Dose Schedule (Morning / Noon / Night)
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    chip(
+                                      "Morning: ${m["morning"] ?? 0}",
+                                      Colors.orange,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    chip(
+                                      "Noon: ${m["noon"] ?? 0}",
+                                      Colors.blue,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    chip(
+                                      "Night: ${m["night"] ?? 0}",
+                                      Colors.purple,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                       ],
                     ),
