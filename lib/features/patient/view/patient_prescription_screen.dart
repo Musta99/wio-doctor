@@ -25,8 +25,10 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<PatientViewModel>(context, listen: false)
-          .fetchPrescriptionDetails(widget.patientId, widget.prescriptionId);
+      Provider.of<PatientViewModel>(
+        context,
+        listen: false,
+      ).fetchPrescriptionDetails(widget.patientId, widget.prescriptionId);
     });
   }
 
@@ -39,9 +41,13 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
 
     final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
     final borderColor =
-        isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.06);
+        isDark
+            ? Colors.white.withOpacity(0.08)
+            : Colors.black.withOpacity(0.06);
     final subtleText =
-        isDark ? Colors.white.withOpacity(0.72) : Colors.black.withOpacity(0.62);
+        isDark
+            ? Colors.white.withOpacity(0.72)
+            : Colors.black.withOpacity(0.62);
 
     TextStyle titleStyle(double s) =>
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
@@ -50,17 +56,17 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w700);
 
     BoxDecoration cardDecoration() => BoxDecoration(
-          color: cardColor,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: borderColor),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
-              blurRadius: 18,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        );
+      color: cardColor,
+      borderRadius: BorderRadius.circular(22),
+      border: Border.all(color: borderColor),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
+          blurRadius: 18,
+          offset: const Offset(0, 10),
+        ),
+      ],
+    );
 
     Widget sectionHeader({
       required IconData icon,
@@ -84,8 +90,10 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title, style: titleStyle(16)),
-              Text(subtitle,
-                  style: bodyStyle(12.5).copyWith(color: subtleText)),
+              Text(
+                subtitle,
+                style: bodyStyle(12.5).copyWith(color: subtleText),
+              ),
             ],
           ),
         ],
@@ -141,15 +149,15 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                       children: [
                         sectionHeader(
                           icon: LucideIcons.user,
-                          title: data["patientName"] ?? "Patient",
+                          title: data["analysis"]["patientName"] ?? "Patient",
                           subtitle:
-                              "Dr. ${data["doctorName"] ?? "-"} • ${data["date"] ?? "-"}",
+                              "Dr. ${data["analysis"]["doctorName"] ?? "-"}",
                         ),
                         const SizedBox(height: 12),
-                        Text("Age: ${data["age"] ?? "-"}",
-                            style: bodyStyle(13)),
-                        Text("Gender: ${data["gender"] ?? "-"}",
-                            style: bodyStyle(13)),
+                        Text(
+                          "Date: ${data["date"] ?? "-"}",
+                          style: bodyStyle(13),
+                        ),
                       ],
                     ),
                   ),
@@ -172,10 +180,10 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                         for (final m in meds)
                           ListTile(
                             contentPadding: EdgeInsets.zero,
-                            title: Text(m["name"] ?? "-",
-                                style: bodyStyle(14)),
+                            title: Text(m["name"] ?? "-", style: bodyStyle(14)),
                             subtitle: Text(
-                                "Dosage: ${m["dosage"]} • Duration: ${m["duration"]}"),
+                              "Dosage: ${m["dosage"]} • Duration: ${m["duration"]}",
+                            ),
                             trailing: chip(m["frequency"] ?? "", Colors.teal),
                           ),
                       ],
@@ -202,11 +210,12 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                         interactions.isEmpty
                             ? chip("No interactions found", Colors.green)
                             : Wrap(
-                                spacing: 8,
-                                children: interactions
-                                    .map<Widget>((i) => chip(i, Colors.red))
-                                    .toList(),
-                              ),
+                              spacing: 8,
+                              children:
+                                  interactions
+                                      .map<Widget>((i) => chip(i, Colors.red))
+                                      .toList(),
+                            ),
                       ],
                     ),
                   ),
@@ -232,8 +241,11 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                             padding: const EdgeInsets.only(bottom: 6),
                             child: Row(
                               children: [
-                                const Icon(Icons.check_circle,
-                                    size: 18, color: Colors.teal),
+                                const Icon(
+                                  Icons.check_circle,
+                                  size: 18,
+                                  color: Colors.teal,
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(child: Text(t, style: bodyStyle(13))),
                               ],
