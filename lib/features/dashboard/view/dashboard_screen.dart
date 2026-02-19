@@ -472,45 +472,55 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ],
                   ),
 
-                  // Patient List (kept as-is)
+                  // Patient List -- Patient Roaster
                   Consumer<DashboardViewModel>(
                     builder: (context, dashboardVM, child) {
+                      final patients = dashboardVM.roasterPatients;
+
+                      ///  Case 1 → Loading + empty
+                      if (dashboardVM.isLoadingPatientRoaster &&
+                          patients.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      ///  Case 2 → Not loading + empty
+                      if (!dashboardVM.isLoadingPatientRoaster &&
+                          patients.isEmpty) {
+                        return Center(child: Text("No patients found"));
+                      }
+
+                      ///  Case 3 → List has data
                       return ListView.builder(
                         padding: EdgeInsets.zero,
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: dashboardVM.roasterPatients.length,
+                        itemCount: patients.length,
                         itemBuilder: (context, index) {
                           final patientDetails =
-                              dashboardVM.roasterPatients[index]
-                                  as Map<String, dynamic>;
+                              patients[index] as Map<String, dynamic>;
 
-                          return dashboardVM.isLoadingPatientRoaster
-                              ? Icon(LucideIcons.loader)
-                              : PatientCard(
-                                name: patientDetails["patientName"] ?? "",
-                                sex: "F",
-                                lastVisited:
-                                    patientDetails["lastVisitAt"] != null
-                                        ? TimeFormateService().formatDate(
-                                          patientDetails["lastVisitAt"],
-                                        )
-                                        : "New Visit",
-                                status: patientDetails["status"] ?? "",
-                                onPressed: () {
-                                  print(patientDetails["patientId"]);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder:
-                                          (_) => PatientDetailsScreen(
-                                            patientId:
-                                                patientDetails["patientId"],
-                                          ),
-                                    ),
-                                  );
-                                },
+                          return PatientCard(
+                            name: patientDetails["patientName"] ?? "",
+                            sex: "F",
+                            lastVisited:
+                                patientDetails["lastVisitAt"] != null
+                                    ? TimeFormateService().formatDate(
+                                      patientDetails["lastVisitAt"],
+                                    )
+                                    : "New Visit",
+                            status: patientDetails["status"] ?? "",
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => PatientDetailsScreen(
+                                        patientId: patientDetails["patientId"],
+                                      ),
+                                ),
                               );
+                            },
+                          );
                         },
                       );
                     },
