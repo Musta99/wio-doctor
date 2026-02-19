@@ -619,7 +619,7 @@ class _PatientHealthDashboardScreenState
                         const SizedBox(height: 12),
                         Text(
                           patientDetailsVM
-                              .reportDetails["analysis"]["overallInterpretation"]["en"],
+                              .reportDetails?["analysis"]?["overallInterpretation"]?["en"] ?? "No Interpretation",
                           style: bodyStyle(13.5).copyWith(
                             color:
                                 isDark
@@ -671,35 +671,41 @@ class _PatientHealthDashboardScreenState
                               ),
                               const SizedBox(height: 8),
 
-                              for (final f in favorFoodList)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 6),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        LucideIcons.circleCheck,
-                                        size: 16,
-                                        color: Colors.teal,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          f["name"]["en"],
-                                          style: bodyStyle(13).copyWith(
-                                            color:
-                                                isDark
-                                                    ? Colors.white.withOpacity(
-                                                      0.86,
-                                                    )
-                                                    : Colors.black.withOpacity(
-                                                      0.78,
-                                                    ),
+                              if (favorFoodList.isEmpty)
+                                Chip(
+                                  label: Text(
+                                    "No recommended foods",
+                                    style: bodyStyle(12),
+                                  ),
+                                )
+                              else
+                                for (final f in favorFoodList)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 6),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          LucideIcons.circleCheck,
+                                          size: 16,
+                                          color: Colors.teal,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            f["name"]["en"],
+                                            style: bodyStyle(13).copyWith(
+                                              color:
+                                                  isDark
+                                                      ? Colors.white
+                                                          .withOpacity(0.86)
+                                                      : Colors.black
+                                                          .withOpacity(0.78),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
                               const SizedBox(height: 12),
                               Text(
                                 "Food to limit",
@@ -708,35 +714,41 @@ class _PatientHealthDashboardScreenState
                                 ).copyWith(color: subtleText),
                               ),
                               const SizedBox(height: 8),
-                              for (final f in limitFoodList)
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 6),
-                                  child: Row(
-                                    children: [
-                                      const Icon(
-                                        LucideIcons.x,
-                                        size: 16,
-                                        color: Colors.redAccent,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          f["name"]["en"],
-                                          style: bodyStyle(13).copyWith(
-                                            color:
-                                                isDark
-                                                    ? Colors.white.withOpacity(
-                                                      0.86,
-                                                    )
-                                                    : Colors.black.withOpacity(
-                                                      0.78,
-                                                    ),
+                              if (limitFoodList.isEmpty)
+                                Chip(
+                                  label: Text(
+                                    "No limited foods",
+                                    style: bodyStyle(12),
+                                  ),
+                                )
+                              else
+                                for (final f in limitFoodList)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 6),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          LucideIcons.x,
+                                          size: 16,
+                                          color: Colors.redAccent,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            f["name"]["en"],
+                                            style: bodyStyle(13).copyWith(
+                                              color:
+                                                  isDark
+                                                      ? Colors.white
+                                                          .withOpacity(0.86)
+                                                      : Colors.black
+                                                          .withOpacity(0.78),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
                             ],
                           ),
                         ),
