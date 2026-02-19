@@ -124,9 +124,9 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
 
           final data = vm.prescriptionDetails ?? {};
 
-          final meds = data["analysis"]["medicines"] ?? [];
-          final interactions = data["interactions"] ?? [];
-          final tests = data["recommendedTests"] ?? [];
+          final meds = (data?["analysis"]?["medicines"] as List?) ?? [];
+          final interactions =( data?["analysis"]?["potentialInteractions"] as List?) ?? [];
+          final tests = (data?["analysis"]?["tests"] as List?) ?? [];
 
           return Container(
             decoration: BoxDecoration(
@@ -149,13 +149,13 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                       children: [
                         sectionHeader(
                           icon: LucideIcons.user,
-                          title: data["analysis"]["patientName"] ?? "Patient",
+                          title: data?["analysis"]?["patientName"] ?? "Patient",
                           subtitle:
-                              "Dr. ${data["analysis"]["doctorName"] ?? "-"}",
+                              "Dr. ${data?["analysis"]?["doctorName"] ?? "-"}",
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          "Date: ${data["date"] ?? "-"}",
+                          "Date: ${data?["date"] ?? "-"}",
                           style: bodyStyle(13),
                         ),
                       ],
@@ -277,13 +277,43 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
 
                         interactions.isEmpty
                             ? chip("No interactions found", Colors.green)
-                            : Wrap(
-                              spacing: 8,
-                              children:
-                                  interactions
-                                      .map<Widget>((i) => chip(i, Colors.red))
-                                      .toList(),
-                            ),
+                            : Column(
+        children: interactions.map<Widget>((i) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 10),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              color: Colors.red.withOpacity(.08),
+              border: Border.all(color: Colors.red.withOpacity(.3)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Medicine pair
+                Row(
+                  children: [
+                    chip(i["medicine1"] ?? "-", Colors.orange),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 6),
+                      child: Icon(Icons.close, size: 16),
+                    ),
+                    chip(i["medicine2"] ?? "-", Colors.orange),
+                  ],
+                ),
+
+                const SizedBox(height: 8),
+
+                /// Interaction message (English)
+                Text(
+                  i["interaction"]?["en"] ?? "No details",
+                  style: bodyStyle(13),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ),
                       ],
                     ),
                   ),
