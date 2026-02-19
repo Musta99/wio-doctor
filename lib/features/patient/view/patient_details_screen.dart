@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/patient/view/add_patient_vital.dart';
+import 'package:wio_doctor/features/patient/view/patient_prescription_screen.dart';
 import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 import 'package:wio_doctor/features/patient/view_model/patient_view_model.dart';
 
@@ -754,7 +755,20 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                           ShadButton(
                                             backgroundColor: Colors.teal,
                                             onPressed: () {
-                                              
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder:
+                                                      (context) =>
+                                                          PatientPrescriptionScreen(
+                                                            patientId:
+                                                                widget
+                                                                    .patientId,
+                                                            prescriptionId:
+                                                                p["id"],
+                                                          ),
+                                                ),
+                                              );
                                             },
                                             child: Text(
                                               "View details",
@@ -882,8 +896,10 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                                   builder:
                                                       (context) =>
                                                           PatientHealthDashboardScreen(
-                                                           reportId: r["id"],
-                                                           patientId: widget.patientId,
+                                                            reportId: r["id"],
+                                                            patientId:
+                                                                widget
+                                                                    .patientId,
                                                           ),
                                                 ),
                                               );
