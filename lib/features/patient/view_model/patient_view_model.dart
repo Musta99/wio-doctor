@@ -59,16 +59,20 @@ class PatientViewModel extends ChangeNotifier {
         print(response.body);
       }
     } catch (err) {
+      Fluttertoast.showToast(msg: "Error occured: $err");
     } finally {
       isLoadingReportFetch = false;
       notifyListeners();
     }
   }
 
-    // Fetch prescription details
+  // Fetch prescription details
   bool isLoadingPrescriptionFetch = false;
   Map prescriptionDetails = {};
-  Future fetchPrescriptionDetails(String patientId, String prescriptionId) async {
+  Future fetchPrescriptionDetails(
+    String patientId,
+    String prescriptionId,
+  ) async {
     try {
       isLoadingPrescriptionFetch = true;
       notifyListeners();
@@ -86,8 +90,52 @@ class PatientViewModel extends ChangeNotifier {
         print(response.body);
       }
     } catch (err) {
+      Fluttertoast.showToast(msg: "Error occured: $err");
     } finally {
       isLoadingPrescriptionFetch = false;
+      notifyListeners();
+    }
+  }
+
+  // Add Vitals to specific patient
+  bool isPatientVitalsAddLoading = false;
+  Future addNewVitals(
+    String patientId,
+    String bp,
+    int sugar,
+    String date,
+    String? note,
+  ) async {
+    try {
+      isPatientVitalsAddLoading = true;
+      notifyListeners();
+
+      final String patientVitalsAddRoute =
+          "https://www.wiocare.com/api/patient-data?patientId=${patientId}&dataType=vitals";
+      final response = await http.post(
+        Uri.parse(patientVitalsAddRoute),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode({
+          "bp": bp,
+          "sugar": sugar,
+          "date": date,
+          "notes": note,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print("Succesfully Saved");
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (err) {
+      Fluttertoast.showToast(msg: "Error occured: $err");
+    } finally {
+      isPatientVitalsAddLoading = false;
       notifyListeners();
     }
   }
