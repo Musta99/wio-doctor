@@ -131,20 +131,6 @@ class _PatientHealthDashboardScreenState
     }
 
     // Demo content
-    final summary =
-        "Overall labs suggest mild dyslipidemia with elevated LDL, and borderline HbA1c. Renal markers are within normal range.";
-    final majorIssue = "Elevated LDL cholesterol";
-    final minorIssue = "Borderline HbA1c";
-    final interpretation =
-        "The results indicate increased cardiovascular risk due to lipid imbalance. Lifestyle changes are recommended, and consider follow-up lipid profile in 8–12 weeks.";
-
-    final labRows = const [
-      _LabRow("HbA1c", "6.1", "%", "4.0–5.6"),
-      _LabRow("LDL", "158", "mg/dL", "< 100"),
-      _LabRow("HDL", "42", "mg/dL", "> 40"),
-      _LabRow("Triglycerides", "180", "mg/dL", "< 150"),
-      _LabRow("Creatinine", "0.9", "mg/dL", "0.6–1.2"),
-    ];
 
     final favorFoods = const [
       "Leafy greens, vegetables",
@@ -174,6 +160,17 @@ class _PatientHealthDashboardScreenState
               child: CircularProgressIndicator(color: Colors.teal),
             );
           }
+
+          final favorFoodList =
+              (patientDetailsVM
+                      .reportDetails?["analysis"]?["dietarySuggestions"]?["foodsToEat"]
+                  as List?) ??
+              [];
+          final limitFoodList =
+              (patientDetailsVM
+                      .reportDetails?["analysis"]?["dietarySuggestions"]?["foodsToAvoid"]
+                  as List?) ??
+              [];
 
           return Container(
             decoration: BoxDecoration(
@@ -673,7 +670,8 @@ class _PatientHealthDashboardScreenState
                                 ).copyWith(color: subtleText),
                               ),
                               const SizedBox(height: 8),
-                              for (final f in favorFoods)
+
+                              for (final f in favorFoodList)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 6),
                                   child: Row(
@@ -686,7 +684,7 @@ class _PatientHealthDashboardScreenState
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Text(
-                                          f,
+                                          f["name"]["en"],
                                           style: bodyStyle(13).copyWith(
                                             color:
                                                 isDark
@@ -710,7 +708,7 @@ class _PatientHealthDashboardScreenState
                                 ).copyWith(color: subtleText),
                               ),
                               const SizedBox(height: 8),
-                              for (final f in limitFoods)
+                              for (final f in limitFoodList)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 6),
                                   child: Row(
@@ -723,7 +721,7 @@ class _PatientHealthDashboardScreenState
                                       const SizedBox(width: 8),
                                       Expanded(
                                         child: Text(
-                                          f,
+                                          f["name"]["en"],
                                           style: bodyStyle(13).copyWith(
                                             color:
                                                 isDark
