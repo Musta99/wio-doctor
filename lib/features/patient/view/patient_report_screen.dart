@@ -619,7 +619,8 @@ class _PatientHealthDashboardScreenState
                         const SizedBox(height: 12),
                         Text(
                           patientDetailsVM
-                              .reportDetails?["analysis"]?["overallInterpretation"]?["en"] ?? "No Interpretation",
+                                  .reportDetails?["analysis"]?["overallInterpretation"]?["en"] ??
+                              "No Interpretation",
                           style: bodyStyle(13.5).copyWith(
                             color:
                                 isDark
@@ -683,16 +684,18 @@ class _PatientHealthDashboardScreenState
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 6),
                                     child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Icon(
                                           LucideIcons.circleCheck,
-                                          size: 16,
+                                          size: 18,
                                           color: Colors.teal,
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
-                                            f["name"]["en"],
+                                            "${f["name"]["en"]}: ${f["reason"]["en"]}",
                                             style: bodyStyle(13).copyWith(
                                               color:
                                                   isDark
@@ -726,16 +729,18 @@ class _PatientHealthDashboardScreenState
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 6),
                                     child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Icon(
                                           LucideIcons.x,
-                                          size: 16,
+                                          size: 18,
                                           color: Colors.redAccent,
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: Text(
-                                            f["name"]["en"],
+                                            "${f["name"]["en"]}: ${f["reason"]["en"]}",
                                             style: bodyStyle(13).copyWith(
                                               color:
                                                   isDark
