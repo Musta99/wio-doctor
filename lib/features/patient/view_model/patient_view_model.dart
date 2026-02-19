@@ -64,4 +64,31 @@ class PatientViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+    // Fetch prescription details
+  bool isLoadingPrescriptionFetch = false;
+  Map prescriptionDetails = {};
+  Future fetchPrescriptionDetails(String patientId, String prescriptionId) async {
+    try {
+      isLoadingReportFetch = true;
+      notifyListeners();
+
+      final prescriptionFetchRoute =
+          "https://www.wiocare.com/api/patient-data?patientId=${patientId}&dataType=prescriptions&prescriptionId=${prescriptionId}";
+      final response = await http.get(Uri.parse(prescriptionFetchRoute));
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        prescriptionDetails = data;
+        notifyListeners();
+        print("Data: $prescriptionDetails");
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (err) {
+    } finally {
+      isLoadingReportFetch = false;
+      notifyListeners();
+    }
+  }
 }

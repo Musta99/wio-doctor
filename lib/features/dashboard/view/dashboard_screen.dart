@@ -158,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         ? AssetImage(
                                           "assets/icons/user-icon.png",
                                         )
-                                        : AssetImage(dashboardVM.photo!),
+                                        : NetworkImage(dashboardVM.photo!),
                               );
                             },
                           ),
@@ -503,7 +503,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder:
-                                          (_) =>  PatientDetailsScreen(patientId: patientDetails["patientId"]),
+                                          (_) => PatientDetailsScreen(
+                                            patientId:
+                                                patientDetails["patientId"],
+                                          ),
                                     ),
                                   );
                                 },

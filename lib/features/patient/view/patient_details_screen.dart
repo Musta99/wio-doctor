@@ -753,7 +753,9 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
 
                                           ShadButton(
                                             backgroundColor: Colors.teal,
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              
+                                            },
                                             child: Text(
                                               "View details",
                                               style: GoogleFonts.exo(
