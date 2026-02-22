@@ -985,14 +985,29 @@ class _UpdateWeeklyAvailabilityScreenState
                     backgroundColor: Colors.teal,
                     onPressed: () {
                       scheduleVM.printAllData();
+                      print("--------------------------------");
+                      scheduleVM.updateWeeklyAvailability(
+                        context,
+                        instantDayControllers: _instantDayControllers,
+                        instantTimeControllers: _instantTimeControllers,
+                        apptDayControllers: _apptDayControllers,
+                        apptTimeControllers: _apptTimeControllers,
+                      );
                     },
-                    child: Text(
-                      "Save changes",
-                      style: GoogleFonts.exo(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
+                    child:
+                        scheduleVM.isWeeklyAvailabilityUpdateLoading
+                            ? Icon(
+                              LucideIcons.loader,
+                              color: Colors.white,
+                              size: 22,
+                            )
+                            : Text(
+                              "Save changes",
+                              style: GoogleFonts.exo(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
                   ),
 
                   const SizedBox(height: 24),
