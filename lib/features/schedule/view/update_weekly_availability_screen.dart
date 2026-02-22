@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
+import 'package:wio_doctor/view_model/date_picker_view_model.dart';
 
 class UpdateWeeklyAvailabilityScreen extends StatefulWidget {
   const UpdateWeeklyAvailabilityScreen({super.key});
@@ -30,9 +31,7 @@ class _UpdateWeeklyAvailabilityScreenState
   final List<TextEditingController> _apptTimeControllers = [];
 
   // Status / Next availability / Timezone
-  String _status = "Offline"; // Online / Appointment only / Offline
   DateTime? _nextAvailableDate;
-  String _timeZone = "Asia/Dhaka";
 
   // Weekly schedule
   final List<_WeekDayRow> _weekRows = [
@@ -714,47 +713,68 @@ class _UpdateWeeklyAvailabilityScreenState
                           // --------  Next available date ----------
                           Text("Next available date", style: sectionStyle(16)),
                           const SizedBox(height: 10),
-                          InkWell(
-                            borderRadius: BorderRadius.circular(14),
-                            onTap: _pickNextAvailableDate,
-                            child: Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.04)
-                                        : const Color(0xFFF3F4F8),
-                                border: Border.all(color: borderColor),
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              child: Row(
+                          // Inside your build method
+                          Consumer<DatePickerProvider>(
+                            builder: (context, datePicker, child) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Icon(LucideIcons.calendar, size: 18),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      _nextAvailableDate == null
-                                          ? "Tap to pick a date"
-                                          : "${_nextAvailableDate!.day.toString().padLeft(2, '0')}-"
-                                              "${_nextAvailableDate!.month.toString().padLeft(2, '0')}-"
-                                              "${_nextAvailableDate!.year}",
-                                      style: bodyStyle(
-                                        14,
-                                      ).copyWith(fontWeight: FontWeight.w900),
+                                  Text(
+                                    "Next available date",
+                                    style: sectionStyle(16),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  InkWell(
+                                    borderRadius: BorderRadius.circular(14),
+                                    onTap: () {
+                                      datePicker.pickDate(context);
+                                      print(datePicker.selectedDate);
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            isDark
+                                                ? Colors.white.withOpacity(0.04)
+                                                : const Color(0xFFF3F4F8),
+                                        border: Border.all(color: borderColor),
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            LucideIcons.calendar,
+                                            size: 18,
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: Text(
+                                              datePicker.selectedDate == null
+                                                  ? "Tap to pick a date"
+                                                  : "${datePicker.selectedDate!.day.toString().padLeft(2, '0')}-"
+                                                      "${datePicker.selectedDate!.month.toString().padLeft(2, '0')}-"
+                                                      "${datePicker.selectedDate!.year}",
+                                              style: bodyStyle(14).copyWith(
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                          ),
+                                          Icon(
+                                            LucideIcons.chevronRight,
+                                            size: 18,
+                                            color: subtleText,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  Icon(
-                                    LucideIcons.chevronRight,
-                                    size: 18,
-                                    color: subtleText,
-                                  ),
                                 ],
-                              ),
-                            ),
+                              );
+                            },
                           ),
 
                           const SizedBox(height: 14),

@@ -24,6 +24,7 @@ class DatePickerProvider extends ChangeNotifier {
       initialDate: selectedDate ?? now,
       firstDate: DateTime(now.year - 10),
       lastDate: DateTime(now.year + 2),
+      
     );
 
     if (picked != null) {
