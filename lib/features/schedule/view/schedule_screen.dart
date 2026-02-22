@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +24,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<ScheduleViewModel>(context,listen: false).fetchDoctorSchedule(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ScheduleViewModel>(
+        context,
+        listen: false,
+      ).fetchDoctorSchedule(context);
+    });
   }
 
   @override
@@ -76,21 +80,21 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       );
     }
 
-    Color statusDotColor() {
-      if (status == "Online") return Colors.greenAccent;
+    Color statusDotColor(String status) {
+      if (status == "online") return Colors.greenAccent;
       if (status == "Appointment only") return Colors.orangeAccent;
       return Colors.redAccent;
     }
 
-    Color statusChipBg() {
-      if (status == "Online")
+    Color statusChipBg(String status) {
+      if (status == "online")
         return Colors.green.withOpacity(isDark ? 0.18 : 0.12);
       if (status == "Appointment only")
         return Colors.orange.withOpacity(isDark ? 0.18 : 0.12);
       return Colors.red.withOpacity(isDark ? 0.18 : 0.12);
     }
 
-    Color statusChipBorder() {
+    Color statusChipBorder(String status) {
       if (status == "Online")
         return Colors.green.withOpacity(isDark ? 0.35 : 0.25);
       if (status == "Appointment only")
@@ -98,9 +102,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       return Colors.red.withOpacity(isDark ? 0.35 : 0.25);
     }
 
-    Color statusTextColor() {
+    Color statusTextColor(String status) {
       if (isDark) return Colors.white.withOpacity(0.92);
-      if (status == "Online") return Colors.green.shade900;
+      if (status == "online") return Colors.green.shade900;
       if (status == "Appointment only") return Colors.orange.shade900;
       return Colors.red.shade900;
     }
@@ -167,225 +171,278 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           const SizedBox(width: 6),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [bgTop, bgBottom],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // ==============================
-                // Current Availability (ONLY)
-                // ==============================
-                Container(
-                  decoration: cardDecoration(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header
-                        Row(
-                          children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.06)
-                                        : Colors.black.withOpacity(0.04),
-                              ),
-                              child: Icon(
-                                LucideIcons.activity,
-                                size: 18,
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.88)
-                                        : Colors.black.withOpacity(0.82),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Current Availability",
-                                    style: sectionStyle(18),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    "Manage your weekly schedule from the next screen.",
-                                    style: bodyStyle(
-                                      13,
-                                    ).copyWith(color: subtleText),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+      body: Consumer<ScheduleViewModel>(
+        builder: (context, scheduleVM, child) {
+          // ✅ 1. Loading
+          if (scheduleVM.isScheduleFetchLoading &&
+              scheduleVM.scheduleData.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.teal),
+            );
+          }
 
-                        const SizedBox(height: 14),
+          // ✅ 2. No data / API failed
+          if (!scheduleVM.isScheduleFetchLoading &&
+              scheduleVM.scheduleData.isEmpty) {
+            return const Center(child: Text("No schedule available"));
+          }
+          final instantList =
+              scheduleVM.scheduleData["instantConsultation"]
+                  as List<dynamic>? ??
+              [];
 
-                        // Status Row
-                        Row(
-                          children: [
-                            Text(
-                              "Status:",
-                              style: bodyStyle(14).copyWith(color: subtleText),
-                            ),
-                            const SizedBox(width: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 7,
-                              ),
-                              decoration: BoxDecoration(
-                                color: statusChipBg(),
-                                borderRadius: BorderRadius.circular(999),
-                                border: Border.all(color: statusChipBorder()),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    height: 8,
-                                    width: 8,
-                                    decoration: BoxDecoration(
-                                      color: statusDotColor(),
-                                      borderRadius: BorderRadius.circular(99),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    status,
-                                    style: GoogleFonts.exo(
-                                      color: statusTextColor(),
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Spacer(),
-                            // Quick demo toggle (optional)
-                            PopupMenuButton<String>(
-                              tooltip: "Change status",
-                              icon: Icon(
-                                LucideIcons.chevronsUpDown,
-                                size: 18,
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.75)
-                                        : Colors.black.withOpacity(0.65),
-                              ),
-                              onSelected: (v) => setState(() => status = v),
-                              itemBuilder:
-                                  (_) => const [
-                                    PopupMenuItem(
-                                      value: "Online",
-                                      child: Text("Online"),
-                                    ),
-                                    PopupMenuItem(
-                                      value: "Appointment only",
-                                      child: Text("Appointment only"),
-                                    ),
-                                    PopupMenuItem(
-                                      value: "Offline",
-                                      child: Text("Offline"),
-                                    ),
-                                  ],
-                            ),
-                          ],
-                        ),
+          final appointmentList =
+              scheduleVM.scheduleData["appointmentConsultation"]
+                  as List<dynamic>? ??
+              [];
 
-                        const SizedBox(height: 14),
-
-                        // Services
-                        Row(
-                          children: [
-                            Expanded(
-                              child: pillFeature(
-                                icon: LucideIcons.video,
-                                title: "Instant Consultations",
-                                enabled: instantEnabled,
-                                glow: Colors.green,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: pillFeature(
-                                icon: LucideIcons.calendar,
-                                title: "Appointment Consultations",
-                                enabled: appointmentEnabled,
-                                glow: Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 14),
-
-                        // Days chips
-                        Text("Available days", style: sectionStyle(16)),
-                        const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 10,
-                          runSpacing: 10,
-                          children: [
-                            _prettyChip("Monday", isDark),
-                            _prettyChip("Tuesday", isDark),
-                            _prettyChip("Wednesday", isDark),
-                            _prettyChip("Thursday", isDark),
-                            _prettyChip("Friday", isDark),
-                            _prettyChip("Saturday", isDark),
-                          ],
-                        ),
-
-                        const SizedBox(height: 36),
-
-                        // CTA Button -> New screen
-                        ShadButton(
-                          width: double.infinity,
-                          height: 46,
-                          backgroundColor: Colors.teal,
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder:
-                                    (_) =>
-                                        const UpdateWeeklyAvailabilityScreen(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "Update weekly availability",
-                            style: GoogleFonts.exo(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-              ],
+          // enabled if list has data
+          final instantEnabled = instantList.isNotEmpty;
+          final appointmentEnabled = appointmentList.isNotEmpty;
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [bgTop, bgBottom],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-          ),
-        ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // ==============================
+                    // Current Availability (ONLY)
+                    // ==============================
+                    Container(
+                      decoration: cardDecoration(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header
+                            Row(
+                              children: [
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color:
+                                        isDark
+                                            ? Colors.white.withOpacity(0.06)
+                                            : Colors.black.withOpacity(0.04),
+                                  ),
+                                  child: Icon(
+                                    LucideIcons.activity,
+                                    size: 18,
+                                    color:
+                                        isDark
+                                            ? Colors.white.withOpacity(0.88)
+                                            : Colors.black.withOpacity(0.82),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Current Availability",
+                                        style: sectionStyle(18),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        "Manage your weekly schedule from the next screen.",
+                                        style: bodyStyle(
+                                          13,
+                                        ).copyWith(color: subtleText),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            // Status Row
+                            Row(
+                              children: [
+                                Text(
+                                  "Status:",
+                                  style: bodyStyle(
+                                    14,
+                                  ).copyWith(color: subtleText),
+                                ),
+                                const SizedBox(width: 10),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 7,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: statusChipBg(
+                                      scheduleVM.scheduleData?["status"],
+                                    ),
+                                    borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(
+                                      color: statusChipBorder(
+                                        scheduleVM.scheduleData?["status"],
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        height: 8,
+                                        width: 8,
+                                        decoration: BoxDecoration(
+                                          color: statusDotColor(
+                                            scheduleVM.scheduleData?["status"],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            99,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        scheduleVM.scheduleData?["status"] ??
+                                            "",
+                                        style: GoogleFonts.exo(
+                                          color: statusTextColor(
+                                            scheduleVM.scheduleData?["status"],
+                                          ),
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Spacer(),
+                                // Quick demo toggle (optional)
+                                // PopupMenuButton<String>(
+                                //   tooltip: "Change status",
+                                //   icon: Icon(
+                                //     LucideIcons.chevronsUpDown,
+                                //     size: 18,
+                                //     color:
+                                //         isDark
+                                //             ? Colors.white.withOpacity(0.75)
+                                //             : Colors.black.withOpacity(0.65),
+                                //   ),
+                                //   onSelected: (v) => setState(() => status = v),
+                                //   itemBuilder:
+                                //       (_) => const [
+                                //         PopupMenuItem(
+                                //           value: "Online",
+                                //           child: Text("Online"),
+                                //         ),
+                                //         PopupMenuItem(
+                                //           value: "Appointment only",
+                                //           child: Text("Appointment only"),
+                                //         ),
+                                //         PopupMenuItem(
+                                //           value: "Offline",
+                                //           child: Text("Offline"),
+                                //         ),
+                                //       ],
+                                // ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            // Services
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: pillFeature(
+                                    icon: LucideIcons.video,
+                                    title: "Instant Consultations",
+                                    enabled: instantEnabled,
+                                    glow:
+                                        instantEnabled
+                                            ? Colors.green
+                                            : Colors.red,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: pillFeature(
+                                    icon: LucideIcons.calendar,
+                                    title: "Appointment Consultations",
+                                    enabled: appointmentEnabled,
+                                    glow:
+                                        appointmentEnabled
+                                            ? Colors.green
+                                            : Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 14),
+
+                            // Days chips
+                            Text("Available days", style: sectionStyle(16)),
+                            const SizedBox(height: 10),
+                            Wrap(
+                              spacing: 10,
+                              runSpacing: 10,
+                              children:
+                                  (scheduleVM.scheduleData["availableDays"]
+                                              as List<dynamic>? ??
+                                          [])
+                                      .map(
+                                        (day) =>
+                                            _prettyChip(day.toString(), isDark),
+                                      )
+                                      .toList(),
+                            ),
+
+                            const SizedBox(height: 36),
+
+                            // CTA Button -> New screen
+                            ShadButton(
+                              width: double.infinity,
+                              height: 46,
+                              backgroundColor: Colors.teal,
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder:
+                                        (_) =>
+                                            const UpdateWeeklyAvailabilityScreen(),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Update weekly availability",
+                                style: GoogleFonts.exo(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

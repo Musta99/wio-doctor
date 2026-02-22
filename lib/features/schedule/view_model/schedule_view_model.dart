@@ -11,9 +11,19 @@ class ScheduleViewModel extends ChangeNotifier {
   bool isScheduleFetchLoading = false;
   Map scheduleData = {};
   Future fetchDoctorSchedule(BuildContext context) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? doctorId = prefs.getString("doctorId");
-    String? token = prefs.getString("auth_token");
+    final authProvider = Provider.of<AuthenticationProvider>(
+      context,
+      listen: false,
+    );
+
+    // Always request fresh token
+    String? token = await authProvider.getFreshToken();
+    String? doctorId = authProvider.userId; // or however you store doctorId
+
+    if (doctorId == null || token == null) {
+      print("DoctorId or token missing");
+      return;
+    }
 
     if (doctorId == null || token == null) {
       return;
