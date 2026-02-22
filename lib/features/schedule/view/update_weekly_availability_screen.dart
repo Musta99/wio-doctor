@@ -686,7 +686,7 @@ class _UpdateWeeklyAvailabilityScreenState
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
-                                value: _status,
+                                value: scheduleVM.status,
                                 isExpanded: true,
                                 items: const [
                                   DropdownMenuItem(
@@ -703,8 +703,7 @@ class _UpdateWeeklyAvailabilityScreenState
                                   ),
                                 ],
                                 onChanged: (v) {
-                                  if (v == null) return;
-                                  setState(() => _status = v);
+                                  scheduleVM.setStatus(v!);
                                 },
                               ),
                             ),
