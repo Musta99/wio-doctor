@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
 
 class UpdateWeeklyAvailabilityScreen extends StatefulWidget {
   const UpdateWeeklyAvailabilityScreen({super.key});
@@ -353,6 +355,8 @@ class _UpdateWeeklyAvailabilityScreenState
       );
     }
 
+    final scheduleVM = context.watch<ScheduleViewModel>();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Update Weekly Availability', style: titleStyle(18)),
@@ -444,10 +448,11 @@ class _UpdateWeeklyAvailabilityScreenState
                           serviceTile(
                             icon: LucideIcons.video,
                             title: "Instant video consultations",
-                            value: instantVideo,
-                            onChanged:
-                                (v) =>
-                                    setState(() => instantVideo = v ?? false),
+                            value: scheduleVM.instantVideo,
+                            onChanged: (value) {
+                              scheduleVM.toggleInstantVideo(value!);
+                              print(scheduleVM.instantVideo);
+                            },
                           ),
                           const SizedBox(height: 10),
                           serviceTile(
