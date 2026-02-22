@@ -58,4 +58,85 @@ class ScheduleViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // ----------- UPDATE Schedule Availability ------------------
+  // ---------- Services ----------
+  bool instantVideo = false;
+  bool onlineAppointment = false;
+  bool inClinicAppointment = false;
+
+  // ---------- Duration ----------
+  int durationMinutes = 30;
+
+  // ---------- Status ----------
+  String status = "Offline";
+
+  // ---------- Timezone ----------
+  String timeZone = "Asia/Dhaka";
+
+  // ---------- Next Available Date ----------
+  DateTime? nextAvailableDate;
+
+  // ---------- Weekly Schedule ----------
+  List<WeekDayRow> weekRows = [
+    WeekDayRow("Sunday"),
+    WeekDayRow("Monday"),
+    WeekDayRow("Tuesday"),
+    WeekDayRow("Wednesday"),
+    WeekDayRow("Thursday"),
+    WeekDayRow("Friday"),
+    WeekDayRow("Saturday"),
+  ];
+
+  // ---------- Toggle Methods ----------
+
+  void toggleInstantVideo(bool value) {
+    instantVideo = value;
+    notifyListeners();
+  }
+
+  void toggleOnlineAppointment(bool value) {
+    onlineAppointment = value;
+    notifyListeners();
+  }
+
+  void toggleClinicAppointment(bool value) {
+    inClinicAppointment = value;
+    notifyListeners();
+  }
+
+  void setDuration(int minutes) {
+    durationMinutes = minutes;
+    notifyListeners();
+  }
+
+  void setStatus(String value) {
+    status = value;
+    notifyListeners();
+  }
+
+  void setTimeZone(String value) {
+    timeZone = value;
+    notifyListeners();
+  }
+
+  void setNextAvailableDate(DateTime date) {
+    nextAvailableDate = date;
+    notifyListeners();
+  }
+
+  void toggleWeekDay(int index) {
+    weekRows[index].enabled = !weekRows[index].enabled;
+    notifyListeners();
+  }
+}
+
+// ------------- Class for Weekdays ---------------
+class WeekDayRow {
+  final String day;
+  bool enabled;
+  TextEditingController fromController = TextEditingController();
+  TextEditingController toController = TextEditingController();
+
+  WeekDayRow(this.day, {this.enabled = false});
 }
