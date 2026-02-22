@@ -476,18 +476,27 @@ class _UpdateWeeklyAvailabilityScreenState
 
                           const SizedBox(height: 18),
 
+                          // -------  Consultation Duration -----------
                           Text(
                             "Consultation Duration",
                             style: sectionStyle(16),
                           ),
                           const SizedBox(height: 10),
 
-                          Row(
-                            children: [
-                              Expanded(child: durationTile(minutes: 30)),
-                              const SizedBox(width: 10),
-                              Expanded(child: durationTile(minutes: 60)),
-                            ],
+                          Wrap(
+                            spacing: 10,
+                            children:
+                                [15, 30, 45, 60].map((minutes) {
+                                  final selected =
+                                      scheduleVM.durationMinutes == minutes;
+
+                                  return ChoiceChip(
+                                    label: Text("$minutes min"),
+                                    selected: selected,
+                                    onSelected:
+                                        (_) => scheduleVM.setDuration(minutes),
+                                  );
+                                }).toList(),
                           ),
                         ],
                       ),
