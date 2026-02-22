@@ -458,11 +458,11 @@ class _UpdateWeeklyAvailabilityScreenState
                           serviceTile(
                             icon: LucideIcons.calendar,
                             title: "Online appointment",
-                            value: onlineAppointment,
-                            onChanged:
-                                (v) => setState(
-                                  () => onlineAppointment = v ?? false,
-                                ),
+                            value: scheduleVM.onlineAppointment,
+                            onChanged: (value) {
+                              scheduleVM.toggleOnlineAppointment(value!);
+                              print(scheduleVM.onlineAppointment);
+                            },
                           ),
                           const SizedBox(height: 10),
                           serviceTile(
