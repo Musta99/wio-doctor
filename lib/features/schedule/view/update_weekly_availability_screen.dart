@@ -66,25 +66,13 @@ class _UpdateWeeklyAvailabilityScreenState
   }
 
   // -------- pickers ----------
-  Future<void> _pickTimeToController(TextEditingController controller) async {
-    final now = TimeOfDay.now();
-    final picked = await showTimePicker(context: context, initialTime: now);
-    if (picked == null) return;
-    controller.text = picked.format(context);
-    setState(() {});
-  }
-
-  Future<void> _pickNextAvailableDate() async {
-    final now = DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _nextAvailableDate ?? now,
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365)),
-    );
-    if (picked == null) return;
-    setState(() => _nextAvailableDate = picked);
-  }
+  // Future<void> _pickTimeToController(TextEditingController controller) async {
+  //   final now = TimeOfDay.now();
+  //   final picked = await showTimePicker(context: context, initialTime: now);
+  //   if (picked == null) return;
+  //   controller.text = picked.format(context);
+  //   setState(() {});
+  // }
 
   // -------- add/remove slot rows ----------
   void _addInstantSlot() {
@@ -560,8 +548,10 @@ class _UpdateWeeklyAvailabilityScreenState
                                       controller: _instantTimeControllers[i],
                                       readOnly: true,
                                       onTap:
-                                          () => _pickTimeToController(
-                                            _instantTimeControllers[i],
+                                          () => scheduleVM.pickTime(
+                                            context: context,
+                                            controller:
+                                                _instantTimeControllers[i],
                                           ),
                                       style: bodyStyle(14),
                                       decoration: niceInputDecoration(
@@ -631,11 +621,12 @@ class _UpdateWeeklyAvailabilityScreenState
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: TextField(
-                                      controller: _apptTimeControllers[i],
+                                      controller: _instantTimeControllers[i],
                                       readOnly: true,
                                       onTap:
-                                          () => _pickTimeToController(
-                                            _apptTimeControllers[i],
+                                          () => scheduleVM.pickTime(
+                                            context: context,
+                                            controller: _apptTimeControllers[i],
                                           ),
                                       style: bodyStyle(14),
                                       decoration: niceInputDecoration(
@@ -848,8 +839,10 @@ class _UpdateWeeklyAvailabilityScreenState
                           ),
                           const SizedBox(height: 12),
 
-                          for (int i = 0; i < _weekRows.length; i++)
-                            Container(
+                          ...List.generate(scheduleVM.weekRows.length, (i) {
+                            final row = scheduleVM.weekRows[i];
+
+                            return Container(
                               margin: const EdgeInsets.only(bottom: 10),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -865,14 +858,13 @@ class _UpdateWeeklyAvailabilityScreenState
                               ),
                               child: Row(
                                 children: [
+                                  /// Enable / Disable toggle
                                   InkWell(
                                     borderRadius: BorderRadius.circular(999),
-                                    onTap: () {
-                                      setState(() {
-                                        _weekRows[i].enabled =
-                                            !_weekRows[i].enabled;
-                                      });
-                                    },
+                                    onTap:
+                                        () => scheduleVM.toggleWeekDay(
+                                          i,
+                                        ), // provider call
                                     child: Container(
                                       height: 22,
                                       width: 22,
@@ -881,7 +873,7 @@ class _UpdateWeeklyAvailabilityScreenState
                                         border: Border.all(
                                           width: 2,
                                           color:
-                                              _weekRows[i].enabled
+                                              row.enabled
                                                   ? Colors.green
                                                   : (isDark
                                                       ? Colors.white
@@ -891,7 +883,7 @@ class _UpdateWeeklyAvailabilityScreenState
                                         ),
                                       ),
                                       child:
-                                          _weekRows[i].enabled
+                                          row.enabled
                                               ? Center(
                                                 child: Container(
                                                   height: 10,
@@ -906,59 +898,77 @@ class _UpdateWeeklyAvailabilityScreenState
                                               : const SizedBox.shrink(),
                                     ),
                                   ),
+
                                   const SizedBox(width: 10),
+
+                                  /// Day name
                                   Expanded(
                                     child: Text(
-                                      _weekRows[i].day,
+                                      row.day,
                                       style: bodyStyle(
                                         14,
                                       ).copyWith(fontWeight: FontWeight.w900),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 110,
-                                    child: TextField(
-                                      controller: _weekRows[i].fromController,
-                                      readOnly: true,
-                                      onTap:
-                                          _weekRows[i].enabled
-                                              ? () => _pickTimeToController(
-                                                _weekRows[i].fromController,
-                                              )
-                                              : null,
-                                      decoration: niceInputDecoration(
-                                        hint: "From",
-                                        icon: LucideIcons.clock,
+
+                                  Column(
+                                    spacing: 5,
+                                    children: [
+                                      /// From Time
+                                      SizedBox(
+                                        width: 120,
+                                        child: TextField(
+                                          controller: row.fromController,
+                                          readOnly: true,
+                                          onTap:
+                                              row.enabled
+                                                  ? () => scheduleVM.pickTime(
+                                                    context: context,
+                                                    controller:
+                                                        row.fromController,
+                                                  )
+                                                  : null,
+                                          decoration: niceInputDecoration(
+                                            hint: "From",
+                                            icon: LucideIcons.clock,
+                                          ),
+                                          style: bodyStyle(13).copyWith(
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
                                       ),
-                                      style: bodyStyle(
-                                        13,
-                                      ).copyWith(fontWeight: FontWeight.w900),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  SizedBox(
-                                    width: 110,
-                                    child: TextField(
-                                      controller: _weekRows[i].toController,
-                                      readOnly: true,
-                                      onTap:
-                                          _weekRows[i].enabled
-                                              ? () => _pickTimeToController(
-                                                _weekRows[i].toController,
-                                              )
-                                              : null,
-                                      decoration: niceInputDecoration(
-                                        hint: "To",
-                                        icon: LucideIcons.clock,
+
+                                      const SizedBox(width: 8),
+
+                                      /// To Time
+                                      SizedBox(
+                                        width: 120,
+                                        child: TextField(
+                                          controller: row.toController,
+                                          readOnly: true,
+                                          onTap:
+                                              row.enabled
+                                                  ? () => scheduleVM.pickTime(
+                                                    context: context,
+                                                    controller:
+                                                        row.toController,
+                                                  )
+                                                  : null,
+                                          decoration: niceInputDecoration(
+                                            hint: "To",
+                                            icon: LucideIcons.clock,
+                                          ),
+                                          style: bodyStyle(13).copyWith(
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
                                       ),
-                                      style: bodyStyle(
-                                        13,
-                                      ).copyWith(fontWeight: FontWeight.w900),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -973,7 +983,9 @@ class _UpdateWeeklyAvailabilityScreenState
                     width: double.infinity,
                     height: 46,
                     backgroundColor: Colors.teal,
-                    onPressed: () {},
+                    onPressed: () {
+                      scheduleVM.printAllData();
+                    },
                     child: Text(
                       "Save changes",
                       style: GoogleFonts.exo(

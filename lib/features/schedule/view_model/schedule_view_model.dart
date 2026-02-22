@@ -78,18 +78,14 @@ class ScheduleViewModel extends ChangeNotifier {
   DateTime? nextAvailableDate;
 
   // ---------- Weekly Schedule ----------
-  List<WeekDayRow> weekRows = [
-    WeekDayRow("Sunday"),
-    WeekDayRow("Monday"),
-    WeekDayRow("Tuesday"),
-    WeekDayRow("Wednesday"),
-    WeekDayRow("Thursday"),
-    WeekDayRow("Friday"),
-    WeekDayRow("Saturday"),
-  ];
+  List<WeekDayRow> weekRows = List.generate(
+    7,
+    (i) => WeekDayRow(
+      ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][i],
+    ),
+  );
 
-  // ---------- Toggle Methods ----------
-
+  // ---------- Services Toggle ----------
   void toggleInstantVideo(bool value) {
     instantVideo = value;
     notifyListeners();
@@ -128,6 +124,55 @@ class ScheduleViewModel extends ChangeNotifier {
   void toggleWeekDay(int index) {
     weekRows[index].enabled = !weekRows[index].enabled;
     notifyListeners();
+  }
+
+  // ---------- Reusable Time Picker ----------
+  Future<void> pickTime(
+      {required BuildContext context, required TextEditingController controller}) async {
+    final now = TimeOfDay.now();
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: now,
+    );
+
+    if (picked != null) {
+      controller.text = picked.format(context);
+      notifyListeners(); // updates UI
+    }
+  }
+
+  // ---------- Reusable Date Picker ----------
+  Future<void> pickDate({required BuildContext context}) async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: nextAvailableDate ?? now,
+      firstDate: DateTime(now.year - 10),
+      lastDate: DateTime(now.year + 2),
+    );
+
+    if (picked != null) {
+      nextAvailableDate = picked;
+      notifyListeners();
+    }
+  }
+
+  // ---------- Helper to print all selected data ----------
+  void printAllData() {
+    print("Services:");
+    print("Instant Video: $instantVideo");
+    print("Online Appointment: $onlineAppointment");
+    print("In Clinic: $inClinicAppointment");
+    print("Duration: $durationMinutes minutes");
+    print("Status: $status");
+    print("TimeZone: $timeZone");
+    print("Next Available Date: $nextAvailableDate");
+
+    print("Weekly Schedule:");
+    for (var row in weekRows) {
+      print(
+          "${row.day}: Enabled=${row.enabled}, From=${row.fromController.text}, To=${row.toController.text}");
+    }
   }
 }
 
