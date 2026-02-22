@@ -468,11 +468,10 @@ class _UpdateWeeklyAvailabilityScreenState
                           serviceTile(
                             icon: LucideIcons.building,
                             title: "In clinic appointment",
-                            value: inClinicAppointment,
-                            onChanged:
-                                (v) => setState(
-                                  () => inClinicAppointment = v ?? false,
-                                ),
+                            value: scheduleVM.inClinicAppointment,
+                            onChanged: (value) {
+                              scheduleVM.toggleClinicAppointment(value!);
+                            },
                           ),
 
                           const SizedBox(height: 18),
