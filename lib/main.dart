@@ -29,6 +29,7 @@ import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
 import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/patient/view_model/patient_view_model.dart';
+import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 import 'package:wio_doctor/view_model/date_picker_view_model.dart';
 
@@ -64,6 +65,7 @@ class AppContent extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => DashboardViewModel()),
         ChangeNotifierProvider(create: (context) => PatientViewModel()),
         ChangeNotifierProvider(create: (context) => DatePickerProvider()),
+        ChangeNotifierProvider(create: (context) => ScheduleViewModel()),
       ],
       builder: (context, child) {
         return ShadApp(
