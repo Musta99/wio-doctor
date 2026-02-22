@@ -711,6 +711,7 @@ class _UpdateWeeklyAvailabilityScreenState
 
                           const SizedBox(height: 14),
 
+                          // --------  Next available date ----------
                           Text("Next available date", style: sectionStyle(16)),
                           const SizedBox(height: 10),
                           InkWell(
@@ -758,6 +759,7 @@ class _UpdateWeeklyAvailabilityScreenState
 
                           const SizedBox(height: 14),
 
+                          // ------------ Time Zone -------------
                           Text("Time zone", style: sectionStyle(16)),
                           const SizedBox(height: 10),
                           Container(
@@ -772,7 +774,7 @@ class _UpdateWeeklyAvailabilityScreenState
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
-                                value: _timeZone,
+                                value: scheduleVM.timeZone,
                                 isExpanded: true,
                                 items: const [
                                   DropdownMenuItem(
@@ -797,8 +799,7 @@ class _UpdateWeeklyAvailabilityScreenState
                                   ),
                                 ],
                                 onChanged: (v) {
-                                  if (v == null) return;
-                                  setState(() => _timeZone = v);
+                                  scheduleVM.setTimeZone(v!);
                                 },
                               ),
                             ),
