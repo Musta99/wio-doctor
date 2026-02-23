@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/services/time_formate_service.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
 import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
@@ -268,6 +269,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       final status = (a["status"] ?? "").toString();
       final payment = (a["payment"] ?? "").toString();
       final type = (a["consultationType"] ?? "").toString();
+      final time = TimeFormateService().getFormattedTime(a["slotStart"]);
 
       return Container(
         decoration: cardDecoration(),
@@ -291,7 +293,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          "${a["patientWioId"] ?? ""} • ${a["slotDate"] ?? ""} • ${a["time"] ?? ""}",
+                          "${a["patientWioId"] ?? ""} • ${a["slotDate"] ?? ""} • ${time ?? ""}",
                           style: bodyStyle(12).copyWith(color: subtleText),
                         ),
                       ],
