@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'app_colors.dart';
 
 class AppDecorations {
@@ -17,6 +19,34 @@ class AppDecorations {
           offset: const Offset(0, 12),
         ),
       ],
+    );
+  }
+
+  // ------------------ Input Decoration -----------------------
+  static InputDecoration inputDec(String hint, IconData icon, bool isDark) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: GoogleFonts.exo(
+        color: AppColors.subtleText(isDark),
+        fontWeight: FontWeight.w600,
+      ),
+      prefixIcon: Icon(icon, size: 18),
+      filled: true,
+      fillColor:
+          isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: AppColors.border(isDark)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: AppColors.border(isDark)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Colors.teal.withOpacity(0.6)),
+      ),
     );
   }
 }
