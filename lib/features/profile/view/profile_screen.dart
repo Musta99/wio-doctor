@@ -107,11 +107,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ? Colors.white.withOpacity(0.72)
             : Colors.black.withOpacity(0.65);
 
-    TextStyle titleStyle(double size) => GoogleFonts.exo(
-      fontWeight: FontWeight.w900,
-      fontSize: size,
-      letterSpacing: -0.2,
-    );
+    // TextStyle titleStyle(double size) => GoogleFonts.exo(
+    //   fontWeight: FontWeight.w900,
+    //   fontSize: size,
+    //   letterSpacing: -0.2,
+    // );
 
     // TextStyle sectionStyle(double size) =>
     //     GoogleFonts.exo(fontWeight: FontWeight.w900, fontSize: size);
@@ -217,7 +217,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       fullNameC.text.isEmpty
                           ? "Doctor Profile"
                           : fullNameC.text,
-                      style: titleStyle(18),
+                      style: AppTextStyles.title(18),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -418,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile", style: titleStyle(20)),
+        title: Text("Profile", style: AppTextStyles.title(20)),
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
