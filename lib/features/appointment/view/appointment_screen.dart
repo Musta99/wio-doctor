@@ -267,7 +267,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     Widget appointmentCard(Map<String, dynamic> a) {
       final status = (a["status"] ?? "").toString();
       final payment = (a["payment"] ?? "").toString();
-      final type = (a["type"] ?? "").toString();
+      final type = (a["consultationType"] ?? "").toString();
 
       return Container(
         decoration: cardDecoration(),
@@ -277,21 +277,21 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             children: [
               Row(
                 children: [
-                  avatarCircle(a["name"] ?? "Patient"),
+                  avatarCircle(a["patientName"] ?? "Patient"),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          a["name"] ?? "",
+                          a["patientName"] ?? "",
                           style: bodyStyle(
                             15,
                           ).copyWith(fontWeight: FontWeight.w900),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          "${a["id"] ?? ""} • ${a["date"] ?? ""} • ${a["time"] ?? ""}",
+                          "${a["patientWioId"] ?? ""} • ${a["slotDate"] ?? ""} • ${a["time"] ?? ""}",
                           style: bodyStyle(12).copyWith(color: subtleText),
                         ),
                       ],
@@ -644,11 +644,22 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         ),
                       ),
 
-                    for (final a in filtered) ...[
-                      appointmentCard(a),
-                      const SizedBox(height: 12),
-                    ],
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount:
+                          appointmentsList.length < 5
+                              ? appointmentsList.length
+                              : 6,
+                      itemBuilder: (context, index) {
+                        return appointmentCard(appointmentsList[index]);
+                      },
+                    ),
 
+                    // for (final a in appointmentsList) ...[
+                    //   appointmentCard(a),
+                    //   const SizedBox(height: 12),
+                    // ],
                     const SizedBox(height: 16),
 
                     // =========================================================

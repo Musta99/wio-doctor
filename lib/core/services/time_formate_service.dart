@@ -6,4 +6,13 @@ class TimeFormateService {
     DateTime date = timestamp.toDate();
     return DateFormat('dd-MM-yyyy').format(date);
   }
+
+  // ------------ Get formatted time ---------------
+
+  String getFormattedTime(String slotStart) {
+    DateTime utcTime = DateTime.parse(slotStart); // parse UTC time
+    DateTime localTime = utcTime.toLocal(); // convert to device timezone
+
+    return DateFormat('hh:mm a').format(localTime);
+  }
 }
