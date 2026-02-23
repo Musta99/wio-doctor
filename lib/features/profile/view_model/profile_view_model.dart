@@ -15,13 +15,24 @@ class ProfileViewModel extends ChangeNotifier {
   final genderC = TextEditingController();
   final mobileC = TextEditingController();
   final clinicAddressC = TextEditingController();
+  final clinicNameC = TextEditingController();
   final bioC = TextEditingController();
   final yearsExpC = TextEditingController();
   final hospitalNameC = TextEditingController();
   final nidC = TextEditingController();
+  final specialityC = TextEditingController();
+  final regAuthorityC = TextEditingController();
+  final regNumberC = TextEditingController();
+  final educationDegreeC = TextEditingController();
 
   /// store original values for comparison
   Map<String, String> _originalValues = {};
+
+  String _safe(dynamic value) {
+    if (value == null) return "";
+    if (value.toString().toLowerCase() == "null") return "";
+    return value.toString();
+  }
 
   /// ---------------- FETCH DOCTOR ----------------
 
@@ -51,36 +62,48 @@ class ProfileViewModel extends ChangeNotifier {
         return;
       }
 
-      /// populate controllers
-      fullNameC.text = data["name"] ?? "";
-      emailC.text = data["email"] ?? "";
-      genderC.text = data["gender"] ?? "";
-      mobileC.text = data["mobile"] ?? "";
-      clinicAddressC.text = data["clinicAddress"] ?? "";
-      bioC.text = data["bio"] ?? "";
-      yearsExpC.text = data["experience"] ?? "";
-      hospitalNameC.text = data["hospital"] ?? "";
-      nidC.text = data["nidNumber"] ?? "";
+      /// populate controllers safely
+      fullNameC.text = _safe(data["name"]);
+      emailC.text = _safe(data["email"]);
+      genderC.text = _safe(data["gender"]);
+      mobileC.text = _safe(data["mobile"]);
+      clinicAddressC.text = _safe(data["clinicAddress"]);
+      clinicNameC.text = _safe(data["worksAt"]?["name"]);
+      bioC.text = _safe(data["bio"]);
+      yearsExpC.text = _safe(data["experienceYears"]);
+      hospitalNameC.text = _safe(data["hospital"]);
 
-      /// save original snapshot
+      // Nested fields
+      nidC.text = _safe(data["nidNumber"]);
+      specialityC.text = _safe(data["specialty"]?["name"]);
+      regAuthorityC.text = _safe(data["registration"]?["authority"]);
+      regNumberC.text = _safe(data["registration"]?["number"]);
+      educationDegreeC.text = _safe(data["educationDegree"]);
+
+      // Save original snapshot for change tracking
       _originalValues = {
         "name": fullNameC.text,
         "email": emailC.text,
         "gender": genderC.text,
         "mobile": mobileC.text,
         "clinicAddress": clinicAddressC.text,
+        "clinicName": clinicNameC.text,
         "bio": bioC.text,
         "experience": yearsExpC.text,
         "hospital": hospitalNameC.text,
         "nid": nidC.text,
+        "specialty": specialityC.text,
+        "regAuthority": regAuthorityC.text,
+        "regNumber": regNumberC.text,
+        "educationDegree": educationDegreeC.text,
+
       };
 
-      /// listen changes
       _listenFormChanges();
-
       hasDoctorData = true;
     } catch (e) {
       hasDoctorData = false;
+      print("Error fetching doctor data: $e");
     } finally {
       isLoadingDoctor = false;
       notifyListeners();
