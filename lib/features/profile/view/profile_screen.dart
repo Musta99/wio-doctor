@@ -113,8 +113,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       letterSpacing: -0.2,
     );
 
-    TextStyle sectionStyle(double size) =>
-        GoogleFonts.exo(fontWeight: FontWeight.w900, fontSize: size);
+    // TextStyle sectionStyle(double size) =>
+    //     GoogleFonts.exo(fontWeight: FontWeight.w900, fontSize: size);
 
     // BoxDecoration cardDecoration() {
     //   return BoxDecoration(
@@ -299,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(title, style: sectionStyle(18)),
+                        Text(title, style: AppTextStyles.section(14)),
                         const SizedBox(height: 3),
                         Text(
                           subtitle,
