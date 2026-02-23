@@ -5,7 +5,10 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/services/time_formate_service.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
+import 'package:wio_doctor/features/appointment/widgets/appointment_card_widget.dart';
 import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
+import 'package:wio_doctor/widgets/avatar_circle_widget.dart';
+import 'package:wio_doctor/widgets/pill_chip_widget.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});
@@ -208,179 +211,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       return Colors.blueGrey.shade900;
     }
 
-    Widget pillChip(String text, IconData icon, {String? colorKey}) {
-      final key = colorKey ?? text;
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: chipBg(key),
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: chipBorder(key)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 14, color: chipText(key)),
-            const SizedBox(width: 6),
-            Text(
-              text,
-              style: GoogleFonts.exo(
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                color: chipText(key),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    Widget avatarCircle(String name) {
-      final parts = name.trim().split(RegExp(r"\s+"));
-      final initials =
-          parts.isEmpty
-              ? "P"
-              : parts
-                  .take(2)
-                  .map((e) => e.isNotEmpty ? e[0] : "")
-                  .join()
-                  .toUpperCase();
-      return Container(
-        height: 44,
-        width: 44,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color:
-              isDark
-                  ? Colors.white.withOpacity(0.06)
-                  : Colors.black.withOpacity(0.06),
-          border: Border.all(color: borderColor),
-        ),
-        child: Center(
-          child: Text(
-            initials.isEmpty ? "P" : initials,
-            style: GoogleFonts.exo(fontWeight: FontWeight.w900, fontSize: 14),
-          ),
-        ),
-      );
-    }
-
-    Widget appointmentCard(Map<String, dynamic> a) {
-      final status = (a["status"] ?? "").toString();
-      final payment = (a["payment"] ?? "").toString();
-      final type = (a["consultationType"] ?? "").toString();
-      final time = TimeFormateService().getFormattedTime(a["slotStart"]);
-
-      return Container(
-        decoration: cardDecoration(),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  avatarCircle(a["patientName"] ?? "Patient"),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          a["patientName"] ?? "",
-                          style: bodyStyle(
-                            15,
-                          ).copyWith(fontWeight: FontWeight.w900),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          "${a["patientWioId"] ?? ""} • ${a["slotDate"] ?? ""} • ${time ?? ""}",
-                          style: bodyStyle(12).copyWith(color: subtleText),
-                        ),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.06)
-                                : Colors.black.withOpacity(0.04),
-                        border: Border.all(color: borderColor),
-                      ),
-                      child: Icon(
-                        LucideIcons.chevronRight,
-                        size: 18,
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.85)
-                                : Colors.black.withOpacity(0.75),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  pillChip(type, LucideIcons.badgeCheck, colorKey: "confirmed"),
-                  pillChip(status, LucideIcons.clock3, colorKey: status),
-                  pillChip(payment, LucideIcons.creditCard, colorKey: payment),
-                ],
-              ),
-              const SizedBox(height: 12),
-              status.toLowerCase().contains("pending")
-                  ? Row(
-                    children: [
-                      Expanded(
-                        child: ShadButton(
-                          width: double.infinity,
-                          backgroundColor: Colors.green,
-
-                          onPressed: () {},
-                          child: Text(
-                            "Approve",
-                            style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                          ),
-                        ),
-                      ),
-
-                      Expanded(
-                        child: ShadButton(
-                          width: double.infinity,
-                          backgroundColor: Colors.red,
-
-                          onPressed: () {},
-                          child: Text(
-                            "Reject",
-
-                            style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                  : ShadButton(
-                    width: double.infinity,
-                    backgroundColor: Colors.teal,
-                    onPressed: () {},
-                    child: Text(
-                      "Manage",
-                      style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-            ],
-          ),
-        ),
-      );
-    }
-
     Widget videoCard(Map<String, dynamic> v) {
       return Container(
         decoration: cardDecoration(),
@@ -388,7 +218,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           padding: const EdgeInsets.all(14),
           child: Row(
             children: [
-              avatarCircle(v["name"] ?? "Patient"),
+              AvatarCircleWidget(name: v["name"] ?? "Patient", isDark: isDark),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
@@ -410,15 +240,17 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       spacing: 8,
                       runSpacing: 8,
                       children: [
-                        pillChip(
-                          "Duration: ${v["duration"] ?? "-"}",
-                          LucideIcons.timer,
-                          colorKey: "completed",
+                        PillChipWidget(
+                          text: "Duration: ${v["duration"] ?? "-"}",
+                          icon: LucideIcons.timer,
+                          statusKey: "completed",
+                          isDark: isDark,
                         ),
-                        pillChip(
-                          v["status"] ?? "Completed",
-                          LucideIcons.video,
-                          colorKey: "completed",
+                        PillChipWidget(
+                          text: v["status"] ?? "Completed",
+                          icon: LucideIcons.video,
+                          statusKey: "completed",
+                          isDark: isDark,
                         ),
                       ],
                     ),
@@ -657,7 +489,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                               ? appointmentsList.length
                               : 6,
                       itemBuilder: (context, index) {
-                        return appointmentCard(appointmentsList[index]);
+                        return AppointmentCardWidget(
+                          appointment: appointmentsList[index],
+                          isDark: isDark,
+                        );
                       },
                     ),
 
