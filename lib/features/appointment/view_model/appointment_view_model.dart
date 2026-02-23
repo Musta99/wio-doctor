@@ -55,4 +55,88 @@ class AppointmentViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // -----------------  Fetch all appointments with pagination and query ----------------------
+  bool isLoadingAllAppointmentsFetch = false;
+  bool isPaginationLoading = false;
+  String? fetchError;
+
+  List allAppointmentsList = [];
+
+  int currentPage = 1;
+  bool hasMore = true;
+  String currentQuery = "";
+  Future fetchDoctorsAppointmentsAll(
+    BuildContext context, {
+    String query = "",
+    bool isLoadMore = false,
+  }) async {
+    try {
+      if (isLoadMore && !hasMore) return;
+
+      if (isLoadMore) {
+        isPaginationLoading = true;
+      } else {
+        isLoadingAllAppointmentsFetch = true;
+        fetchError = null;
+        currentPage = 1;
+        hasMore = true;
+        allAppointmentsList.clear();
+        currentQuery = query;
+      }
+
+      notifyListeners();
+
+      final authProvider = Provider.of<AuthenticationProvider>(
+        context,
+        listen: false,
+      );
+
+      String? token = await authProvider.getFreshToken();
+      String? doctorId = authProvider.userId;
+
+      if (doctorId == null || token == null) {
+        fetchError = "Authentication error";
+        return;
+      }
+
+      final url =
+          "https://www.wiocare.com/api/doctor/appointments"
+          "?doctorId=$doctorId"
+          "&search=$currentQuery"
+          "&page=$currentPage"
+          "&limit=10";
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        List newData = data["appointments"] ?? [];
+
+        if (isLoadMore) {
+          allAppointmentsList.addAll(newData);
+        } else {
+          allAppointmentsList = newData;
+        }
+
+        if (newData.length < 10) {
+          hasMore = false;
+        } else {
+          currentPage++;
+        }
+      } else {
+        fetchError = "Failed to load appointments";
+      }
+    } catch (e) {
+      fetchError = e.toString();
+    } finally {
+      isLoadingAllAppointmentsFetch = false;
+      isPaginationLoading = false;
+      notifyListeners();
+    }
+  }
 }
