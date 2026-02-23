@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/appointment/view/all_appointment_list.dart';
 import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
 import 'package:wio_doctor/features/appointment/widgets/appointment_card_widget.dart';
 import 'package:wio_doctor/widgets/avatar_circle_widget.dart';
@@ -92,53 +94,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     final themeProvider = ThemeProvider.of(context);
     final isDark = themeProvider.isDarkMode;
 
-    final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
-    final bgBottom = isDark ? const Color(0xFF060A12) : const Color(0xFFFFFFFF);
-
-    final borderColor =
-        isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06);
-    final subtleText =
-        isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.65);
-
-    InputDecoration searchDecoration() {
-      return InputDecoration(
-        hintText: "Search by patient name or ID",
-        hintStyle: GoogleFonts.exo(
-          color: subtleText,
-          fontWeight: FontWeight.w600,
-        ),
-        prefixIcon: const Icon(LucideIcons.search, size: 18),
-        filled: true,
-        fillColor:
-            isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 12,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color:
-                isDark
-                    ? Colors.white.withOpacity(0.18)
-                    : Colors.black.withOpacity(0.12),
-          ),
-        ),
-      );
-    }
-
     Widget videoCard(Map<String, dynamic> v) {
       return Container(
         decoration: AppDecorations.card(isDark),
@@ -161,7 +116,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     const SizedBox(height: 2),
                     Text(
                       "${v["id"] ?? ""} • ${v["date"] ?? ""} • ${v["time"] ?? ""}",
-                      style: AppTextStyles.body(12).copyWith(color: subtleText),
+                      style: AppTextStyles.body(
+                        12,
+                      ).copyWith(color: AppColors.subtleText(isDark)),
                     ),
                     const SizedBox(height: 10),
                     Wrap(
@@ -196,7 +153,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                         isDark
                             ? Colors.white.withOpacity(0.06)
                             : Colors.black.withOpacity(0.04),
-                    border: Border.all(color: borderColor),
+                    border: Border.all(color: AppColors.border(isDark)),
                   ),
                   child: const Icon(LucideIcons.eye, size: 18),
                 ),
@@ -238,7 +195,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [bgTop, bgBottom],
+            colors: [AppColors.bgTop(isDark), AppColors.bgBottom(isDark)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -307,9 +264,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                       const SizedBox(height: 2),
                                       Text(
                                         "View and manage all your confirmed and pending appointments.",
-                                        style: AppTextStyles.body(
-                                          13,
-                                        ).copyWith(color: subtleText),
+                                        style: AppTextStyles.body(13).copyWith(
+                                          color: AppColors.subtleText(isDark),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -333,24 +290,28 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                         ? Colors.white.withOpacity(0.04)
                                         : const Color(0xFFF3F4F8),
                                 borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: borderColor),
+                                border: Border.all(
+                                  color: AppColors.border(isDark),
+                                ),
                               ),
                               child: Column(
                                 children: [
                                   _StatRow(
                                     isDark: isDark,
-                                    borderColor: borderColor,
-                                    subtleText: subtleText,
+                                    borderColor: AppColors.border(isDark),
+                                    subtleText: AppColors.subtleText(isDark),
                                     title: "Total appointments",
                                     value: appointmentsList.length.toString(),
                                     icon: LucideIcons.layers,
                                     accent: Colors.blue,
                                   ),
-                                  _DividerLine(borderColor: borderColor),
+                                  _DividerLine(
+                                    borderColor: AppColors.border(isDark),
+                                  ),
                                   _StatRow(
                                     isDark: isDark,
-                                    borderColor: borderColor,
-                                    subtleText: subtleText,
+                                    borderColor: AppColors.border(isDark),
+                                    subtleText: AppColors.subtleText(isDark),
                                     title: "Pending approvals",
                                     value: "$pending",
                                     icon: LucideIcons.clock3,
@@ -387,7 +348,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           style: AppTextStyles.section(18),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AllAppointmentList(),
+                              ),
+                            );
+                          },
                           child: Text(
                             "See All",
                             style: GoogleFonts.exo(
@@ -409,7 +377,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             "No appointments found for your search.",
                             style: AppTextStyles.body(
                               13,
-                            ).copyWith(color: subtleText),
+                            ).copyWith(color: AppColors.subtleText(isDark)),
                           ),
                         ),
                       ),
@@ -453,7 +421,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             "No video call history yet.",
                             style: AppTextStyles.body(
                               13,
-                            ).copyWith(color: subtleText),
+                            ).copyWith(color: AppColors.subtleText(isDark)),
                           ),
                         ),
                       ),
