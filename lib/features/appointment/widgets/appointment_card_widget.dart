@@ -2,38 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/services/time_formate_service.dart';
+import 'package:wio_doctor/core/theme/app_decoration.dart';
+import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/widgets/avatar_circle_widget.dart';
+import 'package:wio_doctor/widgets/pill_chip_widget.dart';
 
 class AppointmentCardWidget extends StatelessWidget {
   final  Map<String, dynamic> appointment;
-  const AppointmentCardWidget({super.key, required this.appointment});
+  final bool isDark;
+  const AppointmentCardWidget({super.key, required this.appointment, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
-        final themeProvider = ThemeProvider.of(context);
-    final isDark = themeProvider.isDarkMode;
-    final borderColor =
-        isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06);
-    final subtleText =
-        isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.65);
     // -----------------------------------------------------------------
       final status = (appointment["status"] ?? "").toString();
       final payment = (appointment["payment"] ?? "").toString();
       final type = (appointment["consultationType"] ?? "").toString();
       final time = TimeFormateService().getFormattedTime(appointment["slotStart"]);
     return Container(
-        decoration: cardDecoration(),
+        decoration: AppDecorations.card(isDark),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
-            children: [
+            children: [ 
               Row(
                 children: [
-                  avatarCircle(appointment["patientName"] ?? "Patient"),
+                  AvatarCircleWidget(name:appointment["patientName"] ?? "Patient", isDark: isDark,),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -41,14 +36,16 @@ class AppointmentCardWidget extends StatelessWidget {
                       children: [
                         Text(
                           appointment["patientName"] ?? "",
-                          style: bodyStyle(
+                          style: AppTextStyles.body(
                             15,
                           ).copyWith(fontWeight: FontWeight.w900),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           "${appointment["patientWioId"] ?? ""} • ${appointment["slotDate"] ?? ""} • ${time ?? ""}",
-                          style: bodyStyle(12).copyWith(color: subtleText),
+                          style: AppTextStyles.body(12).copyWith(color: isDark
+            ? Colors.white.withOpacity(0.72)
+            : Colors.black.withOpacity(0.65)),
                         ),
                       ],
                     ),
@@ -64,7 +61,9 @@ class AppointmentCardWidget extends StatelessWidget {
                             isDark
                                 ? Colors.white.withOpacity(0.06)
                                 : Colors.black.withOpacity(0.04),
-                        border: Border.all(color: borderColor),
+                        border: Border.all(color:  isDark
+            ? Colors.white.withOpacity(0.08)
+            : Colors.black.withOpacity(0.06)),
                       ),
                       child: Icon(
                         LucideIcons.chevronRight,
@@ -83,7 +82,7 @@ class AppointmentCardWidget extends StatelessWidget {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  pillChip(type, LucideIcons.badgeCheck, colorKey: "confirmed"),
+                  PillChipWidget(text:type, icon:LucideIcons.badgeCheck, color: colorKey: "confirmed"),
                   pillChip(status, LucideIcons.clock3, colorKey: status),
                   pillChip(payment, LucideIcons.creditCard, colorKey: payment),
                 ],
