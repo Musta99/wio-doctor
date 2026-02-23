@@ -95,17 +95,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final themeProvider = ThemeProvider.of(context);
     final isDark = themeProvider.isDarkMode;
 
-    final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
-    final bgBottom = isDark ? const Color(0xFF060A12) : const Color(0xFFFFFFFF);
+    // final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
+    // final bgBottom = isDark ? const Color(0xFF060A12) : const Color(0xFFFFFFFF);
 
-    final borderColor =
-        isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06);
-    final subtleText =
-        isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.65);
+    // final borderColor =
+    //     isDark
+    //         ? Colors.white.withOpacity(0.08)
+    //         : Colors.black.withOpacity(0.06);
+    // final subtleText =
+    //     isDark
+    //         ? Colors.white.withOpacity(0.72)
+    //         : Colors.black.withOpacity(0.65);
 
     // TextStyle titleStyle(double size) => GoogleFonts.exo(
     //   fontWeight: FontWeight.w900,
@@ -152,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           isDark
                               ? Colors.white.withOpacity(0.06)
                               : Colors.black.withOpacity(0.06),
-                      border: Border.all(color: borderColor),
+                      border: Border.all(color: AppColors.border(isDark)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withOpacity(isDark ? 0.32 : 0.10),
@@ -235,16 +235,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         _pill(
                           isDark: isDark,
-                          borderColor: borderColor,
-                          subtleText: subtleText,
+                          borderColor: AppColors.border(isDark),
+                          subtleText: AppColors.subtleText(isDark),
                           icon: LucideIcons.shieldCheck,
                           text: "Doctor",
                         ),
                         const SizedBox(width: 8),
                         _pill(
                           isDark: isDark,
-                          borderColor: borderColor,
-                          subtleText: subtleText,
+                          borderColor: AppColors.border(isDark),
+                          subtleText: AppColors.subtleText(isDark),
                           icon: LucideIcons.heartPulse,
                           text: "Healthcare",
                         ),
@@ -283,7 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           isDark
                               ? Colors.white.withOpacity(0.06)
                               : Colors.black.withOpacity(0.04),
-                      border: Border.all(color: borderColor),
+                      border: Border.all(color: AppColors.border(isDark)),
                     ),
                     child: Icon(
                       icon,
@@ -359,7 +359,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ? Colors.white.withOpacity(0.04)
                     : const Color(0xFFF3F4F8),
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: borderColor),
+            border: Border.all(color: AppColors.border(isDark)),
           ),
           child: Text(
             "No items added yet.",
@@ -383,12 +383,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     isDark
                         ? Colors.white.withOpacity(0.05)
                         : const Color(0xFFF3F4F8),
-                border: Border.all(color: borderColor),
+                border: Border.all(color: AppColors.border(isDark)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 14, color: subtleText),
+                  Icon(icon, size: 14, color: AppColors.subtleText(isDark)),
                   const SizedBox(width: 8),
                   Text(
                     item,
@@ -407,7 +407,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () {
                       setState(() => items.remove(item));
                     },
-                    child: Icon(LucideIcons.x, size: 16, color: subtleText),
+                    child: Icon(
+                      LucideIcons.x,
+                      size: 16,
+                      color: AppColors.subtleText(isDark),
+                    ),
                   ),
                 ],
               ),
@@ -437,7 +441,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [bgTop, bgBottom],
+            colors: [AppColors.bgTop(isDark), AppColors.bgBottom(isDark)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
