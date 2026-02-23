@@ -9,128 +9,158 @@ import 'package:wio_doctor/widgets/avatar_circle_widget.dart';
 import 'package:wio_doctor/widgets/pill_chip_widget.dart';
 
 class AppointmentCardWidget extends StatelessWidget {
-  final  Map<String, dynamic> appointment;
+  final Map<String, dynamic> appointment;
   final bool isDark;
-  const AppointmentCardWidget({super.key, required this.appointment, required this.isDark});
+  const AppointmentCardWidget({
+    super.key,
+    required this.appointment,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
     // -----------------------------------------------------------------
-      final status = (appointment["status"] ?? "").toString();
-      final payment = (appointment["payment"] ?? "").toString();
-      final type = (appointment["consultationType"] ?? "").toString();
-      final time = TimeFormateService().getFormattedTime(appointment["slotStart"]);
+    final status = (appointment["status"] ?? "").toString();
+    final payment = (appointment["payment"] ?? "").toString();
+    final type = (appointment["consultationType"] ?? "").toString();
+    final time = TimeFormateService().getFormattedTime(
+      appointment["slotStart"],
+    );
     return Container(
-        decoration: AppDecorations.card(isDark),
-        child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            children: [ 
-              Row(
-                children: [
-                  AvatarCircleWidget(name:appointment["patientName"] ?? "Patient", isDark: isDark,),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          appointment["patientName"] ?? "",
-                          style: AppTextStyles.body(
-                            15,
-                          ).copyWith(fontWeight: FontWeight.w900),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          "${appointment["patientWioId"] ?? ""} • ${appointment["slotDate"] ?? ""} • ${time ?? ""}",
-                          style: AppTextStyles.body(12).copyWith(color: isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.65)),
-                        ),
-                      ],
-                    ),
-                  ),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: () {},
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.06)
-                                : Colors.black.withOpacity(0.04),
-                        border: Border.all(color:  isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06)),
-                      ),
-                      child: Icon(
-                        LucideIcons.chevronRight,
-                        size: 18,
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.85)
-                                : Colors.black.withOpacity(0.75),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  PillChipWidget(text:type, icon:LucideIcons.badgeCheck, color: colorKey: "confirmed"),
-                  pillChip(status, LucideIcons.clock3, colorKey: status),
-                  pillChip(payment, LucideIcons.creditCard, colorKey: payment),
-                ],
-              ),
-              const SizedBox(height: 12),
-              status.toLowerCase().contains("pending")
-                  ? Row(
+      decoration: AppDecorations.card(isDark),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                AvatarCircleWidget(
+                  name: appointment["patientName"] ?? "Patient",
+                  isDark: isDark,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: ShadButton(
-                          width: double.infinity,
-                          backgroundColor: Colors.green,
-
-                          onPressed: () {},
-                          child: Text(
-                            "Approve",
-                            style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                          ),
-                        ),
+                      Text(
+                        appointment["patientName"] ?? "",
+                        style: AppTextStyles.body(
+                          15,
+                        ).copyWith(fontWeight: FontWeight.w900),
                       ),
-
-                      Expanded(
-                        child: ShadButton(
-                          width: double.infinity,
-                          backgroundColor: Colors.red,
-
-                          onPressed: () {},
-                          child: Text(
-                            "Reject",
-
-                            style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                          ),
+                      const SizedBox(height: 2),
+                      Text(
+                        "${appointment["patientWioId"] ?? ""} • ${appointment["slotDate"] ?? ""} • ${time ?? ""}",
+                        style: AppTextStyles.body(12).copyWith(
+                          color:
+                              isDark
+                                  ? Colors.white.withOpacity(0.72)
+                                  : Colors.black.withOpacity(0.65),
                         ),
                       ),
                     ],
-                  )
-                  : ShadButton(
-                    width: double.infinity,
-                    backgroundColor: Colors.teal,
-                    onPressed: () {},
-                    child: Text(
-                      "Manage",
-                      style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                  ),
+                ),
+                InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {},
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color:
+                          isDark
+                              ? Colors.white.withOpacity(0.06)
+                              : Colors.black.withOpacity(0.04),
+                      border: Border.all(
+                        color:
+                            isDark
+                                ? Colors.white.withOpacity(0.08)
+                                : Colors.black.withOpacity(0.06),
+                      ),
+                    ),
+                    child: Icon(
+                      LucideIcons.chevronRight,
+                      size: 18,
+                      color:
+                          isDark
+                              ? Colors.white.withOpacity(0.85)
+                              : Colors.black.withOpacity(0.75),
                     ),
                   ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                PillChipWidget(
+                  text: type,
+                  icon: LucideIcons.badgeCheck,
+                  statusKey: "confirmed",
+                  isDark: isDark,
+                ),
+                PillChipWidget(
+                  text: status,
+                  icon: LucideIcons.clock3,
+                  statusKey: status,
+                  isDark: isDark,
+                ),
+                PillChipWidget(
+                  text: payment,
+                  icon: LucideIcons.creditCard,
+                  statusKey: payment,
+                  isDark: isDark,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            status.toLowerCase().contains("pending")
+                ? Row(
+                  children: [
+                    Expanded(
+                      child: ShadButton(
+                        width: double.infinity,
+                        backgroundColor: Colors.green,
+
+                        onPressed: () {},
+                        child: Text(
+                          "Approve",
+                          style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: ShadButton(
+                        width: double.infinity,
+                        backgroundColor: Colors.red,
+
+                        onPressed: () {},
+                        child: Text(
+                          "Reject",
+
+                          style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+                : ShadButton(
+                  width: double.infinity,
+                  backgroundColor: Colors.teal,
+                  onPressed: () {},
+                  child: Text(
+                    "Manage",
+                    style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                  ),
+                ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }
