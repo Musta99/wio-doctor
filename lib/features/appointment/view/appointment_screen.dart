@@ -346,7 +346,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                           onPressed: () {},
                           child: Text(
                             "Approve",
-
                             style: GoogleFonts.exo(fontWeight: FontWeight.w900),
                           ),
                         ),
@@ -467,7 +466,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               ),
             )
             .length;
-    final expectedRevenue = "৳ ${total * 500}"; // demo
 
     return Scaffold(
       appBar: AppBar(
@@ -631,10 +629,25 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     // =========================================================
                     // 2) Latest Appointments (separate section)
                     // =========================================================
-                    Text("Latest appointments", style: sectionStyle(18)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("Latest appointments", style: sectionStyle(18)),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "See All",
+                            style: GoogleFonts.exo(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 10),
 
-                    if (filtered.isEmpty)
+                    if (appointmentsList.isEmpty)
                       Container(
                         decoration: cardDecoration(),
                         child: Padding(
