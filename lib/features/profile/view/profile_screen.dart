@@ -7,6 +7,7 @@ import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
+import 'package:wio_doctor/features/profile/widget/header_card_widget.dart';
 import 'package:wio_doctor/features/profile/widget/virtual_wio_card.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -94,131 +95,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final themeProvider = ThemeProvider.of(context);
     final isDark = themeProvider.isDarkMode;
-
-    Widget headerCard(bool isDark) {
-      return Container(
-        decoration: AppDecorations.card(isDark),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Stack(
-                children: [
-                  Container(
-                    height: 84,
-                    width: 84,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          isDark
-                              ? Colors.white.withOpacity(0.06)
-                              : Colors.black.withOpacity(0.06),
-                      border: Border.all(color: AppColors.border(isDark)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(isDark ? 0.32 : 0.10),
-                          blurRadius: 18,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Icon(
-                        LucideIcons.userRound,
-                        size: 34,
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.9)
-                                : Colors.black.withOpacity(0.75),
-                      ),
-                    ),
-                  ),
-
-                  // ✅ plus/pen icon for image update
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(999),
-                      onTap: () {
-                        // TODO: open image picker
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.teal,
-                          borderRadius: BorderRadius.circular(999),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.25),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.25),
-                              blurRadius: 12,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          LucideIcons.penLine,
-                          size: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      fullNameC.text.isEmpty
-                          ? "Doctor Profile"
-                          : fullNameC.text,
-                      style: AppTextStyles.title(18),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      emailC.text.isEmpty ? "Add email address" : emailC.text,
-                      style: AppTextStyles.body(
-                        13,
-                      ).copyWith(color: AppColors.subtleText(isDark)),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        _pill(
-                          isDark: isDark,
-                          borderColor: AppColors.border(isDark),
-                          subtleText: AppColors.subtleText(isDark),
-                          icon: LucideIcons.shieldCheck,
-                          text: "Doctor",
-                        ),
-                        const SizedBox(width: 8),
-                        _pill(
-                          isDark: isDark,
-                          borderColor: AppColors.border(isDark),
-                          subtleText: AppColors.subtleText(isDark),
-                          icon: LucideIcons.heartPulse,
-                          text: "Healthcare",
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    }
 
     Widget section({
       required IconData icon,
@@ -415,7 +291,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Virtual Wio Card
                 VirtualWioCard(),
                 const SizedBox(height: 14),
-                headerCard(isDark),
+                HeaderCardWidget(
+                  isDark: isDark,
+                  fullName: fullNameC.text,
+                  email: emailC.text,
+                ),
                 const SizedBox(height: 14),
 
                 // 2) Basic Information
@@ -718,39 +598,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _pill({
-    required bool isDark,
-    required Color borderColor,
-    required Color subtleText,
-    required IconData icon,
-    required String text,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color:
-            isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF3F4F8),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: borderColor),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: subtleText),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: GoogleFonts.exo(
-              fontSize: 12,
-              fontWeight: FontWeight.w900,
-              color:
-                  isDark
-                      ? Colors.white.withOpacity(0.88)
-                      : Colors.black.withOpacity(0.75),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _pill({
+  //   required bool isDark,
+  //   required Color borderColor,
+  //   required Color subtleText,
+  //   required IconData icon,
+  //   required String text,
+  // }) {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+  //     decoration: BoxDecoration(
+  //       color:
+  //           isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF3F4F8),
+  //       borderRadius: BorderRadius.circular(999),
+  //       border: Border.all(color: borderColor),
+  //     ),
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min,
+  //       children: [
+  //         Icon(icon, size: 14, color: subtleText),
+  //         const SizedBox(width: 6),
+  //         Text(
+  //           text,
+  //           style: GoogleFonts.exo(
+  //             fontSize: 12,
+  //             fontWeight: FontWeight.w900,
+  //             color:
+  //                 isDark
+  //                     ? Colors.white.withOpacity(0.88)
+  //                     : Colors.black.withOpacity(0.75),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
