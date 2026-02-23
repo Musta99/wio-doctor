@@ -69,7 +69,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<AppointmentViewModel>(
         context,
         listen: false,
@@ -493,174 +493,191 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // =========================================================
-                // 1) Booked Appointments (header + search + stats column-wise)
-                // =========================================================
-                Container(
-                  decoration: cardDecoration(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+        child: Consumer<AppointmentViewModel>(
+          builder: (context, appointmentVM, child) {
+            if (appointmentVM.isLoadingAppointmentsFetch &&
+                appointmentVM.appointmentsList.isEmpty) {
+              return Center(
+                child: CircularProgressIndicator(color: Colors.teal),
+              );
+            }
+            if (!appointmentVM.isLoadingAppointmentsFetch &&
+                appointmentVM.appointmentsList.isEmpty) {
+              return Center(child: Text("You don't have any appointments"));
+            }
+
+            List appointmentsList = (appointmentVM.appointmentsList ?? []);
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // =========================================================
+                    // 1) Booked Appointments (header + search + stats column-wise)
+                    // =========================================================
+                    Container(
+                      decoration: cardDecoration(),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.06)
-                                        : Colors.black.withOpacity(0.04),
-                              ),
-                              child: Icon(
-                                LucideIcons.clipboardList,
-                                size: 18,
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.88)
-                                        : Colors.black.withOpacity(0.82),
-                              ),
+                            Row(
+                              children: [
+                                Container(
+                                  height: 40,
+                                  width: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color:
+                                        isDark
+                                            ? Colors.white.withOpacity(0.06)
+                                            : Colors.black.withOpacity(0.04),
+                                  ),
+                                  child: Icon(
+                                    LucideIcons.clipboardList,
+                                    size: 18,
+                                    color:
+                                        isDark
+                                            ? Colors.white.withOpacity(0.88)
+                                            : Colors.black.withOpacity(0.82),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Booked Appointments",
+                                        style: sectionStyle(18),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        "View and manage all your confirmed and pending appointments.",
+                                        style: bodyStyle(
+                                          13,
+                                        ).copyWith(color: subtleText),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 10),
-                            Expanded(
+                            const SizedBox(height: 14),
+                            // TextField(
+                            //   controller: _searchController,
+                            //   onChanged: (_) => setState(() {}),
+                            //   decoration: searchDecoration(),
+                            //   style: bodyStyle(14),
+                            // ),
+                            // const SizedBox(height: 14),
+
+                            // Stats in COLUMN (as you asked)
+                            Container(
+                              decoration: BoxDecoration(
+                                color:
+                                    isDark
+                                        ? Colors.white.withOpacity(0.04)
+                                        : const Color(0xFFF3F4F8),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: borderColor),
+                              ),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Booked Appointments",
-                                    style: sectionStyle(18),
+                                  _StatRow(
+                                    isDark: isDark,
+                                    borderColor: borderColor,
+                                    subtleText: subtleText,
+                                    title: "Total appointments",
+                                    value: appointmentsList.length.toString(),
+                                    icon: LucideIcons.layers,
+                                    accent: Colors.blue,
                                   ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    "View and manage all your confirmed and pending appointments.",
-                                    style: bodyStyle(
-                                      13,
-                                    ).copyWith(color: subtleText),
+                                  _DividerLine(borderColor: borderColor),
+                                  _StatRow(
+                                    isDark: isDark,
+                                    borderColor: borderColor,
+                                    subtleText: subtleText,
+                                    title: "Pending approvals",
+                                    value: "$pending",
+                                    icon: LucideIcons.clock3,
+                                    accent: Colors.orange,
                                   ),
+                                  // _DividerLine(borderColor: borderColor),
+                                  // _StatRow(
+                                  //   isDark: isDark,
+                                  //   borderColor: borderColor,
+                                  //   subtleText: subtleText,
+                                  //   title: "Expected revenue",
+                                  //   value: expectedRevenue,
+                                  //   icon: LucideIcons.badgeDollarSign,
+                                  //   accent: Colors.green,
+                                  // ),
                                 ],
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 14),
-                        TextField(
-                          controller: _searchController,
-                          onChanged: (_) => setState(() {}),
-                          decoration: searchDecoration(),
-                          style: bodyStyle(14),
-                        ),
-                        const SizedBox(height: 14),
-
-                        // Stats in COLUMN (as you asked)
-                        Container(
-                          decoration: BoxDecoration(
-                            color:
-                                isDark
-                                    ? Colors.white.withOpacity(0.04)
-                                    : const Color(0xFFF3F4F8),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: borderColor),
-                          ),
-                          child: Column(
-                            children: [
-                              _StatRow(
-                                isDark: isDark,
-                                borderColor: borderColor,
-                                subtleText: subtleText,
-                                title: "Total appointments",
-                                value: "$total",
-                                icon: LucideIcons.layers,
-                                accent: Colors.blue,
-                              ),
-                              _DividerLine(borderColor: borderColor),
-                              _StatRow(
-                                isDark: isDark,
-                                borderColor: borderColor,
-                                subtleText: subtleText,
-                                title: "Pending approvals",
-                                value: "$pending",
-                                icon: LucideIcons.clock3,
-                                accent: Colors.orange,
-                              ),
-                              _DividerLine(borderColor: borderColor),
-                              _StatRow(
-                                isDark: isDark,
-                                borderColor: borderColor,
-                                subtleText: subtleText,
-                                title: "Expected revenue",
-                                value: expectedRevenue,
-                                icon: LucideIcons.badgeDollarSign,
-                                accent: Colors.green,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+
+                    const SizedBox(height: 16),
+
+                    // =========================================================
+                    // 2) Latest Appointments (separate section)
+                    // =========================================================
+                    Text("Latest appointments", style: sectionStyle(18)),
+                    const SizedBox(height: 10),
+
+                    if (filtered.isEmpty)
+                      Container(
+                        decoration: cardDecoration(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Text(
+                            "No appointments found for your search.",
+                            style: bodyStyle(13).copyWith(color: subtleText),
+                          ),
+                        ),
+                      ),
+
+                    for (final a in filtered) ...[
+                      appointmentCard(a),
+                      const SizedBox(height: 12),
+                    ],
+
+                    const SizedBox(height: 16),
+
+                    // =========================================================
+                    // 3) Video Call History (separate section)
+                    // =========================================================
+                    Text("Video call history", style: sectionStyle(18)),
+                    const SizedBox(height: 10),
+
+                    if (_videoHistory.isEmpty)
+                      Container(
+                        decoration: cardDecoration(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Text(
+                            "No video call history yet.",
+                            style: bodyStyle(13).copyWith(color: subtleText),
+                          ),
+                        ),
+                      ),
+
+                    for (final v in _videoHistory) ...[
+                      videoCard(v),
+                      const SizedBox(height: 12),
+                    ],
+                  ],
                 ),
-
-                const SizedBox(height: 16),
-
-                // =========================================================
-                // 2) Latest Appointments (separate section)
-                // =========================================================
-                Text("Latest appointments", style: sectionStyle(18)),
-                const SizedBox(height: 10),
-
-                if (filtered.isEmpty)
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Text(
-                        "No appointments found for your search.",
-                        style: bodyStyle(13).copyWith(color: subtleText),
-                      ),
-                    ),
-                  ),
-
-                for (final a in filtered) ...[
-                  appointmentCard(a),
-                  const SizedBox(height: 12),
-                ],
-
-                const SizedBox(height: 16),
-
-                // =========================================================
-                // 3) Video Call History (separate section)
-                // =========================================================
-                Text("Video call history", style: sectionStyle(18)),
-                const SizedBox(height: 10),
-
-                if (_videoHistory.isEmpty)
-                  Container(
-                    decoration: cardDecoration(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Text(
-                        "No video call history yet.",
-                        style: bodyStyle(13).copyWith(color: subtleText),
-                      ),
-                    ),
-                  ),
-
-                for (final v in _videoHistory) ...[
-                  videoCard(v),
-                  const SizedBox(height: 12),
-                ],
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

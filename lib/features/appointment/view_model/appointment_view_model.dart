@@ -9,6 +9,7 @@ import 'package:wio_doctor/view_model/auth_provider.dart';
 class AppointmentViewModel extends ChangeNotifier {
   // ----------  Fetch appointments --------------
   bool isLoadingAppointmentsFetch = false;
+  List appointmentsList = [];
   Future fetchDoctorsAppointments(BuildContext context) async {
     try {
       isLoadingAppointmentsFetch = true;
@@ -39,9 +40,9 @@ class AppointmentViewModel extends ChangeNotifier {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        // scheduleData = data["availability"];
-        // notifyListeners();
-        print("Data: $data");
+        appointmentsList = data["appointments"];
+        notifyListeners();
+        print("Data: $appointmentsList");
       } else {
         print(response.statusCode);
         print(response.body);
