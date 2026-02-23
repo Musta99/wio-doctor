@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:wio_doctor/core/services/time_formate_service.dart';
+import 'package:wio_doctor/core/theme/app_decoration.dart';
+import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
 import 'package:wio_doctor/features/appointment/widgets/appointment_card_widget.dart';
-import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
 import 'package:wio_doctor/widgets/avatar_circle_widget.dart';
 import 'package:wio_doctor/widgets/pill_chip_widget.dart';
 
@@ -95,7 +95,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
     final bgBottom = isDark ? const Color(0xFF060A12) : const Color(0xFFFFFFFF);
 
-    final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
     final borderColor =
         isDark
             ? Colors.white.withOpacity(0.08)
@@ -104,36 +103,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         isDark
             ? Colors.white.withOpacity(0.72)
             : Colors.black.withOpacity(0.65);
-
-    TextStyle titleStyle(double size) => GoogleFonts.exo(
-      fontWeight: FontWeight.w800,
-      fontSize: size,
-      letterSpacing: -0.2,
-    );
-
-    TextStyle sectionStyle(double size) =>
-        GoogleFonts.exo(fontWeight: FontWeight.w800, fontSize: size);
-
-    TextStyle bodyStyle(double size) =>
-        GoogleFonts.exo(fontWeight: FontWeight.w500, fontSize: size);
-
-    BoxDecoration cardDecoration() {
-      return BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color:
-                isDark
-                    ? Colors.black.withOpacity(0.38)
-                    : Colors.black.withOpacity(0.07),
-            blurRadius: 22,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      );
-    }
 
     InputDecoration searchDecoration() {
       return InputDecoration(
@@ -170,50 +139,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       );
     }
 
-    Color chipBg(String key) {
-      final s = key.toLowerCase();
-      if (s.contains("pending"))
-        return Colors.orange.withOpacity(isDark ? 0.18 : 0.12);
-      if (s.contains("confirm"))
-        return Colors.green.withOpacity(isDark ? 0.18 : 0.12);
-      if (s.contains("complete"))
-        return Colors.blue.withOpacity(isDark ? 0.18 : 0.12);
-      if (s.contains("paid"))
-        return Colors.green.withOpacity(isDark ? 0.18 : 0.12);
-      if (s.contains("unpaid"))
-        return Colors.red.withOpacity(isDark ? 0.18 : 0.12);
-      return Colors.blueGrey.withOpacity(isDark ? 0.18 : 0.12);
-    }
-
-    Color chipBorder(String key) {
-      final s = key.toLowerCase();
-      if (s.contains("pending"))
-        return Colors.orange.withOpacity(isDark ? 0.35 : 0.25);
-      if (s.contains("confirm"))
-        return Colors.green.withOpacity(isDark ? 0.35 : 0.25);
-      if (s.contains("complete"))
-        return Colors.blue.withOpacity(isDark ? 0.35 : 0.25);
-      if (s.contains("paid"))
-        return Colors.green.withOpacity(isDark ? 0.35 : 0.25);
-      if (s.contains("unpaid"))
-        return Colors.red.withOpacity(isDark ? 0.35 : 0.25);
-      return Colors.blueGrey.withOpacity(isDark ? 0.35 : 0.25);
-    }
-
-    Color chipText(String key) {
-      if (isDark) return Colors.white.withOpacity(0.92);
-      final s = key.toLowerCase();
-      if (s.contains("pending")) return Colors.orange.shade900;
-      if (s.contains("confirm")) return Colors.green.shade900;
-      if (s.contains("complete")) return Colors.blue.shade900;
-      if (s.contains("paid")) return Colors.green.shade900;
-      if (s.contains("unpaid")) return Colors.red.shade900;
-      return Colors.blueGrey.shade900;
-    }
-
     Widget videoCard(Map<String, dynamic> v) {
       return Container(
-        decoration: cardDecoration(),
+        decoration: AppDecorations.card(isDark),
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Row(
@@ -226,14 +154,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   children: [
                     Text(
                       v["name"] ?? "",
-                      style: bodyStyle(
+                      style: AppTextStyles.body(
                         15,
                       ).copyWith(fontWeight: FontWeight.w900),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       "${v["id"] ?? ""} • ${v["date"] ?? ""} • ${v["time"] ?? ""}",
-                      style: bodyStyle(12).copyWith(color: subtleText),
+                      style: AppTextStyles.body(12).copyWith(color: subtleText),
                     ),
                     const SizedBox(height: 10),
                     Wrap(
@@ -291,7 +219,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Appointments", style: titleStyle(20)),
+        title: Text("Appointments", style: AppTextStyles.title(20)),
         centerTitle: true,
         automaticallyImplyLeading: false,
         actions: [
@@ -339,7 +267,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     // 1) Booked Appointments (header + search + stats column-wise)
                     // =========================================================
                     Container(
-                      decoration: cardDecoration(),
+                      decoration: AppDecorations.card(isDark),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Column(
@@ -374,12 +302,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                                     children: [
                                       Text(
                                         "Booked Appointments",
-                                        style: sectionStyle(18),
+                                        style: AppTextStyles.section(18),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
                                         "View and manage all your confirmed and pending appointments.",
-                                        style: bodyStyle(
+                                        style: AppTextStyles.body(
                                           13,
                                         ).copyWith(color: subtleText),
                                       ),
@@ -454,7 +382,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Latest appointments", style: sectionStyle(18)),
+                        Text(
+                          "Latest appointments",
+                          style: AppTextStyles.section(18),
+                        ),
                         TextButton(
                           onPressed: () {},
                           child: Text(
@@ -471,12 +402,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
                     if (appointmentsList.isEmpty)
                       Container(
-                        decoration: cardDecoration(),
+                        decoration: AppDecorations.card(isDark),
                         child: Padding(
                           padding: const EdgeInsets.all(14),
                           child: Text(
                             "No appointments found for your search.",
-                            style: bodyStyle(13).copyWith(color: subtleText),
+                            style: AppTextStyles.body(
+                              13,
+                            ).copyWith(color: subtleText),
                           ),
                         ),
                       ),
@@ -505,17 +438,22 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                     // =========================================================
                     // 3) Video Call History (separate section)
                     // =========================================================
-                    Text("Video call history", style: sectionStyle(18)),
+                    Text(
+                      "Video call history",
+                      style: AppTextStyles.section(18),
+                    ),
                     const SizedBox(height: 10),
 
                     if (_videoHistory.isEmpty)
                       Container(
-                        decoration: cardDecoration(),
+                        decoration: AppDecorations.card(isDark),
                         child: Padding(
                           padding: const EdgeInsets.all(14),
                           child: Text(
                             "No video call history yet.",
-                            style: bodyStyle(13).copyWith(color: subtleText),
+                            style: AppTextStyles.body(
+                              13,
+                            ).copyWith(color: subtleText),
                           ),
                         ),
                       ),
