@@ -448,16 +448,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     }
 
     // Filter appointments by search (name/id)
-    final q = _searchController.text.trim().toLowerCase();
-    final filtered =
-        _latestAppointments.where((a) {
-          if (q.isEmpty) return true;
-          final name = (a["name"] ?? "").toString().toLowerCase();
-          final id = (a["id"] ?? "").toString().toLowerCase();
-          return name.contains(q) || id.contains(q);
-        }).toList();
-
-    final total = _latestAppointments.length;
     final pending =
         _latestAppointments
             .where(
