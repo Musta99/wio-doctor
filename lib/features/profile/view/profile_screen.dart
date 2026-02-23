@@ -8,6 +8,7 @@ import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/profile/widget/header_card_widget.dart';
+import 'package:wio_doctor/features/profile/widget/section_widget.dart';
 import 'package:wio_doctor/features/profile/widget/virtual_wio_card.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -95,67 +96,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final themeProvider = ThemeProvider.of(context);
     final isDark = themeProvider.isDarkMode;
-
-    Widget section({
-      required IconData icon,
-      required String title,
-      required String subtitle,
-      required Widget child,
-    }) {
-      return Container(
-        decoration: AppDecorations.card(isDark),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(14),
-                      color:
-                          isDark
-                              ? Colors.white.withOpacity(0.06)
-                              : Colors.black.withOpacity(0.04),
-                      border: Border.all(color: AppColors.border(isDark)),
-                    ),
-                    child: Icon(
-                      icon,
-                      size: 18,
-                      color:
-                          isDark
-                              ? Colors.white.withOpacity(0.88)
-                              : Colors.black.withOpacity(0.80),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(title, style: AppTextStyles.section(14)),
-                        const SizedBox(height: 3),
-                        Text(
-                          subtitle,
-                          style: AppTextStyles.body(
-                            13,
-                          ).copyWith(color: AppColors.subtleText(isDark)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 14),
-              child,
-            ],
-          ),
-        ),
-      );
-    }
 
     Widget listAddRow({
       required TextEditingController controller,
@@ -299,10 +239,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 14),
 
                 // 2) Basic Information
-                section(
+                SectionWidget(
+                  isDark: isDark,
                   icon: LucideIcons.userRound,
                   title: "Basic Information",
-                  subtitle: "Keep your personal info accurate for patients.",
+                  subTitle: "Keep your personal info accurate for patients.",
                   child: Column(
                     children: [
                       TextField(
@@ -412,10 +353,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 14),
 
                 // 3) Professional Information
-                section(
+                SectionWidget(
+                  isDark: isDark,
                   icon: LucideIcons.stethoscope,
                   title: "Professional Information",
-                  subtitle: "Your practice and expertise details.",
+                  subTitle: "Your practice and expertise details.",
                   child: Column(
                     children: [
                       TextField(
@@ -465,10 +407,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 14),
 
                 // 4) Education & Qualification
-                section(
+                SectionWidget(
+                  isDark: isDark,
                   icon: LucideIcons.graduationCap,
                   title: "Education & Qualification",
-                  subtitle:
+                  subTitle:
                       "Add education degrees and additional certifications.",
                   child: Column(
                     children: [
@@ -500,10 +443,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 14),
 
                 // 5) Registration & Identity
-                section(
+                SectionWidget(
+                  isDark: isDark,
                   icon: LucideIcons.shieldCheck,
                   title: "Registration & Identity",
-                  subtitle: "Registration details help maintain trust.",
+                  subTitle: "Registration details help maintain trust.",
                   child: Column(
                     children: [
                       TextField(
@@ -543,10 +487,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 14),
 
                 // 6) Practice details
-                section(
+                SectionWidget(
+                  isDark: isDark,
+
                   icon: LucideIcons.mapPinned,
                   title: "Practice Details",
-                  subtitle: "Clinic address and professional bio for patients.",
+                  subTitle: "Clinic address and professional bio for patients.",
                   child: Column(
                     children: [
                       TextField(
@@ -597,40 +543,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
-  // Widget _pill({
-  //   required bool isDark,
-  //   required Color borderColor,
-  //   required Color subtleText,
-  //   required IconData icon,
-  //   required String text,
-  // }) {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-  //     decoration: BoxDecoration(
-  //       color:
-  //           isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF3F4F8),
-  //       borderRadius: BorderRadius.circular(999),
-  //       border: Border.all(color: borderColor),
-  //     ),
-  //     child: Row(
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: [
-  //         Icon(icon, size: 14, color: subtleText),
-  //         const SizedBox(width: 6),
-  //         Text(
-  //           text,
-  //           style: GoogleFonts.exo(
-  //             fontSize: 12,
-  //             fontWeight: FontWeight.w900,
-  //             color:
-  //                 isDark
-  //                     ? Colors.white.withOpacity(0.88)
-  //                     : Colors.black.withOpacity(0.75),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }
