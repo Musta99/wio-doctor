@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
+import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/profile/widget/virtual_wio_card.dart';
@@ -96,7 +98,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
     final bgBottom = isDark ? const Color(0xFF060A12) : const Color(0xFFFFFFFF);
 
-    final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
     final borderColor =
         isDark
             ? Colors.white.withOpacity(0.08)
@@ -115,30 +116,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     TextStyle sectionStyle(double size) =>
         GoogleFonts.exo(fontWeight: FontWeight.w900, fontSize: size);
 
-    TextStyle bodyStyle(double size) =>
-        GoogleFonts.exo(fontWeight: FontWeight.w500, fontSize: size);
+    // BoxDecoration cardDecoration() {
+    //   return BoxDecoration(
+    //     color: cardColor,
+    //     borderRadius: BorderRadius.circular(18),
+    //     border: Border.all(color: borderColor),
+    //     boxShadow: [
+    //       BoxShadow(
+    //         color:
+    //             isDark
+    //                 ? Colors.black.withOpacity(0.38)
+    //                 : Colors.black.withOpacity(0.07),
+    //         blurRadius: 22,
+    //         offset: const Offset(0, 12),
+    //       ),
+    //     ],
+    //   );
+    // }
 
-    BoxDecoration cardDecoration() {
-      return BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color:
-                isDark
-                    ? Colors.black.withOpacity(0.38)
-                    : Colors.black.withOpacity(0.07),
-            blurRadius: 22,
-            offset: const Offset(0, 12),
-          ),
-        ],
-      );
-    }
-
-    Widget headerCard() {
+    Widget headerCard(bool isDa) {
       return Container(
-        decoration: cardDecoration(),
+        decoration: AppDecorations.card(isDark),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
@@ -226,7 +224,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 6),
                     Text(
                       emailC.text.isEmpty ? "Add email address" : emailC.text,
-                      style: bodyStyle(13).copyWith(color: subtleText),
+                      style: AppTextStyles.body(
+                        13,
+                      ).copyWith(color: AppColors.subtleText(isDark)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -266,7 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       required Widget child,
     }) {
       return Container(
-        decoration: cardDecoration(),
+        decoration: AppDecorations.card(isDark),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -303,7 +303,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         const SizedBox(height: 3),
                         Text(
                           subtitle,
-                          style: bodyStyle(13).copyWith(color: subtleText),
+                          style: AppTextStyles.body(
+                            13,
+                          ).copyWith(color: AppColors.subtleText(isDark)),
                         ),
                       ],
                     ),
@@ -329,7 +331,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Expanded(
             child: TextField(
               controller: controller,
-              style: bodyStyle(14),
+              style: AppTextStyles.body(14),
               decoration: AppDecorations.inputDec(hint, icon, isDark),
             ),
           ),
@@ -361,7 +363,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           child: Text(
             "No items added yet.",
-            style: bodyStyle(13).copyWith(color: subtleText),
+            style: AppTextStyles.body(
+              13,
+            ).copyWith(color: AppColors.subtleText(isDark)),
           ),
         );
       }
@@ -446,7 +450,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Virtual Wio Card
                 VirtualWioCard(),
                 const SizedBox(height: 14),
-                headerCard(),
+                headerCard(isDark),
                 const SizedBox(height: 14),
 
                 // 2) Basic Information
@@ -463,7 +467,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.user,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         onChanged: (_) => setState(() {}),
                       ),
                       const SizedBox(height: 12),
@@ -474,7 +478,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.mail,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         keyboardType: TextInputType.emailAddress,
                         onChanged: (_) => setState(() {}),
                       ),
@@ -486,7 +490,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.users,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -496,7 +500,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.phone,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         keyboardType: TextInputType.phone,
                       ),
                       const SizedBox(height: 14),
@@ -576,7 +580,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.badgeCheck,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -586,7 +590,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.key,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -596,7 +600,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.building2,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -606,7 +610,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.timer,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         keyboardType: TextInputType.number,
                       ),
                     ],
@@ -630,7 +634,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.graduationCap,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         maxLines: 2,
                       ),
                       const SizedBox(height: 12),
@@ -641,7 +645,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.award,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         maxLines: 2,
                       ),
                     ],
@@ -664,7 +668,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.shield,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -674,7 +678,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.hash,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
@@ -684,7 +688,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.idCard,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         keyboardType: TextInputType.number,
                       ),
                     ],
@@ -707,7 +711,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.mapPin,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         maxLines: 2,
                       ),
                       const SizedBox(height: 12),
@@ -718,7 +722,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           LucideIcons.filePenLine,
                           isDark,
                         ),
-                        style: bodyStyle(14),
+                        style: AppTextStyles.body(14),
                         maxLines: 4,
                       ),
                       const SizedBox(height: 16),
