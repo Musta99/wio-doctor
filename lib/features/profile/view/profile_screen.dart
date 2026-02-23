@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/profile/widget/virtual_wio_card.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -46,6 +49,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     text:
         "Dedicated to patient-centered care with a focus on preventive health and long-term wellness.",
   );
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DashboardViewModel>(context, listen: false).fetchDoctorData();
+    });
+  }
 
   @override
   void dispose() {
@@ -120,36 +133,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             offset: const Offset(0, 12),
           ),
         ],
-      );
-    }
-
-    InputDecoration inputDec(String hint, IconData icon) {
-      return InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.exo(
-          color: subtleText,
-          fontWeight: FontWeight.w600,
-        ),
-        prefixIcon: Icon(icon, size: 18),
-        filled: true,
-        fillColor:
-            isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 12,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.teal.withOpacity(0.6)),
-        ),
       );
     }
 
@@ -347,7 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: TextField(
               controller: controller,
               style: bodyStyle(14),
-              decoration: inputDec(hint, icon),
+              decoration: AppDecorations.inputDec(hint, icon, isDark),
             ),
           ),
           const SizedBox(width: 10),
@@ -475,14 +458,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       TextField(
                         controller: fullNameC,
-                        decoration: inputDec("Full name", LucideIcons.user),
+                        decoration: AppDecorations.inputDec(
+                          "Full name",
+                          LucideIcons.user,
+                          isDark,
+                        ),
                         style: bodyStyle(14),
                         onChanged: (_) => setState(() {}),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: emailC,
-                        decoration: inputDec("Email address", LucideIcons.mail),
+                        decoration: AppDecorations.inputDec(
+                          "Email address",
+                          LucideIcons.mail,
+                          isDark,
+                        ),
                         style: bodyStyle(14),
                         keyboardType: TextInputType.emailAddress,
                         onChanged: (_) => setState(() {}),
@@ -490,13 +481,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 12),
                       TextField(
                         controller: genderC,
-                        decoration: inputDec("Gender", LucideIcons.users),
+                        decoration: AppDecorations.inputDec(
+                          "Gender",
+                          LucideIcons.users,
+                          isDark,
+                        ),
                         style: bodyStyle(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: mobileC,
-                        decoration: inputDec("Mobile", LucideIcons.phone),
+                        decoration: AppDecorations.inputDec(
+                          "Mobile",
+                          LucideIcons.phone,
+                          isDark,
+                        ),
                         style: bodyStyle(14),
                         keyboardType: TextInputType.phone,
                       ),
@@ -572,33 +571,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       TextField(
                         controller: specialtyNameC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Specialty name",
                           LucideIcons.badgeCheck,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: specialtyKeyC,
-                        decoration: inputDec("Specialty key", LucideIcons.key),
+                        decoration: AppDecorations.inputDec(
+                          "Specialty key",
+                          LucideIcons.key,
+                          isDark,
+                        ),
                         style: bodyStyle(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: hospitalNameC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Hospital name",
                           LucideIcons.building2,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: yearsExpC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Years of experience",
                           LucideIcons.timer,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                         keyboardType: TextInputType.number,
@@ -619,9 +625,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       TextField(
                         controller: educationDegreesC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Education degrees",
                           LucideIcons.graduationCap,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                         maxLines: 2,
@@ -629,9 +636,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 12),
                       TextField(
                         controller: additionalQualC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Additional qualifications",
                           LucideIcons.award,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                         maxLines: 2,
@@ -651,27 +659,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       TextField(
                         controller: regAuthorityC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Registration authority",
                           LucideIcons.shield,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: regNumberC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Registration number",
                           LucideIcons.hash,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                       ),
                       const SizedBox(height: 12),
                       TextField(
                         controller: nidC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "NID number (optional)",
                           LucideIcons.idCard,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                         keyboardType: TextInputType.number,
@@ -691,9 +702,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       TextField(
                         controller: clinicAddressC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Clinic address",
                           LucideIcons.mapPin,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                         maxLines: 2,
@@ -701,9 +713,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 12),
                       TextField(
                         controller: bioC,
-                        decoration: inputDec(
+                        decoration: AppDecorations.inputDec(
                           "Professional bio",
                           LucideIcons.filePenLine,
+                          isDark,
                         ),
                         style: bodyStyle(14),
                         maxLines: 4,
