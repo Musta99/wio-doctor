@@ -21,6 +21,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
 
 import 'package:wio_doctor/core/theme/theme_provider.dart';
@@ -66,6 +67,7 @@ class AppContent extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => PatientViewModel()),
         ChangeNotifierProvider(create: (context) => DatePickerProvider()),
         ChangeNotifierProvider(create: (context) => ScheduleViewModel()),
+        ChangeNotifierProvider(create: (context)=> AppointmentViewModel())
       ],
       builder: (context, child) {
         return ShadApp(
