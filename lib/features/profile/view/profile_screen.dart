@@ -95,46 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final themeProvider = ThemeProvider.of(context);
     final isDark = themeProvider.isDarkMode;
 
-    // final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
-    // final bgBottom = isDark ? const Color(0xFF060A12) : const Color(0xFFFFFFFF);
-
-    // final borderColor =
-    //     isDark
-    //         ? Colors.white.withOpacity(0.08)
-    //         : Colors.black.withOpacity(0.06);
-    // final subtleText =
-    //     isDark
-    //         ? Colors.white.withOpacity(0.72)
-    //         : Colors.black.withOpacity(0.65);
-
-    // TextStyle titleStyle(double size) => GoogleFonts.exo(
-    //   fontWeight: FontWeight.w900,
-    //   fontSize: size,
-    //   letterSpacing: -0.2,
-    // );
-
-    // TextStyle sectionStyle(double size) =>
-    //     GoogleFonts.exo(fontWeight: FontWeight.w900, fontSize: size);
-
-    // BoxDecoration cardDecoration() {
-    //   return BoxDecoration(
-    //     color: cardColor,
-    //     borderRadius: BorderRadius.circular(18),
-    //     border: Border.all(color: borderColor),
-    //     boxShadow: [
-    //       BoxShadow(
-    //         color:
-    //             isDark
-    //                 ? Colors.black.withOpacity(0.38)
-    //                 : Colors.black.withOpacity(0.07),
-    //         blurRadius: 22,
-    //         offset: const Offset(0, 12),
-    //       ),
-    //     ],
-    //   );
-    // }
-
-    Widget headerCard(bool isDa) {
+    Widget headerCard(bool isDark) {
       return Container(
         decoration: AppDecorations.card(isDark),
         child: Padding(
