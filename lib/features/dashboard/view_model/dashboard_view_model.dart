@@ -27,7 +27,6 @@ class DashboardViewModel extends ChangeNotifier {
   String? educationDegree;
   String? specialization;
 
-
   Future fetchDoctorData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? doctorId = prefs.getString("doctorId");
@@ -71,51 +70,38 @@ class DashboardViewModel extends ChangeNotifier {
       name = data["name"];
       notifyListeners();
 
-
-      print("Dashboard data fetched and name is: ${name}");
+      print("Dashboard data fetched : ${data}");
     } catch (err) {
     } finally {}
   }
-
 
   //  Patient Roaster
   bool isLoadingPatientRoaster = false;
   List roasterPatients = [];
   Future fetchPatientRoaster() async {
-
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? doctorId = prefs.getString("doctorId");
 
- 
-
-
-    try{
-      
-
+    try {
       isLoadingPatientRoaster = true;
       notifyListeners();
 
-      final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("patientAccess").where("doctorId", isEqualTo: doctorId).get();
+      final QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance
+              .collection("patientAccess")
+              .where("doctorId", isEqualTo: doctorId)
+              .get();
 
       print("Roastered Patient: ${querySnapshot.docs}");
-      roasterPatients = querySnapshot.docs
-    .map((doc) => doc.data() as Map<String, dynamic>)
-    .toList();
+      roasterPatients =
+          querySnapshot.docs
+              .map((doc) => doc.data() as Map<String, dynamic>)
+              .toList();
       notifyListeners();
-
-
-     
-
-
-    }catch(err){
-
-    }finally{
+    } catch (err) {
+    } finally {
       isLoadingPatientRoaster = false;
       notifyListeners();
     }
-
-
-
-
   }
 }
