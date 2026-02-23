@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
+import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
 
 class AppointmentScreen extends StatefulWidget {
   const AppointmentScreen({super.key});
@@ -62,6 +65,17 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       "status": "Completed",
     },
   ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<AppointmentViewModel>(
+        context,
+        listen: false,
+      ).fetchDoctorsAppointments(context);
+    });
+  }
 
   @override
   void dispose() {
