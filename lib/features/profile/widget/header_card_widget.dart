@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
+import 'package:wio_doctor/features/profile/view_model/profile_view_model.dart';
 import 'package:wio_doctor/features/profile/widget/pill_widget.dart';
 
 class HeaderCardWidget extends StatelessWidget {
@@ -65,8 +67,8 @@ class HeaderCardWidget extends StatelessWidget {
                   bottom: 0,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(999),
-                    onTap: () {
-                      // TODO: open image picker
+                    onTap: () async{
+                      await Provider.of<ProfileViewModel>(context, listen: false).pickAndUploadProfileImage(context);
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),

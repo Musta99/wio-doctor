@@ -1,6 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   /// ---------------- STATES ----------------
@@ -98,7 +105,6 @@ class ProfileViewModel extends ChangeNotifier {
         "regAuthority": regAuthorityC.text,
         "regNumber": regNumberC.text,
         "educationDegree": educationDegreeC.text,
-
       };
 
       _listenFormChanges();
@@ -182,5 +188,90 @@ class ProfileViewModel extends ChangeNotifier {
     hospitalNameC.dispose();
     nidC.dispose();
     super.dispose();
+  }
+
+  // ----------------- Profile picture update ------------------
+  bool isUploadingPhoto = false;
+  Future pickAndUploadProfileImage(BuildContext context) async {
+    try {
+      final picker = ImagePicker();
+
+      /// Pick image
+      final XFile? picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70,
+      );
+
+      if (picked == null) return;
+
+      isUploadingPhoto = true;
+      notifyListeners();
+
+      final file = File(picked.path);
+
+      /// Get Firebase UID (userId)
+      final prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString("doctorId");
+      // OR use FirebaseAuth.instance.currentUser?.uid
+      // Use whichever stores Firebase UID in your app
+
+      if (userId == null || userId.isEmpty) {
+        print("UserId missing");
+        return;
+      }
+
+      /// Create multipart request
+      final request = http.MultipartRequest(
+        "POST",
+        Uri.parse("https://www.wiocare.com/api/upload-profile-image"),
+      );
+
+      /// If your API requires token
+      try {
+        final authProvider = context.read<AuthenticationProvider>();
+        final token = await authProvider.getFreshToken();
+
+        if (token != null) {
+          request.headers["Authorization"] = "Bearer $token";
+        }
+      } catch (_) {}
+
+      /// Required body fields
+      request.fields["userId"] = userId; // ✅ REQUIRED
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          "file", // backend field name
+          file.path,
+        ),
+      );
+
+      /// Send request
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      print("Upload status: ${response.statusCode}");
+      print("Upload response: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+
+        /// Backend should return image URL
+        final imageUrl = data["url"] ?? data["photoUrl"] ?? "";
+
+        print("----------- $imageUrl");
+
+        if (imageUrl.isNotEmpty) {
+          photo = imageUrl; // update provider state
+          notifyListeners();
+        }
+      } else {
+        print("Upload failed: ${response.body}");
+      }
+    } catch (e) {
+      print("Upload error: $e");
+    } finally {
+      isUploadingPhoto = false;
+      notifyListeners();
+    }
   }
 }
