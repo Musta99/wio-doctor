@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
@@ -47,24 +48,15 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: GoogleFonts.exo(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
+                Text(title, style: AppTextStyles.title(16)),
                 const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: GoogleFonts.exo(fontSize: 13, color: Colors.grey),
-                ),
+                Text(subtitle, style: AppTextStyles.body(13)),
               ],
             ),
           ),
           const SizedBox(width: 12),
           SizedBox(
-            width: 100,
+            width: 120,
             child: TextField(
               controller: controller,
               keyboardType: TextInputType.number,
@@ -92,7 +84,23 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeProvider = ThemeProvider.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text("Consultation Fees")),
+      appBar: AppBar(
+        title: Text("Consultation Fee", style: AppTextStyles.title(20)),
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            tooltip: isDark ? "Switch to light" : "Switch to dark",
+            icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon),
+            onPressed: () {
+              themeProvider.setThemeMode(
+                isDark ? ThemeMode.light : ThemeMode.dark,
+              );
+            },
+          ),
+          const SizedBox(width: 6),
+        ],
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -100,20 +108,19 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
           children: [
             // Currency selector
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Text("Currency", style: AppTextStyles.title(16)),
+
                 DropdownButton<String>(
                   value: currency,
-                  dropdownColor: Colors.grey.shade900,
+
                   items:
                       ["BDT (৳)", "USD (\$)"]
                           .map(
                             (e) => DropdownMenuItem(
                               value: e,
-                              child: Text(
-                                e,
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                              child: Text(e, style: AppTextStyles.body(13)),
                             ),
                           )
                           .toList(),
@@ -200,29 +207,13 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
             ),
 
             // Save button
-            SizedBox(
+            ShadButton(
               width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: isSaving ? null : _saveFees,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child:
-                    isSaving
-                        ? const CircularProgressIndicator(color: Colors.white)
-                        : Text(
-                          "Save Fees",
-                          style: GoogleFonts.exo(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-              ),
+              backgroundColor: Colors.teal,
+              child: Text("Save Fees"),
             ),
+
+            SizedBox(height: 35),
           ],
         ),
       ),
