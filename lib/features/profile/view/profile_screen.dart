@@ -553,19 +553,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     const SizedBox(height: 24),
 
-                    ShadButton(
-                      width: double.infinity,
-                      backgroundColor: Colors.red,
-                      onPressed:
-                          profileVM.isProfileChanged
-                              ? () {
-                                // call update API
-                              }
-                              : null,
-                      child: Text(
-                        "Logout",
-                        style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                      ),
+                    Consumer<ProfileViewModel>(
+                      builder: (context, vm, child) {
+                        return ShadButton(
+                          width: double.infinity,
+                          backgroundColor: Colors.red,
+                          onPressed:
+                              vm.isLogoutLoading
+                                  ? null // disable while loading
+                                  : () => vm.userLogout(context),
+
+                          child:
+                              vm.isLogoutLoading
+                                  ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SizedBox(
+                                        height: 18,
+                                        width: 18,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        "Logging out...",
+                                        style: GoogleFonts.exo(
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                  : Text(
+                                    "Logout",
+                                    style: GoogleFonts.exo(
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                        );
+                      },
                     ),
 
                     const SizedBox(height: 24),
