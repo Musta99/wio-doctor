@@ -30,36 +30,63 @@ class HeaderCardWidget extends StatelessWidget {
           children: [
             Stack(
               children: [
-                photoUrl.isNotEmpty
-                    ? ClipOval(
-                      child: Image.network(
-                        photoUrl,
-                        fit: BoxFit.cover,
-                        width: 84,
-                        height: 84,
-                        errorBuilder:
-                            (_, __, ___) => Center(
-                              child: Icon(
-                                LucideIcons.userRound,
-                                size: 34,
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.9)
-                                        : Colors.black.withOpacity(0.75),
+                Consumer<ProfileViewModel>(
+                  builder: (context, profileVM, _) {
+                    return Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        /// Profile image
+                        Container(
+                          height: 84,
+                          width: 84,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.06)
+                                    : Colors.black.withOpacity(0.06),
+                            border: Border.all(color: AppColors.border(isDark)),
+                          ),
+                          child: ClipOval(
+                            child:
+                                photoUrl.isNotEmpty
+                                    ? Image.network(
+                                      photoUrl,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (_, __, ___) => Icon(
+                                            LucideIcons.userRound,
+                                            size: 34,
+                                          ),
+                                    )
+                                    : Icon(LucideIcons.userRound, size: 34),
+                          ),
+                        ),
+
+                        /// Loader overlay
+                        if (profileVM.isUploadingPhoto)
+                          Container(
+                            height: 84,
+                            width: 84,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withOpacity(0.4),
+                            ),
+                            child: const Center(
+                              child: SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.teal,
+                                ),
                               ),
                             ),
-                      ),
-                    )
-                    : Center(
-                      child: Icon(
-                        LucideIcons.userRound,
-                        size: 34,
-                        color:
-                            isDark
-                                ? Colors.white.withOpacity(0.9)
-                                : Colors.black.withOpacity(0.75),
-                      ),
-                    ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
 
                 // ✅ plus/pen icon for image update
                 Positioned(
@@ -67,8 +94,11 @@ class HeaderCardWidget extends StatelessWidget {
                   bottom: 0,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(999),
-                    onTap: () async{
-                      await Provider.of<ProfileViewModel>(context, listen: false).pickAndUploadProfileImage(context);
+                    onTap: () async {
+                      await Provider.of<ProfileViewModel>(
+                        context,
+                        listen: false,
+                      ).pickAndUploadProfileImage(context);
                     },
                     child: Container(
                       padding: const EdgeInsets.all(8),

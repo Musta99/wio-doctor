@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -263,12 +265,27 @@ class ProfileViewModel extends ChangeNotifier {
         if (imageUrl.isNotEmpty) {
           photo = imageUrl; // update provider state
           notifyListeners();
+
+          // -------- save to firebase firestore -------------
+          await FirebaseFirestore.instance
+              .collection("doctors")
+              .doc(userId)
+              .update({"photo": imageUrl});
+
+          Fluttertoast.showToast(
+            msg: "Successfully updated profile picture",
+            backgroundColor: Colors.green,
+          );
         }
       } else {
         print("Upload failed: ${response.body}");
       }
-    } catch (e) {
-      print("Upload error: $e");
+    } catch (err) {
+      Fluttertoast.showToast(
+        msg: "Error occured: $err",
+        backgroundColor: Colors.red,
+      );
+      print("Upload error: $err");
     } finally {
       isUploadingPhoto = false;
       notifyListeners();
