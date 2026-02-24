@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wio_doctor/features/auth/view/login_screen.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class ProfileViewModel extends ChangeNotifier {
@@ -294,7 +296,32 @@ class ProfileViewModel extends ChangeNotifier {
 
   // --------------------- Update Profile data -----------------------
   bool isUpdatingData = false;
-  Future updateProfileData() async{
-    
+  Future updateProfileData() async {}
+
+  // -------------------- Logout function -------------------
+  bool isLogoutLoading = false;
+  Future userLogout(BuildContext context) async {
+    try {
+      isLogoutLoading = true;
+      notifyListeners();
+      await FirebaseAuth.instance.signOut();
+
+      await context.read<AuthenticationProvider>().clearCredentials();
+
+      // Remove all screens and go to login
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        (route) => false, // removes all previous routes
+      );
+    } catch (err) {
+      Fluttertoast.showToast(
+        msg: "Error occured: $err",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isLogoutLoading = false;
+      notifyListeners();
+    }
   }
 }

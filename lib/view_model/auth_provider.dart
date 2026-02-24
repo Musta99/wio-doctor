@@ -26,7 +26,7 @@ class AuthenticationProvider extends ChangeNotifier {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', _token!);
         await prefs.setString('user_id', _userId!);
-        await prefs.setString('patientId', _userId!);
+        
 
         debugPrint('✅ Auth initialized for user: $_userId');
       } else {
