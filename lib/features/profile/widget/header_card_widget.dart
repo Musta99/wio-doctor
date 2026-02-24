@@ -9,11 +9,13 @@ class HeaderCardWidget extends StatelessWidget {
   final bool isDark;
   final String fullName;
   final String email;
+  final String photoUrl;
   const HeaderCardWidget({
     super.key,
     required this.isDark,
     required this.fullName,
     required this.email,
+    required this.photoUrl,
   });
 
   @override
@@ -26,35 +28,36 @@ class HeaderCardWidget extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Container(
-                  height: 84,
-                  width: 84,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color:
-                        isDark
-                            ? Colors.white.withOpacity(0.06)
-                            : Colors.black.withOpacity(0.06),
-                    border: Border.all(color: AppColors.border(isDark)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(isDark ? 0.32 : 0.10),
-                        blurRadius: 18,
-                        offset: const Offset(0, 10),
+                photoUrl.isNotEmpty
+                    ? ClipOval(
+                      child: Image.network(
+                        photoUrl,
+                        fit: BoxFit.cover,
+                        width: 84,
+                        height: 84,
+                        errorBuilder:
+                            (_, __, ___) => Center(
+                              child: Icon(
+                                LucideIcons.userRound,
+                                size: 34,
+                                color:
+                                    isDark
+                                        ? Colors.white.withOpacity(0.9)
+                                        : Colors.black.withOpacity(0.75),
+                              ),
+                            ),
                       ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Icon(
-                      LucideIcons.userRound,
-                      size: 34,
-                      color:
-                          isDark
-                              ? Colors.white.withOpacity(0.9)
-                              : Colors.black.withOpacity(0.75),
+                    )
+                    : Center(
+                      child: Icon(
+                        LucideIcons.userRound,
+                        size: 34,
+                        color:
+                            isDark
+                                ? Colors.white.withOpacity(0.9)
+                                : Colors.black.withOpacity(0.75),
+                      ),
                     ),
-                  ),
-                ),
 
                 // ✅ plus/pen icon for image update
                 Positioned(

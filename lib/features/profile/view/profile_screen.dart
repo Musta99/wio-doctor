@@ -246,6 +246,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       isDark: isDark,
                       fullName: profileVM.fullNameC.text,
                       email: profileVM.emailC.text,
+                      photoUrl: profileVM.photo,
                     ),
                     const SizedBox(height: 14),
 
@@ -303,61 +304,60 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 14),
 
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Countries",
-                              style: GoogleFonts.exo(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          listAddRow(
-                            controller: addCountryC,
-                            hint: "Add country",
-                            icon: LucideIcons.mapPin,
-                            onAdd: () {
-                              final v = addCountryC.text.trim();
-                              if (v.isEmpty) return;
-                              setState(() {
-                                countries.add(v);
-                                addCountryC.clear();
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          chipsList(countries, icon: LucideIcons.mapPin),
+                          // Align(
+                          //   alignment: Alignment.centerLeft,
+                          //   child: Text(
+                          //     "Countries",
+                          //     style: GoogleFonts.exo(
+                          //       fontSize: 14,
+                          //       fontWeight: FontWeight.w900,
+                          //     ),
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 10),
+                          // listAddRow(
+                          //   controller: addCountryC,
+                          //   hint: "Add country",
+                          //   icon: LucideIcons.mapPin,
+                          //   onAdd: () {
+                          //     final v = addCountryC.text.trim();
+                          //     if (v.isEmpty) return;
+                          //     setState(() {
+                          //       countries.add(v);
+                          //       addCountryC.clear();
+                          //     });
+                          //   },
+                          // ),
+                          // const SizedBox(height: 10),
+                          // chipsList(countries, icon: LucideIcons.mapPin),
+                          // const SizedBox(height: 14),
 
-                          const SizedBox(height: 14),
-
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Languages",
-                              style: GoogleFonts.exo(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          listAddRow(
-                            controller: addLanguageC,
-                            hint: "Add language",
-                            icon: LucideIcons.languages,
-                            onAdd: () {
-                              final v = addLanguageC.text.trim();
-                              if (v.isEmpty) return;
-                              setState(() {
-                                languages.add(v);
-                                addLanguageC.clear();
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          chipsList(languages, icon: LucideIcons.languages),
+                          // Align(
+                          //   alignment: Alignment.centerLeft,
+                          //   child: Text(
+                          //     "Languages",
+                          //     style: GoogleFonts.exo(
+                          //       fontSize: 14,
+                          //       fontWeight: FontWeight.w900,
+                          //     ),
+                          //   ),
+                          // ),
+                          // const SizedBox(height: 10),
+                          // listAddRow(
+                          //   controller: addLanguageC,
+                          //   hint: "Add language",
+                          //   icon: LucideIcons.languages,
+                          //   onAdd: () {
+                          //     final v = addLanguageC.text.trim();
+                          //     if (v.isEmpty) return;
+                          //     setState(() {
+                          //       languages.add(v);
+                          //       addLanguageC.clear();
+                          //     });
+                          //   },
+                          // ),
+                          // const SizedBox(height: 10),
+                          // chipsList(languages, icon: LucideIcons.languages),
                         ],
                       ),
                     ),
@@ -530,13 +530,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(height: 16),
                           ShadButton(
                             width: double.infinity,
-                            backgroundColor: Colors.teal,
-                            onPressed: () {
-                              // TODO: Save profile
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Saved (demo).")),
-                              );
-                            },
+                            backgroundColor:
+                                profileVM.isProfileChanged
+                                    ? Colors.teal
+                                    : Colors.grey,
+                            onPressed:
+                                profileVM.isProfileChanged
+                                    ? () {
+                                      // call update API
+                                    }
+                                    : null,
                             child: Text(
                               "Save changes",
                               style: GoogleFonts.exo(
