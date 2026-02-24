@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/consultation_fee/view_model/consultation_fee_view_model.dart';
 
 class ConsultationFeeScreen extends StatefulWidget {
   const ConsultationFeeScreen({super.key});
@@ -68,11 +69,24 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
     );
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ConsultationFeeViewModel>(
+        context,
+        listen: false,
+      ).fetchConsultationFee(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final themeProvider = ThemeProvider.of(context);
+    final vm = Provider.of<ConsultationFeeViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Consultation Fee", style: AppTextStyles.title(20)),
@@ -100,22 +114,20 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Currency", style: AppTextStyles.title(16)),
-
+                const Text("Currency"),
                 DropdownButton<String>(
-                  value: currency,
-
+                  value: vm.currency,
                   items:
                       ["BDT (৳)", "USD (\$)"]
                           .map(
-                            (e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(e, style: AppTextStyles.body(13)),
-                            ),
+                            (e) => DropdownMenuItem(value: e, child: Text(e)),
                           )
                           .toList(),
                   onChanged: (val) {
-                    if (val != null) setState(() => currency = val);
+                    if (val != null) {
+                      vm.currency = val;
+                      vm.notifyListeners();
+                    }
                   },
                 ),
               ],
@@ -130,35 +142,35 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
                     isDark,
                     "60-Minute Consultation",
                     "Full consultation session (60 minutes)",
-                    feeControllers["60-Minute Consultation"]!,
+                    vm.feeControllers['60-Minute Consultation']!,
                     Icons.access_time,
                   ),
                   _buildFeeRow(
                     isDark,
                     "30-Minute Consultation",
                     "Quick consultation session (30 minutes)",
-                    feeControllers["30-Minute Consultation"]!,
+                    vm.feeControllers['30-Minute Consultation']!,
                     Icons.hourglass_bottom,
                   ),
                   _buildFeeRow(
                     isDark,
                     "Follow-up Consultation",
                     "Reduced fee for follow-up visits",
-                    feeControllers["Follow-up Consultation"]!,
+                    vm.feeControllers['Follow-up Consultation']!,
                     Icons.update,
                   ),
                   _buildFeeRow(
                     isDark,
                     "Online Video Consultation",
                     "Virtual consultation via video call",
-                    feeControllers["Online Video Consultation"]!,
+                    vm.feeControllers['Online Video Consultation']!,
                     Icons.videocam,
                   ),
                   _buildFeeRow(
                     isDark,
                     "Home Visit",
                     "Doctor visits patient at home",
-                    feeControllers["Home Visit"]!,
+                    vm.feeControllers['Home Visit']!,
                     Icons.home,
                   ),
 
