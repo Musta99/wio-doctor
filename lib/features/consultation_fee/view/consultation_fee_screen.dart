@@ -68,16 +68,6 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
     );
   }
 
-  void _saveFees() async {
-    setState(() => isSaving = true);
-
-    await Future.delayed(const Duration(seconds: 2)); // Simulate save
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Consultation fees saved successfully")),
-    );
-
-    setState(() => isSaving = false);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +77,7 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
       appBar: AppBar(
         title: Text("Consultation Fee", style: AppTextStyles.title(20)),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
         actions: [
           IconButton(
             tooltip: isDark ? "Switch to light" : "Switch to dark",
