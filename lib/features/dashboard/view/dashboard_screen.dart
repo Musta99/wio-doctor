@@ -5,6 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/services/time_formate_service.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/clinical_review/view/clinical_review_screen.dart';
+import 'package:wio_doctor/features/consultation_fee/view/consultation_fee_screen.dart';
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
@@ -705,7 +706,7 @@ class _DashboardEndDrawer extends StatelessWidget {
                   // TODO: navigate
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => PatientAccessScreen()),
+                    MaterialPageRoute(builder: (_) => ConsultationFeeScreen()),
                   );
                 },
               ),
