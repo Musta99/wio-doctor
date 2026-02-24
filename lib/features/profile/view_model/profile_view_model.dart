@@ -131,10 +131,15 @@ class ProfileViewModel extends ChangeNotifier {
       genderC,
       mobileC,
       clinicAddressC,
+      clinicNameC,
       bioC,
       yearsExpC,
       hospitalNameC,
       nidC,
+      specialityC,
+      regAuthorityC,
+      regNumberC,
+      educationDegreeC,
     ];
 
     for (var c in controllers) {
@@ -149,10 +154,15 @@ class ProfileViewModel extends ChangeNotifier {
         genderC.text != _originalValues["gender"] ||
         mobileC.text != _originalValues["mobile"] ||
         clinicAddressC.text != _originalValues["clinicAddress"] ||
+        clinicNameC.text != _originalValues["clinicName"] ||
         bioC.text != _originalValues["bio"] ||
         yearsExpC.text != _originalValues["experience"] ||
         hospitalNameC.text != _originalValues["hospital"] ||
-        nidC.text != _originalValues["nid"];
+        nidC.text != _originalValues["nid"] ||
+        specialityC.text != _originalValues["specialty"] ||
+        regAuthorityC.text != _originalValues["regAuthority"] ||
+        regNumberC.text != _originalValues["regNumber"] ||
+        educationDegreeC.text != _originalValues["educationDegree"];
 
     if (changed != isProfileChanged) {
       isProfileChanged = changed;
@@ -169,10 +179,15 @@ class ProfileViewModel extends ChangeNotifier {
       "gender": genderC.text,
       "mobile": mobileC.text,
       "clinicAddress": clinicAddressC.text,
+      "clinicName": clinicNameC.text,
       "bio": bioC.text,
       "experience": yearsExpC.text,
       "hospital": hospitalNameC.text,
       "nid": nidC.text,
+      "specialty": specialityC.text,
+      "regAuthority": regAuthorityC.text,
+      "regNumber": regNumberC.text,
+      "educationDegree": educationDegreeC.text,
     };
 
     isProfileChanged = false;
@@ -296,7 +311,87 @@ class ProfileViewModel extends ChangeNotifier {
 
   // --------------------- Update Profile data -----------------------
   bool isUpdatingData = false;
-  Future updateProfileData() async {}
+  Future updateProfileData() async {
+    try {
+      /// Prevent unnecessary update
+      if (!isProfileChanged) return;
+
+      isUpdatingData = true;
+      notifyListeners();
+
+      final prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString("doctorId");
+
+      if (userId == null || userId.isEmpty) {
+        Fluttertoast.showToast(msg: "User not found");
+        return;
+      }
+
+      /// Detect only changed fields
+      Map<String, dynamic> updateData = {};
+
+      if (fullNameC.text != _originalValues["name"]) {
+        updateData["name"] = fullNameC.text.trim();
+      }
+
+      // if (emailC.text != _originalValues["email"]) {
+      //   updateData["email"] = emailC.text.trim();
+      // }
+
+      if (genderC.text != _originalValues["gender"]) {
+        updateData["gender"] = genderC.text.trim();
+      }
+
+      if (mobileC.text != _originalValues["mobile"]) {
+        updateData["mobile"] = mobileC.text.trim();
+      }
+
+      if (clinicAddressC.text != _originalValues["clinicAddress"]) {
+        updateData["clinicAddress"] = clinicAddressC.text.trim();
+      }
+
+      if (bioC.text != _originalValues["bio"]) {
+        updateData["bio"] = bioC.text.trim();
+      }
+
+      if (yearsExpC.text != _originalValues["experience"]) {
+        updateData["experienceYears"] = yearsExpC.text.trim();
+      }
+
+      if (hospitalNameC.text != _originalValues["hospital"]) {
+        updateData["hospital"] = hospitalNameC.text.trim();
+      }
+
+      if (nidC.text != _originalValues["nid"]) {
+        updateData["nidNumber"] = nidC.text.trim();
+      }
+
+      /// If nothing changed → stop
+      if (updateData.isEmpty) return;
+
+      /// Update firestore
+      await FirebaseFirestore.instance
+          .collection("doctors")
+          .doc(userId)
+          .update(updateData);
+
+      Fluttertoast.showToast(
+        msg: "Profile updated successfully",
+        backgroundColor: Colors.green,
+      );
+
+      /// Reset change tracking
+      markSaved();
+    } catch (err) {
+      Fluttertoast.showToast(
+        msg: "Update failed: $err",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isUpdatingData = false;
+      notifyListeners();
+    }
+  }
 
   // -------------------- Logout function -------------------
   bool isLogoutLoading = false;

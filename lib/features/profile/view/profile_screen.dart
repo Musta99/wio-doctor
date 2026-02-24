@@ -535,17 +535,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ? Colors.teal
                                     : Colors.grey,
                             onPressed:
-                                profileVM.isProfileChanged
-                                    ? () {
-                                      // call update API
-                                    }
-                                    : null,
-                            child: Text(
-                              "Save changes",
-                              style: GoogleFonts.exo(
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
+                                !profileVM.isProfileChanged ||
+                                        profileVM.isUpdatingData
+                                    ? null
+                                    : () async {
+                                      await profileVM.updateProfileData();
+                                    },
+                            child:
+                                profileVM.isUpdatingData
+                                    ? Icon(LucideIcons.loader, size: 22)
+                                    : Text(
+                                      "Save changes",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
                           ),
                         ],
                       ),
