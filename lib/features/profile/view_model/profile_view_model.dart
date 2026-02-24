@@ -291,4 +291,10 @@ class ProfileViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // --------------------- Update Profile data -----------------------
+  bool isUpdatingData = false;
+  Future updateProfileData() async{
+    
+  }
 }

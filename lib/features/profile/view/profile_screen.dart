@@ -552,6 +552,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
 
                     const SizedBox(height: 24),
+
+                    ShadButton(
+                      width: double.infinity,
+                      backgroundColor: Colors.red,
+                      onPressed:
+                          profileVM.isProfileChanged
+                              ? () {
+                                // call update API
+                              }
+                              : null,
+                      child: Text(
+                        "Logout",
+                        style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
