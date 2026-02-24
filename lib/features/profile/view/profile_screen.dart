@@ -271,6 +271,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 12),
                           TextField(
+                            readOnly: true,
                             controller: profileVM.emailC,
                             decoration: AppDecorations.inputDec(
                               "Email address",
@@ -293,6 +294,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 12),
                           TextField(
+                            
                             controller: profileVM.mobileC,
                             decoration: AppDecorations.inputDec(
                               "Mobile",
