@@ -70,4 +70,66 @@ class ConsultationFeeViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // ---------------- Update Consultation fee details --------------------
+  bool isConsultationFeeUpdating = false;
+  Future updateConsultationFee(BuildContext context) async {
+    try {
+      isConsultationFeeUpdating = true;
+      notifyListeners();
+
+      final authProvider = Provider.of<AuthenticationProvider>(
+        context,
+        listen: false,
+      );
+
+      String? token = await authProvider.getFreshToken();
+      String? doctorId = authProvider.userId;
+      if (doctorId == null || token == null) return;
+
+      // Build payload from controllers
+      final Map<String, dynamic> updatedData = {
+        "consultationFee":
+            int.tryParse(feeControllers['60-Minute Consultation']!.text) ?? 0,
+        "consultationFee30min":
+            int.tryParse(feeControllers['30-Minute Consultation']!.text) ?? 0,
+        "followUp": {
+          "fee": feeControllers['Follow-up Consultation']!.text,
+          "window": "Within 7 days",
+        },
+        "onlineVideoFee":
+            int.tryParse(feeControllers['Online Video Consultation']!.text) ??
+            0,
+        "homeVisitFee": int.tryParse(feeControllers['Home Visit']!.text) ?? 0,
+        "currency": currency,
+      };
+
+      final response = await http.put(
+        Uri.parse("https://www.wiocare.com/api/doctor/fees?doctorId=$doctorId"),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(updatedData),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data['success'] == true) {
+        Fluttertoast.showToast(msg: "Consultation fees updated successfully");
+        notifyListeners();
+      } else {
+        Fluttertoast.showToast(msg: "Failed to update fees");
+        print("Response: $data");
+      }
+    } catch (err) {
+      Fluttertoast.showToast(
+        msg: "Error occurred: $err",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isConsultationFeeUpdating = false;
+      notifyListeners();
+    }
+  }
 }

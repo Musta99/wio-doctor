@@ -107,14 +107,14 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 20),
         child: Column(
           children: [
             // Currency selector
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Currency"),
+                Text("Currency", style: AppTextStyles.title(16)),
                 DropdownButton<String>(
                   value: vm.currency,
                   items:
@@ -210,12 +210,18 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
 
             // Save button
             ShadButton(
+              onPressed: () async {
+                await vm.updateConsultationFee(context);
+              },
               width: double.infinity,
               backgroundColor: Colors.teal,
-              child: Text("Save Fees"),
+              child:
+                  vm.isConsultationFeeUpdating
+                      ? Icon(LucideIcons.loader, size: 22)
+                      : Text("Save Fees", style: AppTextStyles.title(15)),
             ),
 
-            SizedBox(height: 35),
+            SizedBox(height: 45),
           ],
         ),
       ),
