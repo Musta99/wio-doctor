@@ -620,11 +620,7 @@ class _DashboardEndDrawer extends StatelessWidget {
                     color: Colors.teal.withOpacity(isDark ? 0.25 : 0.18),
                   ),
                 ),
-                child: const Icon(
-                  LucideIcons.dot,
-                  size: 18,
-                  color: Colors.teal,
-                ),
+                child: Icon(icon, size: 22, color: Colors.teal),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -701,6 +697,19 @@ class _DashboardEndDrawer extends StatelessWidget {
               ),
 
               const SizedBox(height: 14),
+
+              item(
+                icon: LucideIcons.dollarSign,
+                title: "Consultation Fee",
+                onTap: () {
+                  // TODO: navigate
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PatientAccessScreen()),
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
 
               item(
                 icon: LucideIcons.users,
