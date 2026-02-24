@@ -240,7 +240,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     // Virtual Wio Card
-                    VirtualWioCard(),
+                    VirtualWioCard(
+                      name: profileVM.fullNameC.text,
+                      wioId: profileVM.wioId,
+                    ),
                     const SizedBox(height: 14),
                     HeaderCardWidget(
                       isDark: isDark,
@@ -294,7 +297,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 12),
                           TextField(
-                            
                             controller: profileVM.mobileC,
                             decoration: AppDecorations.inputDec(
                               "Mobile",

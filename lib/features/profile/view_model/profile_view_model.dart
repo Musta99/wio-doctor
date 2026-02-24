@@ -36,6 +36,7 @@ class ProfileViewModel extends ChangeNotifier {
   final regNumberC = TextEditingController();
   final educationDegreeC = TextEditingController();
   String photo = "";
+  String? wioId;
 
   /// store original values for comparison
   Map<String, String> _originalValues = {};
@@ -92,6 +93,8 @@ class ProfileViewModel extends ChangeNotifier {
       regNumberC.text = _safe(data["registration"]?["number"]);
       educationDegreeC.text = _safe(data["educationDegree"]);
       photo = data["photo"];
+      wioId = data["wioId"];
+      notifyListeners();
 
       // Save original snapshot for change tracking
       _originalValues = {
