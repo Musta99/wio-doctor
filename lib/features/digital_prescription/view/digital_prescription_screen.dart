@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_decoration.dart';
 
 class DigitalPrescriberScreen extends StatefulWidget {
   const DigitalPrescriberScreen({super.key});
@@ -82,19 +83,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
     TextStyle bodyStyle(double s) =>
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w700);
-
-    BoxDecoration cardDecoration() => BoxDecoration(
-      color: cardColor,
-      borderRadius: BorderRadius.circular(22),
-      border: Border.all(color: borderColor),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
-          blurRadius: 18,
-          offset: const Offset(0, 10),
-        ),
-      ],
-    );
 
     InputDecoration inputDec({required String hint, required IconData icon}) {
       return InputDecoration(
@@ -305,7 +293,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
             children: [
               // PATIENT INFO
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,7 +320,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
 
               // MEDICATIONS
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -526,7 +514,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
 
               // ADDITIONAL INFO
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -566,7 +554,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
 
               // ACTIONS
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
