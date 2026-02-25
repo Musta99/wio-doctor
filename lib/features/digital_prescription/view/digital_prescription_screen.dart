@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
+import 'package:wio_doctor/core/theme/app_text_styles.dart';
 
 class DigitalPrescriberScreen extends StatefulWidget {
   const DigitalPrescriberScreen({super.key});
@@ -73,11 +74,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
             ? Colors.white.withOpacity(0.72)
             : Colors.black.withOpacity(0.62);
 
-    TextStyle titleStyle(double s) => GoogleFonts.exo(
-      fontSize: s,
-      fontWeight: FontWeight.w900,
-      letterSpacing: -0.2,
-    );
     TextStyle sectionStyle(double s) =>
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
     TextStyle bodyStyle(double s) =>
@@ -243,7 +239,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Digital Prescriber", style: titleStyle(18)),
+        title: Text("Digital Prescriber", style: AppTextStyles.title(18)),
         centerTitle: true,
       ),
       body: Container(
