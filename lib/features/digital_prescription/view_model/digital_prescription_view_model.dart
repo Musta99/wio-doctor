@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
@@ -51,6 +54,37 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
   void selectPatient(value) {
     selectedPatient = value;
     notifyListeners();
+  }
+
+  // -------------------- Get Medicines Name ----------------------------
+  bool isLoadingMedicinesList = false;
+  List medicinesList = [];
+  Future getMedicinesList(String medicineName) async {
+    try {
+      isLoadingMedicinesList = true;
+      notifyListeners();
+
+      final response = await http.get(
+        Uri.parse("https://www.wiocare.com/api/medicines?q=${medicineName}"),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        medicinesList = data["data"];
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (err) {
+      Fluttertoast.showToast(
+        msg: "Error occured: $err",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isLoadingMedicinesList = false;
+      notifyListeners();
+    }
   }
 
   // ---------------------------------------

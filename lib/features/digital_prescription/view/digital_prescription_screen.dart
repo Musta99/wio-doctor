@@ -381,6 +381,9 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                 /// NAME
                                 TextField(
                                   controller: vm.meds[i].name,
+                                  onChanged: (value) {
+                                    vm.getMedicinesList(value);
+                                  },
                                   style: AppTextStyles.body(14),
                                   decoration: AppDecorations.inputDec(
                                     "Medicine name (e.g., Paracetamol)",
