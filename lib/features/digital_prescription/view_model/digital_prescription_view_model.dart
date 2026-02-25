@@ -23,16 +23,18 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
 
       if (doctorId == null || token == null) return;
 
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection("patientAccess")
-          .where("doctorId", isEqualTo: doctorId)
-          .where("status", isEqualTo: "granted")
-          .get();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance
+              .collection("patientAccess")
+              .where("doctorId", isEqualTo: doctorId)
+              .where("status", isEqualTo: "granted")
+              .get();
 
       /// ✅ Store fetched data
-      grantedPatientList = querySnapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
+      grantedPatientList =
+          querySnapshot.docs
+              .map((doc) => doc.data() as Map<String, dynamic>)
+              .toList();
     } catch (err) {
       Fluttertoast.showToast(
         msg: "Error occured: $err",
@@ -42,5 +44,70 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
       isLoadingPatientsList = false;
       notifyListeners();
     }
+  }
+
+  // ----------- Select Patient from dropdown -----------
+  String? selectedPatient;
+  void selectPatient(value) {
+    selectedPatient = value;
+    notifyListeners();
+  }
+
+  // ---------------------------------------
+  List<MedRow> meds = [MedRow()];
+
+  /// Add medicine
+  void addMed() {
+    meds.add(MedRow());
+    notifyListeners();
+  }
+
+  /// Remove medicine
+  void removeMed(int index) {
+    if (meds.length == 1) return;
+    meds[index].dispose();
+    meds.removeAt(index);
+    notifyListeners();
+  }
+
+  /// Toggle timing
+  void toggleMorning(int index) {
+    meds[index].morning = !meds[index].morning;
+    notifyListeners();
+  }
+
+  void toggleNoon(int index) {
+    meds[index].noon = !meds[index].noon;
+    notifyListeners();
+  }
+
+  void toggleNight(int index) {
+    meds[index].night = !meds[index].night;
+    notifyListeners();
+  }
+
+  /// Instruction select
+  void setInstruction(int index, String? value) {
+    meds[index].instruction = value;
+    notifyListeners();
+  }
+}
+
+// -------------- MedRow Class -------------
+class MedRow {
+  final name = TextEditingController();
+  final strength = TextEditingController();
+  final duration = TextEditingController();
+
+  bool morning = false;
+  bool noon = false;
+  bool night = false;
+
+  String? instruction;
+
+  void dispose() {
+    name.dispose();
+    strength.dispose();
+    duration.dispose();
   }
 }

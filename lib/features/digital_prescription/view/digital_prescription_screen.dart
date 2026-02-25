@@ -16,15 +16,6 @@ class DigitalPrescriberScreen extends StatefulWidget {
 }
 
 class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
-  // Patient dropdown demo
-  // final List<String> patients = const [
-  //   "Sarah Jenkins (WIO-10234)",
-  //   "Rahim Uddin (WIO-88421)",
-  //   "Nusrat Jahan (WIO-22109)",
-  //   "Ayesha Khan (WIO-55319)",
-  // ];
-  String? selectedPatient;
-
   // Medication dynamic list
   final List<_MedRow> meds = [];
 
@@ -53,18 +44,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
     testsCtrl.dispose();
     suggestionCtrl.dispose();
     super.dispose();
-  }
-
-  void _addMed() {
-    setState(() => meds.add(_MedRow()));
-  }
-
-  void _removeMed(int i) {
-    if (meds.length == 1) return; // keep at least 1
-    setState(() {
-      meds[i].dispose();
-      meds.removeAt(i);
-    });
   }
 
   @override
@@ -220,16 +199,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
     }
 
     // Instruction dropdown for each medicine row
-    Widget instructionDropdown({required _MedRow med}) {
-      const options = ["After food", "Before food", "With food"];
-      return dropdownBox(
-        icon: LucideIcons.list,
-        hint: "Instruction",
-        value: med.instruction,
-        items: options,
-        onChanged: (v) => setState(() => med.instruction = v),
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -288,9 +257,11 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                         return dropdownBox(
                           icon: LucideIcons.users,
                           hint: "Select patient",
-                          value: selectedPatient,
+                          value: vm.selectedPatient,
                           items: patients,
-                          onChanged: (v) => setState(() => selectedPatient = v),
+                          onChanged: (v) {
+                            vm.selectPatient(v);
+                          },
                         );
                       },
                     ),
@@ -301,200 +272,212 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
               const SizedBox(height: 14),
 
               // MEDICATIONS
-              Container(
-                decoration: AppDecorations.card(isDark),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+              Consumer<DigitalPrescriptionViewModel>(
+                builder: (context, vm, child) {
+                  return Container(
+                    decoration: AppDecorations.card(isDark),
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: headerRow(
-                            icon: LucideIcons.pill,
-                            title: "Medications",
-                            subtitle:
-                                "Add medicines with dosage & instructions.",
-                            accent: const Color(0xFF8B5CF6),
-                          ),
-                        ),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(999),
-                          onTap: _addMed,
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
+                        Row(
+                          children: [
+                            Expanded(
+                              child: headerRow(
+                                icon: LucideIcons.pill,
+                                title: "Medications",
+                                subtitle:
+                                    "Add medicines with dosage & instructions.",
+                                accent: const Color(0xFF8B5CF6),
+                              ),
+                            ),
+
+                            /// ADD MEDICINE
+                            InkWell(
                               borderRadius: BorderRadius.circular(999),
+                              onTap: vm.addMed, // ✅ use ViewModel
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(999),
+                                  color:
+                                      isDark
+                                          ? Colors.white.withOpacity(0.06)
+                                          : Colors.black.withOpacity(0.05),
+                                  border: Border.all(
+                                    color: AppColors.border(isDark),
+                                  ),
+                                ),
+                                child: Icon(LucideIcons.plus, size: 18),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 14),
+
+                        /// MEDICINE ROWS
+                        for (int i = 0; i < vm.meds.length; i++)
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
                               color:
                                   isDark
-                                      ? Colors.white.withOpacity(0.06)
-                                      : Colors.black.withOpacity(0.05),
+                                      ? Colors.white.withOpacity(0.04)
+                                      : const Color(0xFFF3F4F8),
+                              borderRadius: BorderRadius.circular(18),
                               border: Border.all(
                                 color: AppColors.border(isDark),
                               ),
                             ),
-                            child: Icon(
-                              LucideIcons.plus,
-                              size: 18,
-                              color:
-                                  isDark
-                                      ? Colors.white.withOpacity(0.9)
-                                      : Colors.black.withOpacity(0.8),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 14),
-
-                    // rows
-                    for (int i = 0; i < meds.length; i++)
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color:
-                              isDark
-                                  ? Colors.white.withOpacity(0.04)
-                                  : const Color(0xFFF3F4F8),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: AppColors.border(isDark)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // row header
-                            Row(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Expanded(
-                                  child: Text(
-                                    "Medicine ${i + 1}",
-                                    style: GoogleFonts.exo(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  borderRadius: BorderRadius.circular(12),
-                                  onTap: () => _removeMed(i),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(7),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.red.withOpacity(
-                                        isDark ? 0.14 : 0.10,
-                                      ),
-                                      border: Border.all(
-                                        color: Colors.red.withOpacity(
-                                          isDark ? 0.35 : 0.22,
+                                /// HEADER
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        "Medicine ${i + 1}",
+                                        style: GoogleFonts.exo(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w900,
                                         ),
                                       ),
                                     ),
-                                    child: const Icon(
-                                      LucideIcons.trash2,
-                                      size: 18,
-                                      color: Colors.red,
+
+                                    /// REMOVE MED
+                                    InkWell(
+                                      borderRadius: BorderRadius.circular(12),
+                                      onTap: () => vm.removeMed(i), // ✅
+                                      child: Container(
+                                        padding: const EdgeInsets.all(7),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          color: Colors.red.withOpacity(
+                                            isDark ? 0.14 : 0.10,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.red.withOpacity(
+                                              isDark ? 0.35 : 0.22,
+                                            ),
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          LucideIcons.trash2,
+                                          size: 18,
+                                          color: Colors.red,
+                                        ),
+                                      ),
                                     ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                /// NAME
+                                TextField(
+                                  controller: vm.meds[i].name,
+                                  style: AppTextStyles.body(14),
+                                  decoration: AppDecorations.inputDec(
+                                    "Medicine name (e.g., Paracetamol)",
+                                    LucideIcons.pill,
+                                    isDark,
                                   ),
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                /// STRENGTH + DURATION
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: vm.meds[i].strength,
+                                        style: AppTextStyles.body(14),
+                                        decoration: AppDecorations.inputDec(
+                                          "Strength (e.g., 500mg)",
+                                          LucideIcons.flaskConical,
+                                          isDark,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: vm.meds[i].duration,
+                                        style: AppTextStyles.body(14),
+                                        decoration: AppDecorations.inputDec(
+                                          "Duration (e.g., 5 days)",
+                                          LucideIcons.calendarClock,
+                                          isDark,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 10),
+
+                                Text(
+                                  "Timing",
+                                  style: GoogleFonts.exo(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w900,
+                                    color: AppColors.subtleText(isDark),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                /// TIMING TOGGLES
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    pillToggle(
+                                      text: "Morning",
+                                      active: vm.meds[i].morning,
+                                      onTap: () => vm.toggleMorning(i), // ✅
+                                    ),
+                                    pillToggle(
+                                      text: "Noon",
+                                      active: vm.meds[i].noon,
+                                      onTap: () => vm.toggleNoon(i), // ✅
+                                    ),
+                                    pillToggle(
+                                      text: "Night",
+                                      active: vm.meds[i].night,
+                                      onTap: () => vm.toggleNight(i), // ✅
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 12),
+
+                                /// INSTRUCTION
+                                dropdownBox(
+                                  icon: LucideIcons.list,
+                                  hint: "Instruction",
+                                  value: vm.meds[i].instruction,
+                                  items: const [
+                                    "After food",
+                                    "Before food",
+                                    "With food",
+                                  ],
+                                  onChanged:
+                                      (v) => vm.setInstruction(i, v), // ✅
                                 ),
                               ],
                             ),
-
-                            const SizedBox(height: 12),
-
-                            TextField(
-                              controller: meds[i].name,
-                              style: AppTextStyles.body(14),
-                              decoration: AppDecorations.inputDec(
-                                "Medicine name (e.g., Paracetamol)",
-                                LucideIcons.pill,
-                                isDark,
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextField(
-                                    controller: meds[i].strength,
-                                    style: AppTextStyles.body(14),
-                                    decoration: AppDecorations.inputDec(
-                                      "Strength (e.g., 500mg)",
-                                      LucideIcons.flaskConical,
-                                      isDark,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: TextField(
-                                    controller: meds[i].duration,
-                                    style: AppTextStyles.body(14),
-                                    decoration: AppDecorations.inputDec(
-                                      "Duration (e.g., 5 days)",
-                                      LucideIcons.calendarClock,
-                                      isDark,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 10),
-
-                            Text(
-                              "Timing",
-                              style: GoogleFonts.exo(
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w900,
-                                color: AppColors.subtleText(isDark),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: [
-                                pillToggle(
-                                  text: "Morning",
-                                  active: meds[i].morning,
-                                  onTap:
-                                      () => setState(
-                                        () =>
-                                            meds[i].morning = !meds[i].morning,
-                                      ),
-                                ),
-                                pillToggle(
-                                  text: "Noon",
-                                  active: meds[i].noon,
-                                  onTap:
-                                      () => setState(
-                                        () => meds[i].noon = !meds[i].noon,
-                                      ),
-                                ),
-                                pillToggle(
-                                  text: "Night",
-                                  active: meds[i].night,
-                                  onTap:
-                                      () => setState(
-                                        () => meds[i].night = !meds[i].night,
-                                      ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 12),
-
-                            instructionDropdown(med: meds[i]),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
               ),
 
               const SizedBox(height: 14),
