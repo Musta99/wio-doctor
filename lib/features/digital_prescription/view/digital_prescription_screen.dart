@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
+import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 
 class DigitalPrescriberScreen extends StatefulWidget {
   const DigitalPrescriberScreen({super.key});
@@ -33,6 +35,12 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DigitalPrescriptionViewModel>(
+        context,
+        listen: false,
+      ).fetchGrantedPatientsList(context);
+    });
     // one default row
     meds.add(_MedRow());
   }

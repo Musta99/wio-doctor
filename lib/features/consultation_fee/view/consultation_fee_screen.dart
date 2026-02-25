@@ -14,14 +14,7 @@ class ConsultationFeeScreen extends StatefulWidget {
 }
 
 class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
-  String currency = "BDT (৳)";
-  final Map<String, TextEditingController> feeControllers = {
-    "60-Minute Consultation": TextEditingController(text: "1000"),
-    "30-Minute Consultation": TextEditingController(text: "250"),
-    "Follow-up Consultation": TextEditingController(text: "300"),
-    "Online Video Consultation": TextEditingController(text: "0"),
-    "Home Visit": TextEditingController(text: "0"),
-  };
+
 
   bool isSaving = false;
 
