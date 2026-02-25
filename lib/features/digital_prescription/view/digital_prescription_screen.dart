@@ -17,12 +17,12 @@ class DigitalPrescriberScreen extends StatefulWidget {
 
 class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
   // Patient dropdown demo
-  final List<String> patients = const [
-    "Sarah Jenkins (WIO-10234)",
-    "Rahim Uddin (WIO-88421)",
-    "Nusrat Jahan (WIO-22109)",
-    "Ayesha Khan (WIO-55319)",
-  ];
+  // final List<String> patients = const [
+  //   "Sarah Jenkins (WIO-10234)",
+  //   "Rahim Uddin (WIO-88421)",
+  //   "Nusrat Jahan (WIO-22109)",
+  //   "Ayesha Khan (WIO-55319)",
+  // ];
   String? selectedPatient;
 
   // Medication dynamic list
@@ -263,12 +263,36 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                       accent: Colors.teal,
                     ),
                     const SizedBox(height: 14),
-                    dropdownBox(
-                      icon: LucideIcons.users,
-                      hint: "Select patient",
-                      value: selectedPatient,
-                      items: patients,
-                      onChanged: (v) => setState(() => selectedPatient = v),
+                    Consumer<DigitalPrescriptionViewModel>(
+                      builder: (context, vm, child) {
+                        /// Loading state
+                        if (vm.isLoadingPatientsList &&
+                            vm.grantedPatientList.isEmpty) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        /// Empty state
+                        if (vm.grantedPatientList.isEmpty) {
+                          return const Text("No patients available");
+                        }
+
+                        /// Convert API → dropdown text
+                        final patients =
+                            vm.grantedPatientList.map((p) {
+                              final name = p["patientName"] ?? "Unknown";
+                              return "$name";
+                            }).toList();
+
+                        return dropdownBox(
+                          icon: LucideIcons.users,
+                          hint: "Select patient",
+                          value: selectedPatient,
+                          items: patients,
+                          onChanged: (v) => setState(() => selectedPatient = v),
+                        );
+                      },
                     ),
                   ],
                 ),
