@@ -379,17 +379,88 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                 const SizedBox(height: 12),
 
                                 /// NAME
-                                TextField(
-                                  controller: vm.meds[i].name,
-                                  onChanged: (value) {
-                                    vm.getMedicinesList(value);
-                                  },
-                                  style: AppTextStyles.body(14),
-                                  decoration: AppDecorations.inputDec(
-                                    "Medicine name (e.g., Paracetamol)",
-                                    LucideIcons.pill,
-                                    isDark,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    /// MEDICINE NAME INPUT
+                                    TextField(
+                                      controller: vm.meds[i].name,
+                                      onChanged: (value) {
+                                        if (value.trim().isNotEmpty) {
+                                          vm.getMedicinesList(value);
+                                        } else {
+                                          vm.clearMedicinesList();
+                                        }
+                                      },
+                                      style: AppTextStyles.body(14),
+                                      decoration: AppDecorations.inputDec(
+                                        "Medicine name (e.g., Paracetamol)",
+                                        LucideIcons.pill,
+                                        isDark,
+                                      ),
+                                    ),
+
+                                    /// SUGGESTION DROPDOWN
+                                    if (vm.isLoadingMedicinesList)
+                                      const Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: LinearProgressIndicator(
+                                          color: Colors.teal,
+                                        ),
+                                      ),
+
+                                    if (!vm.isLoadingMedicinesList &&
+                                        vm.medicinesList.isNotEmpty)
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 6),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: AppColors.border(isDark),
+                                          ),
+                                          color:
+                                              isDark
+                                                  ? Colors.white.withOpacity(
+                                                    0.04,
+                                                  )
+                                                  : const Color(0xFFF3F4F8),
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          maxHeight: 180,
+                                        ),
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: vm.medicinesList.length,
+                                          itemBuilder: (context, index) {
+                                            final medicine =
+                                                vm.medicinesList[index];
+
+                                            return ListTile(
+                                              dense: true,
+                                              title: Text(
+                                                medicine["name"] ?? "",
+                                                style: AppTextStyles.body(13),
+                                              ),
+                                              subtitle: Text(
+                                                medicine["genericName"] ?? "",
+                                                style: AppTextStyles.body(11),
+                                              ),
+                                              onTap: () {
+                                                /// fill selected medicine
+                                                vm.meds[i].name.text =
+                                                    medicine["name"] ?? "";
+                                                vm.meds[i].strength.text =
+                                                    medicine["strength"] ?? "";
+
+                                                vm.clearMedicinesList(); // hide dropdown
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                  ],
                                 ),
 
                                 const SizedBox(height: 10),
@@ -443,17 +514,22 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                   children: [
                                     pillToggle(
                                       text: "Morning",
-                                      active: vm.meds[i].morning,
+                                      active:
+                                          vm.meds[i].morning == 0
+                                              ? false
+                                              : true,
                                       onTap: () => vm.toggleMorning(i), // ✅
                                     ),
                                     pillToggle(
                                       text: "Noon",
-                                      active: vm.meds[i].noon,
+                                      active:
+                                          vm.meds[i].noon == 0 ? false : true,
                                       onTap: () => vm.toggleNoon(i), // ✅
                                     ),
                                     pillToggle(
                                       text: "Night",
-                                      active: vm.meds[i].night,
+                                      active:
+                                          vm.meds[i].night == 0 ? false : true,
                                       onTap: () => vm.toggleNight(i), // ✅
                                     ),
                                   ],
@@ -553,19 +629,35 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    ShadButton(
-                      width: double.infinity,
-                      backgroundColor: Colors.teal,
-                      onPressed: () {
-                        // TODO: Save prescription
+                    Consumer<DigitalPrescriptionViewModel>(
+                      builder: (context, vm, child) {
+                        return ShadButton(
+                          width: double.infinity,
+                          backgroundColor: Colors.teal,
+                          onPressed: () {
+                            /// PRINT ALL MEDICINES
+                            for (int i = 0; i < vm.meds.length; i++) {
+                              final med = vm.meds[i];
+
+                              print("------ Medicine ${i + 1} ------");
+                              print("Name: ${med.name.text}");
+                              print("Strength: ${med.strength.text}");
+                              print("Duration: ${med.duration.text}");
+                              print("Morning: ${med.morning}");
+                              print("Noon: ${med.noon}");
+                              print("Night: ${med.night}");
+                              print("Instruction: ${med.instruction}");
+                            }
+                          },
+                          child: Text(
+                            "Save",
+                            style: GoogleFonts.exo(
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                          ),
+                        );
                       },
-                      child: Text(
-                        "Save",
-                        style: GoogleFonts.exo(
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                        ),
-                      ),
                     ),
                   ],
                 ),
