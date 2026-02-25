@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 
@@ -62,18 +63,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
-    final bgBottom = isDark ? const Color(0xFF060A12) : Colors.white;
-
-    final borderColor =
-        isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06);
-    final subtleText =
-        isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.62);
-
     Widget headerRow({
       required IconData icon,
       required String title,
@@ -103,7 +92,9 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: AppTextStyles.body(15).copyWith(color: subtleText),
+                  style: AppTextStyles.body(
+                    15,
+                  ).copyWith(color: AppColors.subtleText(isDark)),
                 ),
               ],
             ),
@@ -136,7 +127,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
               color:
                   active
                       ? Colors.teal.withOpacity(isDark ? 0.55 : 0.40)
-                      : borderColor,
+                      : AppColors.border(isDark),
             ),
           ),
           child: Text(
@@ -172,11 +163,11 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
           color:
               isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: borderColor),
+          border: Border.all(color: AppColors.border(isDark)),
         ),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: subtleText),
+            Icon(icon, size: 18, color: AppColors.subtleText(isDark)),
             const SizedBox(width: 10),
             Expanded(
               child: DropdownButtonHideUnderline(
@@ -188,13 +179,13 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                     style: GoogleFonts.exo(
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      color: subtleText,
+                      color: AppColors.subtleText(isDark),
                     ),
                   ),
                   icon: Icon(
                     LucideIcons.chevronDown,
                     size: 18,
-                    color: subtleText,
+                    color: AppColors.subtleText(isDark),
                   ),
                   items:
                       items
@@ -240,7 +231,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [bgTop, bgBottom],
+            colors: [AppColors.bgTop(isDark), AppColors.bgBottom(isDark)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -306,7 +297,9 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                   isDark
                                       ? Colors.white.withOpacity(0.06)
                                       : Colors.black.withOpacity(0.05),
-                              border: Border.all(color: borderColor),
+                              border: Border.all(
+                                color: AppColors.border(isDark),
+                              ),
                             ),
                             child: Icon(
                               LucideIcons.plus,
@@ -334,7 +327,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                   ? Colors.white.withOpacity(0.04)
                                   : const Color(0xFFF3F4F8),
                           borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: borderColor),
+                          border: Border.all(color: AppColors.border(isDark)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,7 +418,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                               style: GoogleFonts.exo(
                                 fontSize: 12.5,
                                 fontWeight: FontWeight.w900,
-                                color: subtleText,
+                                color: AppColors.subtleText(isDark),
                               ),
                             ),
                             const SizedBox(height: 8),
