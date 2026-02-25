@@ -74,11 +74,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
             ? Colors.white.withOpacity(0.72)
             : Colors.black.withOpacity(0.62);
 
-    TextStyle sectionStyle(double s) =>
-        GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
-    TextStyle bodyStyle(double s) =>
-        GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w700);
-
     Widget headerRow({
       required IconData icon,
       required String title,
@@ -104,11 +99,11 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: sectionStyle(16)),
+                Text(title, style: AppTextStyles.section(16)),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
-                  style: bodyStyle(12.5).copyWith(color: subtleText),
+                  style: AppTextStyles.body(15).copyWith(color: subtleText),
                 ),
               ],
             ),
@@ -386,7 +381,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
 
                             TextField(
                               controller: meds[i].name,
-                              style: bodyStyle(14),
+                              style: AppTextStyles.body(14),
                               decoration: AppDecorations.inputDec(
                                 "Medicine name (e.g., Paracetamol)",
                                 LucideIcons.pill,
@@ -400,7 +395,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                 Expanded(
                                   child: TextField(
                                     controller: meds[i].strength,
-                                    style: bodyStyle(14),
+                                    style: AppTextStyles.body(14),
                                     decoration: AppDecorations.inputDec(
                                       "Strength (e.g., 500mg)",
                                       LucideIcons.flaskConical,
@@ -412,7 +407,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                 Expanded(
                                   child: TextField(
                                     controller: meds[i].duration,
-                                    style: bodyStyle(14),
+                                    style: AppTextStyles.body(14),
                                     decoration: AppDecorations.inputDec(
                                       "Duration (e.g., 5 days)",
                                       LucideIcons.calendarClock,
@@ -496,7 +491,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                     TextField(
                       controller: testsCtrl,
                       maxLines: 3,
-                      style: bodyStyle(14),
+                      style: AppTextStyles.body(14),
                       decoration: AppDecorations.inputDec(
                         "Recommended tests (e.g., CBC, ECG, HbA1c)",
                         LucideIcons.flaskRound,
@@ -507,7 +502,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                     TextField(
                       controller: suggestionCtrl,
                       maxLines: 3,
-                      style: bodyStyle(14),
+                      style: AppTextStyles.body(14),
                       decoration: AppDecorations.inputDec(
                         "Additional suggestions (diet, exercise, follow-up...)",
                         LucideIcons.messageSquareText,
