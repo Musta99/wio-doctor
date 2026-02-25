@@ -64,7 +64,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
     final bgBottom = isDark ? const Color(0xFF060A12) : Colors.white;
 
-    final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
     final borderColor =
         isDark
             ? Colors.white.withOpacity(0.08)
@@ -83,37 +82,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
     TextStyle bodyStyle(double s) =>
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w700);
-
-    InputDecoration inputDec({required String hint, required IconData icon}) {
-      return InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.exo(
-          color: subtleText,
-          fontWeight: FontWeight.w700,
-          fontSize: 13,
-        ),
-        prefixIcon: Icon(icon, size: 18),
-        filled: true,
-        fillColor:
-            isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 12,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.teal.withOpacity(0.65)),
-        ),
-      );
-    }
 
     Widget headerRow({
       required IconData icon,
@@ -423,9 +391,10 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                             TextField(
                               controller: meds[i].name,
                               style: bodyStyle(14),
-                              decoration: inputDec(
-                                hint: "Medicine name (e.g., Paracetamol)",
-                                icon: LucideIcons.pill,
+                              decoration: AppDecorations.inputDec(
+                                "Medicine name (e.g., Paracetamol)",
+                                LucideIcons.pill,
+                                isDark,
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -436,9 +405,10 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                   child: TextField(
                                     controller: meds[i].strength,
                                     style: bodyStyle(14),
-                                    decoration: inputDec(
-                                      hint: "Strength (e.g., 500mg)",
-                                      icon: LucideIcons.flaskConical,
+                                    decoration: AppDecorations.inputDec(
+                                      "Strength (e.g., 500mg)",
+                                      LucideIcons.flaskConical,
+                                      isDark,
                                     ),
                                   ),
                                 ),
@@ -447,9 +417,10 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                   child: TextField(
                                     controller: meds[i].duration,
                                     style: bodyStyle(14),
-                                    decoration: inputDec(
-                                      hint: "Duration (e.g., 5 days)",
-                                      icon: LucideIcons.calendarClock,
+                                    decoration: AppDecorations.inputDec(
+                                      "Duration (e.g., 5 days)",
+                                      LucideIcons.calendarClock,
+                                      isDark,
                                     ),
                                   ),
                                 ),
@@ -530,9 +501,10 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                       controller: testsCtrl,
                       maxLines: 3,
                       style: bodyStyle(14),
-                      decoration: inputDec(
-                        hint: "Recommended tests (e.g., CBC, ECG, HbA1c)",
-                        icon: LucideIcons.flaskRound,
+                      decoration: AppDecorations.inputDec(
+                        "Recommended tests (e.g., CBC, ECG, HbA1c)",
+                        LucideIcons.flaskRound,
+                        isDark,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -540,10 +512,10 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                       controller: suggestionCtrl,
                       maxLines: 3,
                       style: bodyStyle(14),
-                      decoration: inputDec(
-                        hint:
-                            "Additional suggestions (diet, exercise, follow-up...)",
-                        icon: LucideIcons.messageSquareText,
+                      decoration: AppDecorations.inputDec(
+                        "Additional suggestions (diet, exercise, follow-up...)",
+                        LucideIcons.messageSquareText,
+                        isDark,
                       ),
                     ),
                   ],
