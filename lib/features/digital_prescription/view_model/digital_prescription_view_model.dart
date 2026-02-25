@@ -51,9 +51,10 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
   }
 
   // ----------- Select Patient from dropdown -----------
-  String? selectedPatient;
-  void selectPatient(value) {
-    selectedPatient = value;
+  Map? selectedPatient; // {"name": "...", "id": "..."}
+
+  void selectPatient(Map patient) {
+    selectedPatient = patient;
     notifyListeners();
   }
 
@@ -88,7 +89,7 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
     }
   }
 
-  //  -------------------- Clear medicine List
+  //  -------------------- Clear medicine List ------------------
   void clearMedicinesList() {
     medicinesList = [];
     notifyListeners();
@@ -171,19 +172,30 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
           "suggestions": suggestionCtrl,
           "doctorId": doctorId,
           "doctorName":
-              Provider.of<ProfileViewModel>(context, listen: false).fullNameC,
+              Provider.of<ProfileViewModel>(
+                context,
+                listen: false,
+              ).fullNameC.text,
           "patientName": patientName,
           "prescriptionDate": prescriptionDate,
           "language": "en",
         },
       };
 
-      final response = await http.put(
+      final response = await http.post(
         Uri.parse("https://www.wiocare.com/api/create-prescription"),
+        headers: {"Content-Type": "application/json"},
         body: jsonEncode(bodyData),
       );
 
+      print("STATUS: ${response.statusCode}");
+      print("BODY: ${response.body}");
+
       if (response.statusCode == 200) {
+        print(response.body);
+
+        clearAllFields(); // ⭐ reset everything
+
         Fluttertoast.showToast(
           msg: "Prescription created succesfully",
           backgroundColor: Colors.green,
@@ -193,6 +205,7 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
         print(response.body);
       }
     } catch (err) {
+      print(err.toString());
       Fluttertoast.showToast(
         msg: "Error occured: $err",
         backgroundColor: Colors.red,
@@ -201,6 +214,25 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
       isLoadingCreation = false;
       notifyListeners();
     }
+  }
+
+  // ---------------- Clear full form after successfull creation --------------
+  void clearAllFields() {
+    /// Clear all medicine controllers
+    for (final med in meds) {
+      med.dispose();
+    }
+
+    /// Reset medicine list with one empty row
+    meds = [MedRow()];
+
+    /// Clear patient selection
+    selectedPatient = null;
+
+    /// Clear medicine search list
+    medicinesList = [];
+
+    notifyListeners();
   }
 }
 

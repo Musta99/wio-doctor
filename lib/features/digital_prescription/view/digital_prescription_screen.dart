@@ -247,20 +247,42 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                           return const Text("No patients available");
                         }
 
-                        /// Convert API → dropdown text
-                        final patients =
-                            vm.grantedPatientList.map((p) {
-                              final name = p["patientName"] ?? "Unknown";
-                              return "$name";
-                            }).toList();
+                        /// Map patient objects
+                        final patientList =
+                            vm.grantedPatientList
+                                .map(
+                                  (p) => {
+                                    "name": p["patientName"] ?? "Unknown",
+                                    "id": p["patientId"] ?? "",
+                                  },
+                                )
+                                .toList();
+
+                        /// Dropdown text list (only names)
+                        final List<String> patientNames =
+                            vm.grantedPatientList
+                                .map<String>(
+                                  (p) =>
+                                      (p["patientName"] ?? "Unknown")
+                                          .toString(),
+                                )
+                                .toList();
+
+                        /// Current selected name
+                        final selectedName = vm.selectedPatient?["name"];
 
                         return dropdownBox(
                           icon: LucideIcons.users,
                           hint: "Select patient",
-                          value: vm.selectedPatient,
-                          items: patients,
+                          value: selectedName,
+                          items: patientNames,
                           onChanged: (v) {
-                            vm.selectPatient(v);
+                            if (v == null) return;
+                            // Find the selected patient map by name
+                            final selected = patientList.firstWhere(
+                              (p) => p["name"] == v,
+                            );
+                            vm.selectPatient(selected);
                           },
                         );
                       },
@@ -634,7 +656,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                         return ShadButton(
                           width: double.infinity,
                           backgroundColor: Colors.teal,
-                          onPressed: () {
+                          onPressed: () async {
                             /// PRINT ALL MEDICINES
                             for (int i = 0; i < vm.meds.length; i++) {
                               final med = vm.meds[i];
@@ -648,14 +670,29 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                               print("Night: ${med.night}");
                               print("Instruction: ${med.instruction}");
                             }
+
+                            await vm.createPrescription(
+                              context,
+                              vm.selectedPatient!["id"],
+                              testsCtrl.text,
+                              suggestionCtrl.text,
+                              vm.selectedPatient!["name"],
+                            );
                           },
-                          child: Text(
-                            "Save",
-                            style: GoogleFonts.exo(
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white,
-                            ),
-                          ),
+                          child:
+                              vm.isLoadingCreation
+                                  ? SizedBox(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                  : Text(
+                                    "Save",
+                                    style: GoogleFonts.exo(
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                         );
                       },
                     ),
