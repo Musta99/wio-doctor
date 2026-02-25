@@ -657,20 +657,6 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                           width: double.infinity,
                           backgroundColor: Colors.teal,
                           onPressed: () async {
-                            /// PRINT ALL MEDICINES
-                            for (int i = 0; i < vm.meds.length; i++) {
-                              final med = vm.meds[i];
-
-                              print("------ Medicine ${i + 1} ------");
-                              print("Name: ${med.name.text}");
-                              print("Strength: ${med.strength.text}");
-                              print("Duration: ${med.duration.text}");
-                              print("Morning: ${med.morning}");
-                              print("Noon: ${med.noon}");
-                              print("Night: ${med.night}");
-                              print("Instruction: ${med.instruction}");
-                            }
-
                             await vm.createPrescription(
                               context,
                               vm.selectedPatient!["id"],
@@ -678,14 +664,13 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                               suggestionCtrl.text,
                               vm.selectedPatient!["name"],
                             );
+
+                            testsCtrl.clear();
+                            suggestionCtrl.clear();
                           },
                           child:
                               vm.isLoadingCreation
-                                  ? SizedBox(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                    ),
-                                  )
+                                  ? Icon(LucideIcons.loader, size: 22)
                                   : Text(
                                     "Save",
                                     style: GoogleFonts.exo(

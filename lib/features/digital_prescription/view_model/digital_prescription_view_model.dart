@@ -232,6 +232,8 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
     /// Clear medicine search list
     medicinesList = [];
 
+
+
     notifyListeners();
   }
 }
