@@ -76,10 +76,12 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<PatientViewModel>(
-      context,
-      listen: false,
-    ).fetchPatientDetails(widget.patientId);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<PatientViewModel>(
+        context,
+        listen: false,
+      ).fetchPatientDetails(widget.patientId);
+    });
   }
 
   @override
@@ -937,9 +939,10 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) =>  AddVitalsScreen(
-                                  patientId: widget.patientId,
-                                ),
+                                builder:
+                                    (_) => AddVitalsScreen(
+                                      patientId: widget.patientId,
+                                    ),
                               ),
                             );
                           },

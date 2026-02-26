@@ -83,6 +83,16 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
     ],
   };
 
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProfileViewModel>(context, listen: false).fetchDoctorData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
