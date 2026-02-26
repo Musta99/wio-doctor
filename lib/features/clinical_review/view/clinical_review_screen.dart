@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
+import 'package:wio_doctor/widgets/dropdown_box_widget.dart';
 
 /// ===============================
 /// 1) CLINICAL REVIEW SCREEN
@@ -154,66 +155,66 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
       );
     }
 
-    Widget dropdownBox({
-      required IconData icon,
-      required String hint,
-      required String? value,
-      required List<String> items,
-      required ValueChanged<String?> onChanged,
-    }) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color:
-              isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: borderColor),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: subtleText),
-            const SizedBox(width: 10),
-            Expanded(
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: value,
-                  hint: Text(
-                    hint,
-                    style: GoogleFonts.exo(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: subtleText,
-                    ),
-                  ),
-                  icon: Icon(
-                    LucideIcons.chevronDown,
-                    size: 18,
-                    color: subtleText,
-                  ),
-                  items:
-                      items
-                          .map(
-                            (e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(
-                                e,
-                                style: GoogleFonts.exo(
-                                  fontSize: 13.5,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                            ),
-                          )
-                          .toList(),
-                  onChanged: onChanged,
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    // Widget dropdownBox({
+    //   required IconData icon,
+    //   required String hint,
+    //   required String? value,
+    //   required List<String> items,
+    //   required ValueChanged<String?> onChanged,
+    // }) {
+    //   return Container(
+    //     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    //     decoration: BoxDecoration(
+    //       color:
+    //           isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
+    //       borderRadius: BorderRadius.circular(16),
+    //       border: Border.all(color: borderColor),
+    //     ),
+    //     child: Row(
+    //       children: [
+    //         Icon(icon, size: 18, color: subtleText),
+    //         const SizedBox(width: 10),
+    //         Expanded(
+    //           child: DropdownButtonHideUnderline(
+    //             child: DropdownButton<String>(
+    //               isExpanded: true,
+    //               value: value,
+    //               hint: Text(
+    //                 hint,
+    //                 style: GoogleFonts.exo(
+    //                   fontSize: 13,
+    //                   fontWeight: FontWeight.w800,
+    //                   color: subtleText,
+    //                 ),
+    //               ),
+    //               icon: Icon(
+    //                 LucideIcons.chevronDown,
+    //                 size: 18,
+    //                 color: subtleText,
+    //               ),
+    //               items:
+    //                   items
+    //                       .map(
+    //                         (e) => DropdownMenuItem(
+    //                           value: e,
+    //                           child: Text(
+    //                             e,
+    //                             style: GoogleFonts.exo(
+    //                               fontSize: 13.5,
+    //                               fontWeight: FontWeight.w900,
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       )
+    //                       .toList(),
+    //               onChanged: onChanged,
+    //             ),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   );
+    // }
 
     final reports =
         selectedPatient == null
@@ -292,7 +293,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                         /// Current selected name
                         final selectedName = vm.selectedPatient?["name"];
 
-                        return dropdownBox(
+                        return DropdownBoxWidget(
                           icon: LucideIcons.users,
                           hint: "Select patient",
                           value: selectedName,
