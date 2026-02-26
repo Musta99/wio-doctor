@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
+import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
-import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 import 'package:wio_doctor/widgets/dropdown_box_widget.dart';
 import 'package:wio_doctor/widgets/header_row_widget.dart';
 
@@ -86,26 +87,6 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
-    final bgBottom = isDark ? const Color(0xFF060A12) : Colors.white;
-
-
-    final borderColor =
-        isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06);
-    final subtleText =
-        isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.62);
-
-    TextStyle titleStyle(double s) =>
-        GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
-  
-    TextStyle bodyStyle(double s) =>
-        GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w700);
-
-
     final reports =
         selectedPatient == null
             ? <_ReportItem>[]
@@ -113,13 +94,13 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Clinical Review", style: titleStyle(18)),
+        title: Text("Clinical Review", style: AppTextStyles.title(18)),
         centerTitle: true,
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [bgTop, bgBottom],
+            colors: [AppColors.bgTop(isDark), AppColors.bgBottom(isDark)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -230,11 +211,13 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                   ? Colors.white.withOpacity(0.04)
                                   : const Color(0xFFF3F4F8),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: borderColor),
+                          border: Border.all(color: AppColors.border(isDark)),
                         ),
                         child: Text(
                           "No patient selected yet.",
-                          style: bodyStyle(13).copyWith(color: subtleText),
+                          style: AppTextStyles.body(
+                            13,
+                          ).copyWith(color: AppColors.subtleText(isDark)),
                         ),
                       ),
                     if (selectedPatient != null && reports.isEmpty)
@@ -247,11 +230,13 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                   ? Colors.white.withOpacity(0.04)
                                   : const Color(0xFFF3F4F8),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: borderColor),
+                          border: Border.all(color: AppColors.border(isDark)),
                         ),
                         child: Text(
                           "No reports found for this patient.",
-                          style: bodyStyle(13).copyWith(color: subtleText),
+                          style: AppTextStyles.body(
+                            13,
+                          ).copyWith(color: AppColors.subtleText(isDark)),
                         ),
                       ),
                     for (final r in reports)
@@ -281,7 +266,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                     ? Colors.white.withOpacity(0.04)
                                     : const Color(0xFFF3F4F8),
                             borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: borderColor),
+                            border: Border.all(color: AppColors.border(isDark)),
                           ),
                           child: Row(
                             children: [
@@ -325,9 +310,9 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                     const SizedBox(height: 4),
                                     Text(
                                       "${r.date} • ${r.source}",
-                                      style: bodyStyle(
-                                        12.5,
-                                      ).copyWith(color: subtleText),
+                                      style: AppTextStyles.body(12.5).copyWith(
+                                        color: AppColors.subtleText(isDark),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -365,7 +350,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                               Icon(
                                 LucideIcons.chevronRight,
                                 size: 18,
-                                color: subtleText,
+                                color: AppColors.subtleText(isDark),
                               ),
                             ],
                           ),
