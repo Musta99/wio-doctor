@@ -56,10 +56,6 @@ class ClinicalReviewViewModel extends ChangeNotifier {
         body: jsonEncode({'reports': reports}),
       );
       final data = jsonDecode(response.body);
-      const encoder = JsonEncoder.withIndent('  ');
-      final prettyJson = encoder.convert(data);
-
-      debugPrint(prettyJson, wrapWidth: 1024);
       if (response.statusCode == 200) {
         clinicalReviewData = data["data"];
         notifyListeners();
@@ -79,5 +75,13 @@ class ClinicalReviewViewModel extends ChangeNotifier {
       isReportAnalyzing = false;
       notifyListeners();
     }
+  }
+
+  // ------------------- rsest ------
+  void resetForNewPatient() {
+    reportsList = [];
+    clinicalReviewData = null;
+    isReportAnalyzing = false;
+    notifyListeners();
   }
 }

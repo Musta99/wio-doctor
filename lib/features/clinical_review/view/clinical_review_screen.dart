@@ -123,10 +123,17 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                             );
                             vm.selectPatient(selected);
 
-                            Provider.of<ClinicalReviewViewModel>(
-                              context,
-                              listen: false,
-                            ).fetchPatientReports(vm.selectedPatient!["id"]);
+                            final clinicalVM =
+                                Provider.of<ClinicalReviewViewModel>(
+                                  context,
+                                  listen: false,
+                                );
+
+                            // 🔥 clear previous state
+                            clinicalVM.resetForNewPatient();
+
+                            // fetch new reports
+                            clinicalVM.fetchPatientReports(selected["id"]);
                           },
                         );
                       },
@@ -137,227 +144,250 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
 
               const SizedBox(height: 14),
 
-              if (!Provider.of<ClinicalReviewViewModel>(
-                    context,
-                  ).isReportAnalyzing && Provider.of<ClinicalReviewViewModel>(
-                    context,
-                  ).clinicalReviewData != null &&
-                  Provider.of<ClinicalReviewViewModel>(
-                    context,
-                  ).clinicalReviewData!.isNotEmpty)
-                ClinicalReviewResultWidget(
-                  data:
+              !Provider.of<ClinicalReviewViewModel>(
+                        context,
+                      ).isReportAnalyzing &&
+                      Provider.of<ClinicalReviewViewModel>(
+                            context,
+                          ).clinicalReviewData !=
+                          null &&
                       Provider.of<ClinicalReviewViewModel>(
                         context,
-                      ).clinicalReviewData,
-                ),
-
-              // Reports list
-              Container(
-                decoration: AppDecorations.card(isDark),
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    HeaderRowWidget(
-                      icon: LucideIcons.file,
-                      title: "Patient Reports",
-                      subTitle:
-                          Provider.of<DigitalPrescriptionViewModel>(
-                                    context,
-                                  ).selectedPatient ==
-                                  null
-                              ? "Select a patient to view their reports."
-                              : "Tap a report to open the health dashboard.",
-                    ),
-                    const SizedBox(height: 14),
-                    if (Provider.of<DigitalPrescriptionViewModel>(
-                          context,
-                        ).selectedPatient ==
-                        null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color:
-                              isDark
-                                  ? Colors.white.withOpacity(0.04)
-                                  : const Color(0xFFF3F4F8),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.border(isDark)),
-                        ),
-                        child: Text(
-                          "No patient selected yet.",
-                          style: AppTextStyles.body(
-                            13,
-                          ).copyWith(color: AppColors.subtleText(isDark)),
-                        ),
-                      ),
-                    if (Provider.of<DigitalPrescriptionViewModel>(
-                              context,
-                            ).selectedPatient !=
-                            null &&
+                      ).clinicalReviewData!.isNotEmpty
+                  ? ClinicalReviewResultWidget(
+                    data:
                         Provider.of<ClinicalReviewViewModel>(
                           context,
-                        ).reportsList.isEmpty)
+                        ).clinicalReviewData,
+                  )
+                  : Column(
+                    children: [
+                      // Reports list
                       Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(14),
-                        decoration: BoxDecoration(
-                          color:
-                              isDark
-                                  ? Colors.white.withOpacity(0.04)
-                                  : const Color(0xFFF3F4F8),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.border(isDark)),
-                        ),
-                        child: Text(
-                          "No reports found for this patient.",
-                          style: AppTextStyles.body(
-                            13,
-                          ).copyWith(color: AppColors.subtleText(isDark)),
-                        ),
-                      ),
-
-                    if (Provider.of<ClinicalReviewViewModel>(
-                      context,
-                    ).isReportFetchLoading)
-                      SizedBox(
-                        height: 100,
-                        child: Center(
-                          child: CircularProgressIndicator(color: Colors.teal),
-                        ),
-                      ),
-
-                    for (final r
-                        in Provider.of<ClinicalReviewViewModel>(
-                          context,
-                        ).reportsList)
-                      InkWell(
-                        borderRadius: BorderRadius.circular(18),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder:
-                                  (_) => PatientHealthDashboardScreen(
-                                    patientId:
-                                        Provider.of<
-                                          DigitalPrescriptionViewModel
-                                        >(context).selectedPatient!["id"],
-                                    reportId: r["id"],
-                                  ),
+                        decoration: AppDecorations.card(isDark),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            HeaderRowWidget(
+                              icon: LucideIcons.file,
+                              title: "Patient Reports",
+                              subTitle:
+                                  Provider.of<DigitalPrescriptionViewModel>(
+                                            context,
+                                          ).selectedPatient ==
+                                          null
+                                      ? "Select a patient to view their reports."
+                                      : "Tap a report to open the health dashboard.",
                             ),
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color:
-                                isDark
-                                    ? Colors.white.withOpacity(0.04)
-                                    : const Color(0xFFF3F4F8),
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: AppColors.border(isDark)),
-                          ),
-                          child: Row(
-                            children: [
+                            const SizedBox(height: 14),
+                            if (Provider.of<DigitalPrescriptionViewModel>(
+                                  context,
+                                ).selectedPatient ==
+                                null)
                               Container(
-                                height: 40,
-                                width: 40,
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  color: Colors.teal.withOpacity(
-                                    isDark ? 0.14 : 0.10,
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.teal.withOpacity(
-                                      isDark ? 0.25 : 0.18,
-                                    ),
-                                  ),
-                                ),
-                                child: Icon(
-                                  LucideIcons.fileText,
-                                  size: 18,
                                   color:
                                       isDark
-                                          ? Colors.tealAccent.withOpacity(0.9)
-                                          : Colors.teal,
+                                          ? Colors.white.withOpacity(0.04)
+                                          : const Color(0xFFF3F4F8),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: AppColors.border(isDark),
+                                  ),
+                                ),
+                                child: Text(
+                                  "No patient selected yet.",
+                                  style: AppTextStyles.body(13).copyWith(
+                                    color: AppColors.subtleText(isDark),
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      r["type"],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.exo(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w900,
-                                      ),
+                            if (Provider.of<DigitalPrescriptionViewModel>(
+                                      context,
+                                    ).selectedPatient !=
+                                    null &&
+                                Provider.of<ClinicalReviewViewModel>(
+                                  context,
+                                ).reportsList.isEmpty)
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(14),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isDark
+                                          ? Colors.white.withOpacity(0.04)
+                                          : const Color(0xFFF3F4F8),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: AppColors.border(isDark),
+                                  ),
+                                ),
+                                child: Text(
+                                  "No reports found for this patient.",
+                                  style: AppTextStyles.body(13).copyWith(
+                                    color: AppColors.subtleText(isDark),
+                                  ),
+                                ),
+                              ),
+
+                            if (Provider.of<ClinicalReviewViewModel>(
+                              context,
+                            ).isReportFetchLoading)
+                              SizedBox(
+                                height: 100,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.teal,
+                                  ),
+                                ),
+                              ),
+
+                            for (final r
+                                in Provider.of<ClinicalReviewViewModel>(
+                                  context,
+                                ).reportsList)
+                              InkWell(
+                                borderRadius: BorderRadius.circular(18),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => PatientHealthDashboardScreen(
+                                            patientId:
+                                                Provider.of<
+                                                  DigitalPrescriptionViewModel
+                                                >(
+                                                  context,
+                                                ).selectedPatient!["id"],
+                                            reportId: r["id"],
+                                          ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "${r["date"]} •",
-                                      style: AppTextStyles.body(12.5).copyWith(
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isDark
+                                            ? Colors.white.withOpacity(0.04)
+                                            : const Color(0xFFF3F4F8),
+                                    borderRadius: BorderRadius.circular(18),
+                                    border: Border.all(
+                                      color: AppColors.border(isDark),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            14,
+                                          ),
+                                          color: Colors.teal.withOpacity(
+                                            isDark ? 0.14 : 0.10,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.teal.withOpacity(
+                                              isDark ? 0.25 : 0.18,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          LucideIcons.fileText,
+                                          size: 18,
+                                          color:
+                                              isDark
+                                                  ? Colors.tealAccent
+                                                      .withOpacity(0.9)
+                                                  : Colors.teal,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              r["type"],
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.exo(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              "${r["date"]} •",
+                                              style: AppTextStyles.body(
+                                                12.5,
+                                              ).copyWith(
+                                                color: AppColors.subtleText(
+                                                  isDark,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+
+                                      const SizedBox(width: 8),
+                                      Icon(
+                                        LucideIcons.chevronRight,
+                                        size: 18,
                                         color: AppColors.subtleText(isDark),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
-
-                              const SizedBox(width: 8),
-                              Icon(
-                                LucideIcons.chevronRight,
-                                size: 18,
-                                color: AppColors.subtleText(isDark),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
                       ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 14),
+                      const SizedBox(height: 14),
 
-              if (Provider.of<ClinicalReviewViewModel>(
-                context,
-              ).reportsList.isNotEmpty)
-                Consumer<ClinicalReviewViewModel>(
-                  builder: (context, clinicalVM, child) {
-                    return ShadButton(
-                      backgroundColor: Colors.teal,
-                      pressedBackgroundColor: Colors.teal,
-                      width: double.infinity,
-                      onPressed: () async {
-                        await clinicalVM.analyzingReports(
-                          clinicalVM.reportsList,
-                        );
-                      },
-                      child:
-                          clinicalVM.isReportAnalyzing
-                              ? Text(
-                                "Analyzing ...",
-                                style: AppTextStyles.section(
-                                  16,
-                                ).copyWith(color: Colors.white),
-                              )
-                              : Text(
-                                "Start Wio Review",
-                                style: AppTextStyles.section(
-                                  16,
-                                ).copyWith(color: Colors.white),
-                              ),
-                    );
-                  },
-                ),
+                      if (Provider.of<ClinicalReviewViewModel>(
+                        context,
+                      ).reportsList.isNotEmpty)
+                        Consumer<ClinicalReviewViewModel>(
+                          builder: (context, clinicalVM, child) {
+                            return ShadButton(
+                              backgroundColor: Colors.teal,
+                              pressedBackgroundColor: Colors.teal,
+                              width: double.infinity,
+                              onPressed: () async {
+                                await clinicalVM.analyzingReports(
+                                  clinicalVM.reportsList,
+                                );
+                              },
+                              child:
+                                  clinicalVM.isReportAnalyzing
+                                      ? Text(
+                                        "Analyzing ...",
+                                        style: AppTextStyles.section(
+                                          16,
+                                        ).copyWith(color: Colors.white),
+                                      )
+                                      : Text(
+                                        "Start Wio Review",
+                                        style: AppTextStyles.section(
+                                          16,
+                                        ).copyWith(color: Colors.white),
+                                      ),
+                            );
+                          },
+                        ),
+                    ],
+                  ),
             ],
           ),
         ),
