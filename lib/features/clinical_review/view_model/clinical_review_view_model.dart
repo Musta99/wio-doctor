@@ -38,4 +38,40 @@ class ClinicalReviewViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // ---------------- Wio Report analyzer ----------------------
+  bool isReportAnalyzing = false;
+  Future analyzingReports(List reports) async {
+    try {
+      isReportAnalyzing = true;
+      notifyListeners();
+
+      final reportsAnalyzingRoute =
+          "https://www.wiocare.com/api/clinical-review";
+
+      final response = await http.post(
+        Uri.parse(reportsAnalyzingRoute),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'reports': reports}),
+      );
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        // reportsList = data["data"];
+        // notifyListeners();
+        print("Data: $data");
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (err) {
+      print(err.toString());
+      Fluttertoast.showToast(
+        msg: "Error occured: $err",
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      isReportAnalyzing = false;
+      notifyListeners();
+    }
+  }
 }

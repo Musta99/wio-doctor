@@ -314,15 +314,25 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
               if (Provider.of<ClinicalReviewViewModel>(
                 context,
               ).reportsList.isNotEmpty)
-                ShadButton(
-                  backgroundColor: Colors.teal,
-                  pressedBackgroundColor: Colors.teal,
-                  width: double.infinity,
-                  onPressed: () {},
-                  child: Text(
-                    "Start Wio Review",
-                    style: AppTextStyles.section(16),
-                  ),
+                Consumer<ClinicalReviewViewModel>(
+                  builder: (context, clinicalVM, child) {
+                    return ShadButton(
+                      backgroundColor: Colors.teal,
+                      pressedBackgroundColor: Colors.teal,
+                      width: double.infinity,
+                      onPressed: () async {
+                        await clinicalVM.analyzingReports(
+                          clinicalVM.reportsList,
+                        );
+                      },
+                      child: Text(
+                        "Start Wio Review",
+                        style: AppTextStyles.section(
+                          16,
+                        ).copyWith(color: Colors.white),
+                      ),
+                    );
+                  },
                 ),
             ],
           ),
@@ -330,20 +340,4 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
       ),
     );
   }
-}
-
-class _ReportItem {
-  final String title;
-  final String date;
-  final String source;
-  final String status;
-  final Color tagColor;
-
-  const _ReportItem({
-    required this.title,
-    required this.date,
-    required this.source,
-    required this.status,
-    required this.tagColor,
-  });
 }
