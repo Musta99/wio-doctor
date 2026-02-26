@@ -41,6 +41,7 @@ class ClinicalReviewViewModel extends ChangeNotifier {
 
   // ---------------- Wio Report analyzer ----------------------
   bool isReportAnalyzing = false;
+  Map? clinicalReviewData;
   Future analyzingReports(List reports) async {
     try {
       isReportAnalyzing = true;
@@ -55,10 +56,15 @@ class ClinicalReviewViewModel extends ChangeNotifier {
         body: jsonEncode({'reports': reports}),
       );
       final data = jsonDecode(response.body);
+      const encoder = JsonEncoder.withIndent('  ');
+      final prettyJson = encoder.convert(data);
+
+      debugPrint(prettyJson, wrapWidth: 1024);
       if (response.statusCode == 200) {
-        // reportsList = data["data"];
-        // notifyListeners();
-        print("Data: $data");
+        clinicalReviewData = data["data"];
+        notifyListeners();
+
+        // print("Data: $clinicalReviewData");
       } else {
         print(response.statusCode);
         print(response.body);

@@ -6,6 +6,7 @@ import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/features/clinical_review/view_model/clinical_review_view_model.dart';
+import 'package:wio_doctor/features/clinical_review/widgets/clinical_review_result_widget.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 import 'package:wio_doctor/widgets/dropdown_box_widget.dart';
@@ -135,6 +136,21 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
               ),
 
               const SizedBox(height: 14),
+
+              if (!Provider.of<ClinicalReviewViewModel>(
+                    context,
+                  ).isReportAnalyzing && Provider.of<ClinicalReviewViewModel>(
+                    context,
+                  ).clinicalReviewData != null &&
+                  Provider.of<ClinicalReviewViewModel>(
+                    context,
+                  ).clinicalReviewData!.isNotEmpty)
+                ClinicalReviewResultWidget(
+                  data:
+                      Provider.of<ClinicalReviewViewModel>(
+                        context,
+                      ).clinicalReviewData,
+                ),
 
               // Reports list
               Container(
@@ -325,12 +341,20 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                           clinicalVM.reportsList,
                         );
                       },
-                      child: Text(
-                        "Start Wio Review",
-                        style: AppTextStyles.section(
-                          16,
-                        ).copyWith(color: Colors.white),
-                      ),
+                      child:
+                          clinicalVM.isReportAnalyzing
+                              ? Text(
+                                "Analyzing ...",
+                                style: AppTextStyles.section(
+                                  16,
+                                ).copyWith(color: Colors.white),
+                              )
+                              : Text(
+                                "Start Wio Review",
+                                style: AppTextStyles.section(
+                                  16,
+                                ).copyWith(color: Colors.white),
+                              ),
                     );
                   },
                 ),
