@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 
 /// ===============================
@@ -251,12 +253,60 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                       accent: Colors.teal,
                     ),
                     const SizedBox(height: 14),
-                    dropdownBox(
-                      icon: LucideIcons.users,
-                      hint: "Select patient",
-                      value: selectedPatient,
-                      items: patients,
-                      onChanged: (v) => setState(() => selectedPatient = v),
+                    Consumer<DigitalPrescriptionViewModel>(
+                      builder: (context, vm, child) {
+                        /// Loading state
+                        if (vm.isLoadingPatientsList &&
+                            vm.grantedPatientList.isEmpty) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        /// Empty state
+                        if (vm.grantedPatientList.isEmpty) {
+                          return const Text("No patients available");
+                        }
+
+                        /// Map patient objects
+                        final patientList =
+                            vm.grantedPatientList
+                                .map(
+                                  (p) => {
+                                    "name": p["patientName"] ?? "Unknown",
+                                    "id": p["patientId"] ?? "",
+                                  },
+                                )
+                                .toList();
+
+                        /// Dropdown text list (only names)
+                        final List<String> patientNames =
+                            vm.grantedPatientList
+                                .map<String>(
+                                  (p) =>
+                                      (p["patientName"] ?? "Unknown")
+                                          .toString(),
+                                )
+                                .toList();
+
+                        /// Current selected name
+                        final selectedName = vm.selectedPatient?["name"];
+
+                        return dropdownBox(
+                          icon: LucideIcons.users,
+                          hint: "Select patient",
+                          value: selectedName,
+                          items: patientNames,
+                          onChanged: (v) {
+                            if (v == null) return;
+                            // Find the selected patient map by name
+                            final selected = patientList.firstWhere(
+                              (p) => p["name"] == v,
+                            );
+                            vm.selectPatient(selected);
+                          },
+                        );
+                      },
                     ),
                   ],
                 ),
