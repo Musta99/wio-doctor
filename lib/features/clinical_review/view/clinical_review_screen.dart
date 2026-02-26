@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 import 'package:wio_doctor/widgets/dropdown_box_widget.dart';
@@ -88,7 +89,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
     final bgBottom = isDark ? const Color(0xFF060A12) : Colors.white;
 
-    final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
+
     final borderColor =
         isDark
             ? Colors.white.withOpacity(0.08)
@@ -100,23 +101,10 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
 
     TextStyle titleStyle(double s) =>
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
-    TextStyle sectionStyle(double s) =>
-        GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w900);
+  
     TextStyle bodyStyle(double s) =>
         GoogleFonts.exo(fontSize: s, fontWeight: FontWeight.w700);
 
-    BoxDecoration cardDecoration() => BoxDecoration(
-      color: cardColor,
-      borderRadius: BorderRadius.circular(22),
-      border: Border.all(color: borderColor),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
-          blurRadius: 18,
-          offset: const Offset(0, 10),
-        ),
-      ],
-    );
 
     final reports =
         selectedPatient == null
@@ -143,7 +131,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
             children: [
               // Select patient
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +206,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
 
               // Reports list
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
