@@ -132,13 +132,7 @@ class _PatientHealthDashboardScreenState
 
     // Demo content
 
-    final favorFoods = const [
-      "Leafy greens, vegetables",
-      "Whole grains (oats, brown rice)",
-      "Fish, lean protein",
-      "Nuts, seeds (in moderation)",
-      "High-fiber fruits",
-    ];
+ 
 
 
 

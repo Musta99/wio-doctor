@@ -7,6 +7,7 @@ import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/features/clinical_review/view_model/clinical_review_view_model.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
+import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 import 'package:wio_doctor/widgets/dropdown_box_widget.dart';
 import 'package:wio_doctor/widgets/header_row_widget.dart';
 
@@ -21,69 +22,6 @@ class ClinicalReviewScreen extends StatefulWidget {
 }
 
 class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
-  // Demo patient list
-  final List<String> patients = const [
-    "Sarah Jenkins (WIO-10234)",
-    "Rahim Uddin (WIO-88421)",
-    "Nusrat Jahan (WIO-22109)",
-    "Ayesha Khan (WIO-55319)",
-  ];
-  String? selectedPatient;
-
-  // Demo reports map
-  final Map<String, List<_ReportItem>> patientReports = {
-    "Sarah Jenkins (WIO-10234)": [
-      _ReportItem(
-        title: "CBC + HbA1c Report",
-        date: "12 Feb 2026",
-        source: "WIO Lab",
-        status: "Reviewed",
-        tagColor: Colors.teal,
-      ),
-      _ReportItem(
-        title: "Lipid Profile",
-        date: "28 Jan 2026",
-        source: "City Diagnostics",
-        status: "Pending",
-        tagColor: Colors.orange,
-      ),
-    ],
-    "Rahim Uddin (WIO-88421)": [
-      _ReportItem(
-        title: "Renal Function Panel",
-        date: "05 Feb 2026",
-        source: "WIO Lab",
-        status: "Reviewed",
-        tagColor: Colors.teal,
-      ),
-    ],
-    "Nusrat Jahan (WIO-22109)": [
-      _ReportItem(
-        title: "Thyroid Profile",
-        date: "02 Feb 2026",
-        source: "Clinic Lab",
-        status: "Reviewed",
-        tagColor: Colors.teal,
-      ),
-      _ReportItem(
-        title: "Vitamin D",
-        date: "14 Jan 2026",
-        source: "Clinic Lab",
-        status: "Reviewed",
-        tagColor: Colors.teal,
-      ),
-    ],
-    "Ayesha Khan (WIO-55319)": [
-      _ReportItem(
-        title: "ECG Summary",
-        date: "09 Feb 2026",
-        source: "Clinic",
-        status: "Pending",
-        tagColor: Colors.orange,
-      ),
-    ],
-  };
-
   @override
   void initState() {
     // TODO: implement initState
@@ -99,12 +37,6 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final reports =
-        selectedPatient == null
-            ? <_ReportItem>[]
-            : (Provider.of<ClinicalReviewViewModel>(context).reportsList ??
-                const <_ReportItem>[]);
 
     return Scaffold(
       appBar: AppBar(
@@ -215,7 +147,10 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                       icon: LucideIcons.file,
                       title: "Patient Reports",
                       subTitle:
-                          selectedPatient == null
+                          Provider.of<DigitalPrescriptionViewModel>(
+                                    context,
+                                  ).selectedPatient ==
+                                  null
                               ? "Select a patient to view their reports."
                               : "Tap a report to open the health dashboard.",
                     ),
@@ -271,8 +206,11 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                     if (Provider.of<ClinicalReviewViewModel>(
                       context,
                     ).isReportFetchLoading)
-                      Center(
-                        child: CircularProgressIndicator(color: Colors.teal),
+                      SizedBox(
+                        height: 100,
+                        child: Center(
+                          child: CircularProgressIndicator(color: Colors.teal),
+                        ),
                       ),
 
                     for (final r
@@ -282,19 +220,19 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                       InkWell(
                         borderRadius: BorderRadius.circular(18),
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder:
-                          //         (_) => PatientHealthDashboardScreen(
-                          //           patientName:
-                          //               selectedPatient!.split(" (").first,
-                          //           doctorName: "Dr. Alex Riveira",
-                          //           reportDate: r.date,
-                          //           reportTitle: r.title,
-                          //         ),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => PatientHealthDashboardScreen(
+                                    patientId:
+                                        Provider.of<
+                                          DigitalPrescriptionViewModel
+                                        >(context).selectedPatient!["id"],
+                                    reportId: r["id"],
+                                  ),
+                            ),
+                          );
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 10),
