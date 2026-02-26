@@ -5,6 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
+import 'package:wio_doctor/features/clinical_review/view_model/clinical_review_view_model.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 import 'package:wio_doctor/widgets/dropdown_box_widget.dart';
 import 'package:wio_doctor/widgets/header_row_widget.dart';
@@ -83,13 +84,15 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
     ],
   };
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProfileViewModel>(context, listen: false).fetchDoctorData();
+      Provider.of<DigitalPrescriptionViewModel>(
+        context,
+        listen: false,
+      ).fetchGrantedPatientsList(context);
     });
   }
 
@@ -100,7 +103,8 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
     final reports =
         selectedPatient == null
             ? <_ReportItem>[]
-            : (patientReports[selectedPatient] ?? const <_ReportItem>[]);
+            : (Provider.of<ClinicalReviewViewModel>(context).reportsList ??
+                const <_ReportItem>[]);
 
     return Scaffold(
       appBar: AppBar(
@@ -185,6 +189,11 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                               (p) => p["name"] == v,
                             );
                             vm.selectPatient(selected);
+
+                            Provider.of<ClinicalReviewViewModel>(
+                              context,
+                              listen: false,
+                            ).fetchPatientReports(vm.selectedPatient!["id"]);
                           },
                         );
                       },
@@ -211,7 +220,10 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                               : "Tap a report to open the health dashboard.",
                     ),
                     const SizedBox(height: 14),
-                    if (selectedPatient == null)
+                    if (Provider.of<DigitalPrescriptionViewModel>(
+                          context,
+                        ).selectedPatient ==
+                        null)
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(14),
@@ -230,7 +242,13 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                           ).copyWith(color: AppColors.subtleText(isDark)),
                         ),
                       ),
-                    if (selectedPatient != null && reports.isEmpty)
+                    if (Provider.of<DigitalPrescriptionViewModel>(
+                              context,
+                            ).selectedPatient !=
+                            null &&
+                        Provider.of<ClinicalReviewViewModel>(
+                          context,
+                        ).reportsList.isEmpty)
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(14),
@@ -249,7 +267,18 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                           ).copyWith(color: AppColors.subtleText(isDark)),
                         ),
                       ),
-                    for (final r in reports)
+
+                    if (Provider.of<ClinicalReviewViewModel>(
+                      context,
+                    ).isReportFetchLoading)
+                      Center(
+                        child: CircularProgressIndicator(color: Colors.teal),
+                      ),
+
+                    for (final r
+                        in Provider.of<ClinicalReviewViewModel>(
+                          context,
+                        ).reportsList)
                       InkWell(
                         borderRadius: BorderRadius.circular(18),
                         onTap: () {
@@ -309,7 +338,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      r.title,
+                                      r["type"],
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: GoogleFonts.exo(
@@ -319,7 +348,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      "${r.date} • ${r.source}",
+                                      "${r["date"]} •",
                                       style: AppTextStyles.body(12.5).copyWith(
                                         color: AppColors.subtleText(isDark),
                                       ),
@@ -328,34 +357,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                 ),
                               ),
                               const SizedBox(width: 10),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 6,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(999),
-                                  color: r.tagColor.withOpacity(
-                                    isDark ? 0.18 : 0.14,
-                                  ),
-                                  border: Border.all(
-                                    color: r.tagColor.withOpacity(
-                                      isDark ? 0.40 : 0.25,
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  r.status,
-                                  style: GoogleFonts.exo(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w900,
-                                    color:
-                                        isDark
-                                            ? Colors.white.withOpacity(0.9)
-                                            : Colors.black.withOpacity(0.72),
-                                  ),
-                                ),
-                              ),
+
                               const SizedBox(width: 8),
                               Icon(
                                 LucideIcons.chevronRight,
