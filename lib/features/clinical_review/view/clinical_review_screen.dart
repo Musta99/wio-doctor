@@ -5,6 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 import 'package:wio_doctor/features/patient/view/patient_report_screen.dart';
 import 'package:wio_doctor/widgets/dropdown_box_widget.dart';
+import 'package:wio_doctor/widgets/header_row_widget.dart';
 
 /// ===============================
 /// 1) CLINICAL REVIEW SCREEN
@@ -117,44 +118,6 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
       ],
     );
 
-    Widget headerRow({
-      required IconData icon,
-      required String title,
-      required String subtitle,
-      Color accent = Colors.teal,
-    }) {
-      return Row(
-        children: [
-          Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: accent.withOpacity(isDark ? 0.14 : 0.10),
-              border: Border.all(
-                color: accent.withOpacity(isDark ? 0.25 : 0.18),
-              ),
-            ),
-            child: Icon(icon, size: 18, color: accent),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: sectionStyle(16)),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: bodyStyle(12.5).copyWith(color: subtleText),
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
-
     final reports =
         selectedPatient == null
             ? <_ReportItem>[]
@@ -185,12 +148,11 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    headerRow(
+                    HeaderRowWidget(
                       icon: LucideIcons.userSearch,
                       title: "Select a patient to review",
-                      subtitle:
+                      subTitle:
                           "Choose a patient to see all available reports.",
-                      accent: Colors.teal,
                     ),
                     const SizedBox(height: 14),
                     Consumer<DigitalPrescriptionViewModel>(
@@ -261,14 +223,13 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    headerRow(
+                    HeaderRowWidget(
                       icon: LucideIcons.file,
                       title: "Patient Reports",
-                      subtitle:
+                      subTitle:
                           selectedPatient == null
                               ? "Select a patient to view their reports."
                               : "Tap a report to open the health dashboard.",
-                      accent: Colors.indigo,
                     ),
                     const SizedBox(height: 14),
                     if (selectedPatient == null)
