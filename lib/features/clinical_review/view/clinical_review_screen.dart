@@ -309,6 +309,21 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 14),
+
+              if (Provider.of<ClinicalReviewViewModel>(
+                context,
+              ).reportsList.isNotEmpty)
+                ShadButton(
+                  backgroundColor: Colors.teal,
+                  pressedBackgroundColor: Colors.teal,
+                  width: double.infinity,
+                  onPressed: () {},
+                  child: Text(
+                    "Start Wio Review",
+                    style: AppTextStyles.section(16),
+                  ),
+                ),
             ],
           ),
         ),
