@@ -191,14 +191,58 @@ class AppointmentCardWidget extends StatelessWidget {
                     );
                   },
                 )
-                : ShadButton(
-                  width: double.infinity,
-                  backgroundColor: Colors.teal,
-                  onPressed: () {},
-                  child: Text(
-                    "Manage",
-                    style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                  ),
+                : Row(
+                  children: [
+                    Expanded(
+                      child: ShadButton(
+                        width: double.infinity,
+                        backgroundColor: Colors.teal,
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              LucideIcons.video,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              "Start Call",
+                              style: GoogleFonts.exo(
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ShadButton.outline(
+                        width: double.infinity,
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              LucideIcons.circleCheck,
+                              size: 16,
+                              color: Colors.green,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              "Mark Complete",
+                              style: GoogleFonts.exo(
+                                fontWeight: FontWeight.w900,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
           ],
         ),
