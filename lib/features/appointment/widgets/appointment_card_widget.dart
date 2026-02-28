@@ -194,23 +194,30 @@ class AppointmentCardWidget extends StatelessWidget {
                 : Row(
                   children: [
                     Expanded(
-                      child: ShadButton(
+                      child: ShadButton.outline(
                         width: double.infinity,
-                        backgroundColor: Colors.teal,
+                        decoration: ShadDecoration(
+                          border: ShadBorder.all(
+                            color: Colors.blue,
+                            radius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        backgroundColor: Colors.blue.withOpacity(0.06),
                         onPressed: () {},
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
-                              LucideIcons.video,
-                              size: 16,
-                              color: Colors.white,
+                            Icon(
+                              LucideIcons.phone,
+                              size: 15,
+                              color: Colors.blue,
                             ),
                             const SizedBox(width: 6),
                             Text(
                               "Start Call",
                               style: GoogleFonts.exo(
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.blue,
                               ),
                             ),
                           ],
@@ -221,20 +228,27 @@ class AppointmentCardWidget extends StatelessWidget {
                     Expanded(
                       child: ShadButton.outline(
                         width: double.infinity,
+                        decoration: ShadDecoration(
+                          border: ShadBorder.all(
+                            color: Colors.green,
+                            radius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        backgroundColor: Colors.green.withOpacity(0.06),
                         onPressed: () {},
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
                               LucideIcons.circleCheck,
-                              size: 16,
+                              size: 15,
                               color: Colors.green,
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              "Mark Complete",
+                              "Mark Completed",
                               style: GoogleFonts.exo(
-                                fontWeight: FontWeight.w900,
+                                fontWeight: FontWeight.w700,
                                 color: Colors.green,
                               ),
                             ),
