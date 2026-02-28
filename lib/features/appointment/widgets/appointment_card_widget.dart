@@ -130,30 +130,34 @@ class AppointmentCardWidget extends StatelessWidget {
                     return Row(
                       children: [
                         Expanded(
-                          child: ShadButton(
+                          child: ShadButton.outline(
                             width: double.infinity,
-                            backgroundColor: Colors.green,
-                            onPressed:
-                                (isApprovingThis || isCancelingThis)
-                                    ? null
-                                    : () async => await appointmentVM
-                                        .updateAppointmentStatus(context, id),
-                            child:
-                                isApprovingThis
-                                    ? const SizedBox(
-                                      height: 18,
-                                      width: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                    : Text(
-                                      "Approve",
-                                      style: GoogleFonts.exo(
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
+                            decoration: ShadDecoration(
+                              border: ShadBorder.all(
+                                color: Colors.green,
+                                radius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            backgroundColor: Colors.green.withOpacity(0.06),
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  LucideIcons.circleCheck,
+                                  size: 15,
+                                  color: Colors.green,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  "Confirm Visit",
+                                  style: GoogleFonts.exo(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         Expanded(
@@ -246,7 +250,7 @@ class AppointmentCardWidget extends StatelessWidget {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              "Mark Completed",
+                              "Completed",
                               style: GoogleFonts.exo(
                                 fontWeight: FontWeight.w700,
                                 color: Colors.green,
