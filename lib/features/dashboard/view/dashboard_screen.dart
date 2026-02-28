@@ -12,6 +12,7 @@ import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
 import 'package:wio_doctor/features/digital_prescription/view/digital_prescription_screen.dart';
 import 'package:wio_doctor/features/patient/view/patient_details_screen.dart';
 import 'package:wio_doctor/features/patient_access/view/patient_access_screen.dart';
+import 'package:wio_doctor/features/wio_case_discussion/view/wio_case_discussion_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -756,7 +757,12 @@ class _DashboardEndDrawer extends StatelessWidget {
                 title: "Case Discussion",
                 onTap: () {
                   // TODO: navigate
-                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WioCaseDiscussionScreen(),
+                    ),
+                  );
                 },
               ),
 

@@ -73,6 +73,7 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
                     const SizedBox(height: 6),
                     _textField(
                       controller: caseTitleC,
+                      icon: LucideIcons.pen,
                       hint: "Enter case title",
                       isDark: isDark,
                     ),
@@ -86,7 +87,7 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
                       controller: caseSummaryC,
                       hint:
                           "Include patient history, key findings, and specific clinical question...",
-                      maxLines: 6,
+                      maxLines: 1,
                       isDark: isDark,
                     ),
 
@@ -131,7 +132,7 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
                     _textField(
                       controller: questionC,
                       hint: "Type your question or comment...",
-                      maxLines: 3,
+                      maxLines: 1,
                       isDark: isDark,
                     ),
 
@@ -169,26 +170,14 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
   Widget _textField({
     required TextEditingController controller,
     required String hint,
+    IconData? icon,
     required bool isDark,
     int maxLines = 1,
   }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
-      decoration: InputDecoration(
-        hintText: hint,
-        filled: true,
-        fillColor:
-            isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.border(isDark)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: AppColors.border(isDark)),
-        ),
-      ),
+      decoration: AppDecorations.inputDec(hint, LucideIcons.pencil, isDark),
     );
   }
 
@@ -204,10 +193,7 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.border(isDark)),
-              ),
+              decoration: AppDecorations.card(isDark),
               child: Column(
                 children: [
                   Icon(LucideIcons.imagePlus, color: Colors.teal),
