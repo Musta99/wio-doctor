@@ -107,7 +107,7 @@ class WioCaseDiscussionScreen extends StatelessWidget {
 
                     const SizedBox(height: 24),
 
-                    /// Submit Button
+                    /// ============ Submit Button ============
                     ShadButton(
                       width: double.infinity,
                       backgroundColor: Colors.teal,
@@ -117,9 +117,7 @@ class WioCaseDiscussionScreen extends StatelessWidget {
                               : () => vm.initiateCaseDiscussion(context),
                       child:
                           vm.isLoadingCaseDiscussion
-                              ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
+                              ? Icon(LucideIcons.loader, size: 22)
                               : Text(
                                 "Send Case",
                                 style: AppTextStyles.section(
@@ -127,6 +125,9 @@ class WioCaseDiscussionScreen extends StatelessWidget {
                                 ).copyWith(color: Colors.white),
                               ),
                     ),
+
+                    // --------------------------------
+                    _discussionResult(vm, isDark),
                   ],
                 ),
               ),
@@ -188,6 +189,72 @@ class WioCaseDiscussionScreen extends StatelessWidget {
             onTap: vm.removeImage,
             child: const Icon(Icons.close),
           ),
+        ),
+      ],
+    );
+  }
+
+  /// ================= DISCUSSION RESULT =================
+  Widget _discussionResult(CaseDiscussionViewModel vm, bool isDark) {
+    if (vm.isLoadingCaseDiscussion) {
+      return const Padding(
+        padding: EdgeInsets.all(20),
+        child: Center(child: CircularProgressIndicator(color: Colors.teal,)),
+      );
+    }
+
+    if (vm.discussionList.isEmpty) {
+      return const SizedBox(); // hide initially
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 30),
+
+        Text("AI Case Discussion", style: AppTextStyles.section(16)),
+
+        const SizedBox(height: 12),
+
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: vm.discussionList.length,
+          itemBuilder: (context, index) {
+            final item = vm.discussionList[index];
+
+            final persona = item["persona"] ?? "Doctor";
+            final comment = item["comment"] ?? "";
+
+            return Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(14),
+              decoration: AppDecorations.card(isDark),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// Persona
+                  Row(
+                    children: [
+                      const Icon(Icons.psychology, size: 18),
+                      const SizedBox(width: 6),
+                      Text(
+                        persona,
+                        style: AppTextStyles.section(
+                          14,
+                        ).copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  /// Comment
+                  Text(comment, style: AppTextStyles.body(13)),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
