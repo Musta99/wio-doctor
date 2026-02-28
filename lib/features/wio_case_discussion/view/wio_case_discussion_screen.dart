@@ -1,59 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
+import 'package:wio_doctor/features/wio_case_discussion/view_model/case_discussion_view_model.dart';
 import 'package:wio_doctor/widgets/header_row_widget.dart';
 
-class WioCaseDiscussionScreen extends StatefulWidget {
+class WioCaseDiscussionScreen extends StatelessWidget {
   const WioCaseDiscussionScreen({super.key});
-
-  @override
-  State<WioCaseDiscussionScreen> createState() =>
-      _WioCaseDiscussionScreenState();
-}
-
-class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
-  final caseTitleC = TextEditingController();
-  final caseSummaryC = TextEditingController();
-  final questionC = TextEditingController();
-
-  String responseType = "Short Notes";
-
-  /// Dummy image list (replace with image picker later)
-  final List<String> attachedImages = [];
-
-  @override
-  void dispose() {
-    caseTitleC.dispose();
-    caseSummaryC.dispose();
-    questionC.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Case Details", style: AppTextStyles.title(18)),
-        centerTitle: true,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.bgTop(isDark), AppColors.bgBottom(isDark)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+    return Consumer<CaseDiscussionViewModel>(
+      builder: (context, vm, child) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text("Case Details", style: AppTextStyles.title(18)),
+            centerTitle: true,
           ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          child: Column(
-            children: [
-              /// ================= CASE DETAILS CARD =================
-              Container(
+          body: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.bgTop(isDark), AppColors.bgBottom(isDark)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+              child: Container(
                 decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -70,42 +48,38 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
 
                     /// Case Title
                     _label("Case Title"),
-                    const SizedBox(height: 6),
                     _textField(
-                      controller: caseTitleC,
-                      icon: LucideIcons.pen,
+                      controller: vm.caseTitleC,
                       hint: "Enter case title",
                       isDark: isDark,
                     ),
 
                     const SizedBox(height: 16),
 
-                    /// Case Summary
+                    /// Summary
                     _label("Detailed Case Summary"),
-                    const SizedBox(height: 6),
                     _textField(
-                      controller: caseSummaryC,
-                      hint:
-                          "Include patient history, key findings, and specific clinical question...",
-                      maxLines: 1,
+                      controller: vm.caseSummaryC,
+                      hint: "Include patient history, key findings...",
                       isDark: isDark,
+                      maxLines: 4,
                     ),
 
                     const SizedBox(height: 18),
 
-                    /// Attach Images
-                    _label("Attach Images"),
-                    const SizedBox(height: 8),
-                    _imageAttachSection(isDark),
+                    /// Image
+                    _label("Attach Image"),
+                    _imageAttachSection(vm, isDark),
 
                     const SizedBox(height: 18),
 
-                    /// Response Type Dropdown
+                    /// Response Type
                     _label("Response Type"),
-                    const SizedBox(height: 6),
-
                     ShadSelect<String>(
-                      initialValue: responseType,
+                      initialValue:
+                          vm.responseType == "concise"
+                              ? "Short Notes"
+                              : "Elaborate",
                       options: const [
                         ShadOption(
                           value: "Short Notes",
@@ -116,61 +90,63 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
                           child: Text("Elaborate"),
                         ),
                       ],
-                      selectedOptionBuilder: (context, value) => Text(value),
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() => responseType = value);
-                        }
-                      },
+                      selectedOptionBuilder: (_, v) => Text(v),
+                      onChanged: (v) => vm.setResponseType(v!),
                     ),
 
                     const SizedBox(height: 18),
 
-                    /// Comment / Question
-                    _label("Ask a Question or Add Comment"),
-                    const SizedBox(height: 6),
+                    /// Question
+                    _label("Ask Question"),
                     _textField(
-                      controller: questionC,
-                      hint: "Type your question or comment...",
-                      maxLines: 1,
+                      controller: vm.questionC,
+                      hint: "Type your question...",
                       isDark: isDark,
+                      maxLines: 3,
                     ),
 
                     const SizedBox(height: 24),
 
-                    /// Send Button
+                    /// Submit Button
                     ShadButton(
                       width: double.infinity,
                       backgroundColor: Colors.teal,
-                      pressedBackgroundColor: Colors.teal,
-                      onPressed: _submitCase,
-                      child: Text(
-                        "Send Case",
-                        style: AppTextStyles.section(
-                          16,
-                        ).copyWith(color: Colors.white),
-                      ),
+                      onPressed:
+                          vm.isLoadingCaseDiscussion
+                              ? null
+                              : () => vm.initiateCaseDiscussion(context),
+                      child:
+                          vm.isLoadingCaseDiscussion
+                              ? const CircularProgressIndicator(
+                                color: Colors.white,
+                              )
+                              : Text(
+                                "Send Case",
+                                style: AppTextStyles.section(
+                                  16,
+                                ).copyWith(color: Colors.white),
+                              ),
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  /// ================= LABEL =================
   Widget _label(String text) {
-    return Text(text, style: AppTextStyles.section(14));
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 6),
+      child: Text(text, style: AppTextStyles.section(14)),
+    );
   }
 
-  /// ================= TEXT FIELD =================
   Widget _textField({
     required TextEditingController controller,
     required String hint,
-    IconData? icon,
     required bool isDark,
     int maxLines = 1,
   }) {
@@ -181,65 +157,39 @@ class _WioCaseDiscussionScreenState extends State<WioCaseDiscussionScreen> {
     );
   }
 
-  /// ================= IMAGE ATTACH SECTION =================
-  Widget _imageAttachSection(bool isDark) {
-    return Column(
-      children: [
-        if (attachedImages.isEmpty)
-          InkWell(
-            onTap: () {
-              // TODO: open image picker
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: AppDecorations.card(isDark),
-              child: Column(
-                children: [
-                  Icon(LucideIcons.imagePlus, color: Colors.teal),
-                  const SizedBox(height: 6),
-                  Text("Tap to attach images", style: AppTextStyles.body(13)),
-                ],
-              ),
-            ),
+  Widget _imageAttachSection(CaseDiscussionViewModel vm, bool isDark) {
+    if (vm.selectedImage == null) {
+      return InkWell(
+        onTap: vm.pickImage,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: AppDecorations.card(isDark),
+          child: Column(
+            children: [
+              Icon(LucideIcons.imagePlus, color: Colors.teal),
+              const SizedBox(height: 6),
+              Text("Tap to attach image", style: AppTextStyles.body(13)),
+            ],
           ),
+        ),
+      );
+    }
 
-        if (attachedImages.isNotEmpty)
-          Wrap(
-            spacing: 10,
-            runSpacing: 10,
-            children:
-                attachedImages.map((img) {
-                  return Stack(
-                    children: [
-                      Container(
-                        height: 80,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey.shade300,
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: () {},
-                          child: const Icon(Icons.close, size: 18),
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: Image.file(vm.selectedImage!, height: 120),
+        ),
+        Positioned(
+          right: 0,
+          child: GestureDetector(
+            onTap: vm.removeImage,
+            child: const Icon(Icons.close),
           ),
+        ),
       ],
     );
-  }
-
-  /// ================= SUBMIT =================
-  void _submitCase() {
-    print("Case Title: ${caseTitleC.text}");
-    print("Summary: ${caseSummaryC.text}");
-    print("Question: ${questionC.text}");
-    print("Response Type: $responseType");
   }
 }
