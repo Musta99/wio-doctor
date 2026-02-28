@@ -397,10 +397,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                       },
                     ),
 
-                    // for (final a in appointmentsList) ...[
-                    //   appointmentCard(a),
-                    //   const SizedBox(height: 12),
-                    // ],
                     const SizedBox(height: 16),
 
                     // =========================================================

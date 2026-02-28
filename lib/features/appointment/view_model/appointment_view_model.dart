@@ -42,7 +42,7 @@ class AppointmentViewModel extends ChangeNotifier {
       if (response.statusCode == 200) {
         appointmentsList = data["appointments"];
         notifyListeners();
-        print("Data: $appointmentsList");
+        print("Data: $appointmentsList[1]");
       } else {
         print(response.statusCode);
         print(response.body);
@@ -136,6 +136,65 @@ class AppointmentViewModel extends ChangeNotifier {
     } finally {
       isLoadingAllAppointmentsFetch = false;
       isPaginationLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // ------------- Approve appointment -------------------
+  bool isUpdateAppointmentStatusLoading = false;
+
+  Future updateAppointmentStatus(
+    BuildContext context,
+    String appointmentId, {
+    bool isApproved = true,
+  }) async {
+    try {
+      isUpdateAppointmentStatusLoading = true;
+      notifyListeners();
+
+      final authProvider = Provider.of<AuthenticationProvider>(
+        context,
+        listen: false,
+      );
+
+      String? token = await authProvider.getFreshToken();
+      String? doctorId = authProvider.userId;
+
+      if (doctorId == null || token == null) {
+        print("DoctorId or token missing");
+        return;
+      }
+
+      final String status = isApproved ? "confirmed" : "canceled";
+
+      final response = await http.post(
+        Uri.parse(
+          "https://www.wiocare.com/api/appointments/$appointmentId/status",
+        ),
+        headers: {"Authorization": "Bearer $token"},
+        body: jsonEncode({"status": status}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg:
+              isApproved
+                  ? "Appointment confirmed successfully"
+                  : "Appointment canceled successfully",
+          backgroundColor: isApproved ? Colors.green : Colors.red,
+        );
+
+        await fetchDoctorsAppointments(context);
+      } else {
+        print(response.statusCode);
+        print(response.body);
+      }
+    } catch (err) {
+      print("Error: $err");
+    } finally {
+      isUpdateAppointmentStatusLoading = false;
       notifyListeners();
     }
   }
