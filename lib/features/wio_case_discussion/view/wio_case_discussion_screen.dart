@@ -62,7 +62,7 @@ class WioCaseDiscussionScreen extends StatelessWidget {
                       controller: vm.caseSummaryC,
                       hint: "Include patient history, key findings...",
                       isDark: isDark,
-                      maxLines: 4,
+                      maxLines: 1,
                     ),
 
                     const SizedBox(height: 18),
@@ -102,7 +102,7 @@ class WioCaseDiscussionScreen extends StatelessWidget {
                       controller: vm.questionC,
                       hint: "Type your question...",
                       isDark: isDark,
-                      maxLines: 3,
+                      maxLines: 1,
                     ),
 
                     const SizedBox(height: 24),
@@ -199,7 +199,7 @@ class WioCaseDiscussionScreen extends StatelessWidget {
     if (vm.isLoadingCaseDiscussion) {
       return const Padding(
         padding: EdgeInsets.all(20),
-        child: Center(child: CircularProgressIndicator(color: Colors.teal,)),
+        child: Center(child: CircularProgressIndicator(color: Colors.teal)),
       );
     }
 
