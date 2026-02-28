@@ -21,6 +21,7 @@ class CaseDiscussionViewModel extends ChangeNotifier {
   String? imageBase64;
 
   Map<String, dynamic>? caseDiscussionData;
+  List discussionList = [];
 
   /// ===== Change response style =====
   void setResponseType(String value) {
@@ -97,6 +98,7 @@ class CaseDiscussionViewModel extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         caseDiscussionData = data["data"];
+        discussionList = caseDiscussionData?["discussion"] ?? [];
         print(caseDiscussionData);
 
         _clearForm();
