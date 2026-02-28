@@ -756,6 +756,7 @@ class _DashboardEndDrawer extends StatelessWidget {
                 title: "Case Discussion",
                 onTap: () {
                   // TODO: navigate
+                  
                 },
               ),
 
