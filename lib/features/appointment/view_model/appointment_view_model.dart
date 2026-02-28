@@ -141,7 +141,13 @@ class AppointmentViewModel extends ChangeNotifier {
   }
 
   // ------------- Approve appointment -------------------
-  bool isUpdateAppointmentStatusLoading = false;
+  String? loadingAppointmentId; // tracks which appointment is loading
+  bool? loadingIsApproved; // tracks which action (approve/cancel)
+
+  bool isApproveLoading(String id) =>
+      loadingAppointmentId == id && loadingIsApproved == true;
+  bool isCancelLoading(String id) =>
+      loadingAppointmentId == id && loadingIsApproved == false;
 
   Future updateAppointmentStatus(
     BuildContext context,
@@ -149,7 +155,8 @@ class AppointmentViewModel extends ChangeNotifier {
     bool isApproved = true,
   }) async {
     try {
-      isUpdateAppointmentStatusLoading = true;
+      loadingAppointmentId = appointmentId;
+      loadingIsApproved = isApproved;
       notifyListeners();
 
       final authProvider = Provider.of<AuthenticationProvider>(
@@ -178,6 +185,7 @@ class AppointmentViewModel extends ChangeNotifier {
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        print(data);
         Fluttertoast.showToast(
           msg:
               isApproved
@@ -194,7 +202,8 @@ class AppointmentViewModel extends ChangeNotifier {
     } catch (err) {
       print("Error: $err");
     } finally {
-      isUpdateAppointmentStatusLoading = false;
+      loadingAppointmentId = null;
+      loadingIsApproved = null;
       notifyListeners();
     }
   }

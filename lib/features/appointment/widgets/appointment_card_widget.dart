@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/services/time_formate_service.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
+import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
 import 'package:wio_doctor/widgets/avatar_circle_widget.dart';
 import 'package:wio_doctor/widgets/pill_chip_widget.dart';
 
@@ -119,35 +121,75 @@ class AppointmentCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             status.toLowerCase().contains("pending")
-                ? Row(
-                  children: [
-                    Expanded(
-                      child: ShadButton(
-                        width: double.infinity,
-                        backgroundColor: Colors.green,
+                ? Consumer<AppointmentViewModel>(
+                  builder: (context, appointmentVM, child) {
+                    final id = appointment["id"];
+                    final isApprovingThis = appointmentVM.isApproveLoading(id);
+                    final isCancelingThis = appointmentVM.isCancelLoading(id);
 
-                        onPressed: () {},
-                        child: Text(
-                          "Approve",
-                          style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: ShadButton(
+                            width: double.infinity,
+                            backgroundColor: Colors.green,
+                            onPressed:
+                                (isApprovingThis || isCancelingThis)
+                                    ? null
+                                    : () async => await appointmentVM
+                                        .updateAppointmentStatus(context, id),
+                            child:
+                                isApprovingThis
+                                    ? const SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                    : Text(
+                                      "Approve",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                          ),
                         ),
-                      ),
-                    ),
-
-                    Expanded(
-                      child: ShadButton(
-                        width: double.infinity,
-                        backgroundColor: Colors.red,
-
-                        onPressed: () {},
-                        child: Text(
-                          "Reject",
-
-                          style: GoogleFonts.exo(fontWeight: FontWeight.w900),
+                        Expanded(
+                          child: ShadButton(
+                            width: double.infinity,
+                            backgroundColor: Colors.red,
+                            onPressed:
+                                (isApprovingThis || isCancelingThis)
+                                    ? null
+                                    : () async => await appointmentVM
+                                        .updateAppointmentStatus(
+                                          context,
+                                          id,
+                                          isApproved: false,
+                                        ),
+                            child:
+                                isCancelingThis
+                                    ? const SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                    : Text(
+                                      "Reject",
+                                      style: GoogleFonts.exo(
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ],
+                      ],
+                    );
+                  },
                 )
                 : ShadButton(
                   width: double.infinity,
