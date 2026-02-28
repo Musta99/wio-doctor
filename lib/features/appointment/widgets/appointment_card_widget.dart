@@ -161,34 +161,34 @@ class AppointmentCardWidget extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          child: ShadButton(
+                          child: ShadButton.outline(
                             width: double.infinity,
-                            backgroundColor: Colors.red,
-                            onPressed:
-                                (isApprovingThis || isCancelingThis)
-                                    ? null
-                                    : () async => await appointmentVM
-                                        .updateAppointmentStatus(
-                                          context,
-                                          id,
-                                          isApproved: false,
-                                        ),
-                            child:
-                                isCancelingThis
-                                    ? const SizedBox(
-                                      height: 18,
-                                      width: 18,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                    : Text(
-                                      "Reject",
-                                      style: GoogleFonts.exo(
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
+                            decoration: ShadDecoration(
+                              border: ShadBorder.all(
+                                color: Colors.red,
+                                radius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            backgroundColor: Colors.red.withOpacity(0.06),
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  LucideIcons.circleX,
+                                  size: 15,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  "Cancel Visit",
+                                  style: GoogleFonts.exo(
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
