@@ -122,7 +122,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                             await Provider.of<PatientAccessViewModel>(
                               context,
                               listen: false,
-                            ).findPatient(value);
+                            ).findPatient(value, context);
                           },
                           style: GoogleFonts.exo(
                             fontSize: 14,
