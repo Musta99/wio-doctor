@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
+import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class PatientAccessScreen extends StatefulWidget {
   const PatientAccessScreen({super.key});
@@ -22,18 +26,8 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
-    final bgBottom = isDark ? const Color(0xFF060A12) : Colors.white;
-
-    final borderColor =
-        isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06);
-    final subtleText =
-        isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.62);
+    final doctorId =
+        context.read<AuthenticationProvider>().userId ?? "DOC-8F29A1";
 
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +40,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [bgTop, bgBottom],
+            colors: [AppColors.bgTop(isDark), AppColors.bgBottom(isDark)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -103,7 +97,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                 style: GoogleFonts.exo(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w500,
-                                  color: subtleText,
+                                  color: AppColors.subtleText(isDark),
                                 ),
                               ),
                             ],
@@ -179,7 +173,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Your QR (WIO ID)",
+                                "Your QR Code",
                                 style: GoogleFonts.exo(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w900,
@@ -191,7 +185,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                 style: GoogleFonts.exo(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w500,
-                                  color: subtleText,
+                                  color: AppColors.subtleText(isDark),
                                 ),
                               ),
                             ],
@@ -211,37 +205,31 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                 ? Colors.white.withOpacity(0.04)
                                 : const Color(0xFFF3F4F8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: borderColor),
+                        border: Border.all(color: AppColors.border(isDark)),
                       ),
                       child: Column(
                         children: [
                           Container(
                             height: 180,
-                            width: 180,
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(18),
-                              color:
-                                  isDark
-                                      ? Colors.white.withOpacity(0.06)
-                                      : Colors.white,
-                              border: Border.all(color: borderColor),
+                              color: Colors.white,
                             ),
-                            child: Center(
-                              child: Icon(
-                                LucideIcons.qrCode,
-                                size: 54,
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.55)
-                                        : Colors.black.withOpacity(0.35),
+                            child: PrettyQrView.data(
+                              data: doctorId,
+                              decoration: PrettyQrDecoration(
+                                shape: PrettyQrSmoothSymbol(
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            "WIO ID: DOC-8F29A1",
+                            "DoctorId ID: ${doctorId}",
                             style: GoogleFonts.exo(
-                              fontSize: 13.5,
+                              fontSize: 12,
                               fontWeight: FontWeight.w900,
                             ),
                           ),
@@ -252,7 +240,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                             style: GoogleFonts.exo(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
-                              color: subtleText,
+                              color: AppColors.subtleText(isDark),
                               height: 1.3,
                             ),
                           ),
@@ -288,7 +276,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                     // TODO: share QR / open QR full screen
                                   },
                                   child: Text(
-                                    "Share",
+                                    "Download",
                                     style: GoogleFonts.exo(
                                       fontWeight: FontWeight.w900,
                                       color: Colors.white,
