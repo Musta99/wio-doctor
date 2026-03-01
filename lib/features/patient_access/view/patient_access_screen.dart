@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/theme/app_decoration.dart';
 
 class PatientAccessScreen extends StatefulWidget {
   const PatientAccessScreen({super.key});
@@ -25,7 +26,6 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
     final bgBottom = isDark ? const Color(0xFF060A12) : Colors.white;
 
-    final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
     final borderColor =
         isDark
             ? Colors.white.withOpacity(0.08)
@@ -34,52 +34,6 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
         isDark
             ? Colors.white.withOpacity(0.72)
             : Colors.black.withOpacity(0.62);
-
-    InputDecoration inputDec() {
-      return InputDecoration(
-        hintText: "Search by name, mobile, email or WIO ID",
-        hintStyle: GoogleFonts.exo(color: subtleText, fontSize: 13),
-        prefixIcon: Icon(
-          LucideIcons.search,
-          size: 18,
-          color: isDark ? Colors.white.withOpacity(0.7) : Colors.black54,
-        ),
-        filled: true,
-        fillColor:
-            isDark ? Colors.white.withOpacity(0.04) : const Color(0xFFF3F4F8),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 12,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: borderColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.teal.withOpacity(0.65)),
-        ),
-      );
-    }
-
-    BoxDecoration cardDecoration() {
-      return BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -104,7 +58,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
             children: [
               // Search section
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +118,11 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                       ),
-                      decoration: inputDec(),
+                      decoration: AppDecorations.inputDec(
+                        "Search by name, mobile, email or WIO ID",
+                        LucideIcons.search,
+                        isDark,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     ShadButton(
@@ -188,7 +146,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
 
               // Doctor QR / WIO section
               Container(
-                decoration: cardDecoration(),
+                decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
