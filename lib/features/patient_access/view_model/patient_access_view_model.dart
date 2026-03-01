@@ -118,7 +118,7 @@ class PatientAccessViewModel extends ChangeNotifier {
 
   // -------------------------------
   void clearPatients() {
-    patientList = [];
+    patientList.clear();
     notifyListeners();
   }
 }

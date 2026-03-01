@@ -110,8 +110,8 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                     Column(
                       children: [
                         TextField(
+                          controller: _searchCtrl, // ✅ Add controller
                           onChanged: (value) async {
-                            print(value);
                             if (value.trim().isEmpty) {
                               Provider.of<PatientAccessViewModel>(
                                 context,
@@ -132,6 +132,25 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                             "Search by name, mobile, email or WIO ID",
                             LucideIcons.search,
                             isDark,
+                          ).copyWith(
+                            suffixIcon: Consumer<PatientAccessViewModel>(
+                              builder: (context, vm, _) {
+                                // ✅ Show clear button when there's text
+                                return _searchCtrl.text.isNotEmpty
+                                    ? IconButton(
+                                      icon: const Icon(Icons.close, size: 18),
+                                      onPressed: () {
+                                        _searchCtrl
+                                            .clear(); // ✅ Clears the field
+                                        Provider.of<PatientAccessViewModel>(
+                                          context,
+                                          listen: false,
+                                        ).clearPatients();
+                                      },
+                                    )
+                                    : const SizedBox.shrink();
+                              },
+                            ),
                           ),
                         ),
 
@@ -184,37 +203,137 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                     ),
                                 itemBuilder: (context, index) {
                                   final patient = vm.patientList[index];
-                                  return ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundColor: Colors.blue.withOpacity(
-                                        0.1,
-                                      ),
-                                      child: Text(
-                                        (patient['name'] ?? '?')[0]
-                                            .toUpperCase(),
-                                        style: const TextStyle(
-                                          color: Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      patient['name'] ?? 'Unknown',
-                                      style: GoogleFonts.exo(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      patient['email'] ?? '',
-                                      style: GoogleFonts.exo(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
+                                  return GestureDetector(
                                     onTap: () {
-                                      // Handle patient selection
                                       print("Selected: ${patient['id']}");
                                     },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 10,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          // Patient Image
+                                          CircleAvatar(
+                                            radius: 24,
+                                            backgroundImage:
+                                                patient['profileImage'] != null
+                                                    ? NetworkImage(
+                                                      patient['profileImage'],
+                                                    )
+                                                    : null,
+                                            backgroundColor: Colors.blue
+                                                .withOpacity(0.1),
+                                            child:
+                                                patient['profileImage'] == null
+                                                    ? Text(
+                                                      (patient['name'] ??
+                                                              '?')[0]
+                                                          .toUpperCase(),
+                                                      style: const TextStyle(
+                                                        color: Colors.blue,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    )
+                                                    : null,
+                                          ),
+
+                                          const SizedBox(width: 12),
+
+                                          // Name & Email
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  patient['name'] ?? 'Unknown',
+                                                  style: GoogleFonts.exo(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  patient['email'] ?? '',
+                                                  style: GoogleFonts.exo(
+                                                    fontSize: 11,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          const SizedBox(width: 8),
+
+                                          // Request / Revoke Button
+                                          GestureDetector(
+                                            onTap: () async {
+                                              if (patient['accessStatus'] ==
+                                                  'granted') {
+                                                // Call revoke function
+                                                print(
+                                                  "Revoke access for ${patient['id']}",
+                                                );
+                                              } else {
+                                                // Call request function
+                                                print(
+                                                  "Request access for ${patient['id']}",
+                                                );
+
+                                                await vm.sendAccessRequest(
+                                                  context,
+                                                  patient['id'],
+                                                );
+                                              }
+                                            },
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 6,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    patient['accessStatus'] ==
+                                                            'granted'
+                                                        ? Colors.red
+                                                            .withOpacity(0.1)
+                                                        : Colors.blue
+                                                            .withOpacity(0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                                border: Border.all(
+                                                  color:
+                                                      patient['accessStatus'] ==
+                                                              'granted'
+                                                          ? Colors.red
+                                                          : Colors.blue,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                patient['accessStatus'] ==
+                                                        'granted'
+                                                    ? 'Revoke Access'
+                                                    : 'Request Access',
+                                                style: GoogleFonts.exo(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                      patient['accessStatus'] ==
+                                                              'granted'
+                                                          ? Colors.red
+                                                          : Colors.blue,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   );
                                 },
                               ),
