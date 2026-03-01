@@ -27,11 +27,8 @@ class PatientAccessViewModel extends ChangeNotifier {
 
       /// same as buildAccessDocId(patientId, doctorId)
       final docId = "${patientId}_$doctorId";
-
       final docRef = firestore.collection("access_requests").doc(docId);
-
       final snapshot = await docRef.get();
-
       final now = FieldValue.serverTimestamp();
 
       // -----------------------------
@@ -82,6 +79,27 @@ class PatientAccessViewModel extends ChangeNotifier {
       Fluttertoast.showToast(msg: "Error: $err", backgroundColor: Colors.red);
     } finally {
       isSendingRequest = false;
+      notifyListeners();
+    }
+  }
+
+  // ---------------------- Get Patients List ---------------------
+  bool isPatientsListLoading = false;
+  Future findPatient(String email) async {
+    try {
+      isPatientsListLoading = true;
+      notifyListeners();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance
+              .collection("patients")
+              .where("email", isEqualTo: email)
+              .get();
+
+      print(querySnapshot.docs);
+    } catch (err) {
+      Fluttertoast.showToast(msg: "Error: $err", backgroundColor: Colors.red);
+    } finally {
+      isPatientsListLoading = false;
       notifyListeners();
     }
   }
