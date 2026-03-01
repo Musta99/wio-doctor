@@ -85,17 +85,31 @@ class PatientAccessViewModel extends ChangeNotifier {
 
   // ---------------------- Get Patients List ---------------------
   bool isPatientsListLoading = false;
+  List<Map<String, dynamic>> patientList = [];
+
   Future findPatient(String email) async {
     try {
       isPatientsListLoading = true;
       notifyListeners();
+
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance
               .collection("patients")
-              .where("email", isEqualTo: email)
+              .where("email", isGreaterThanOrEqualTo: email)
+              .where(
+                "email",
+                isLessThanOrEqualTo: "$email\uf8ff",
+              ) // ✅ For prefix search
               .get();
 
-      print(querySnapshot.docs);
+      patientList =
+          querySnapshot.docs
+              .map(
+                (doc) => {"id": doc.id, ...doc.data() as Map<String, dynamic>},
+              )
+              .toList();
+
+      
     } catch (err) {
       Fluttertoast.showToast(msg: "Error: $err", backgroundColor: Colors.red);
     } finally {

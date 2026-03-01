@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
+import 'package:wio_doctor/features/patient_access/view_model/patient_access_view_model.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class PatientAccessScreen extends StatefulWidget {
@@ -107,7 +108,11 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                     ),
                     const SizedBox(height: 14),
                     TextField(
-                      controller: _searchCtrl,
+                      onChanged: (value) async{
+                        print(value);
+
+                        await Provider.of<PatientAccessViewModel>(context, listen: false).findPatient(value);
+                      },
                       style: GoogleFonts.exo(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,

@@ -33,6 +33,7 @@ import 'package:wio_doctor/features/consultation_fee/view_model/consultation_fee
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/digital_prescription/view_model/digital_prescription_view_model.dart';
 import 'package:wio_doctor/features/patient/view_model/patient_view_model.dart';
+import 'package:wio_doctor/features/patient_access/view_model/patient_access_view_model.dart';
 import 'package:wio_doctor/features/profile/view_model/profile_view_model.dart';
 import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
 import 'package:wio_doctor/features/wio_case_discussion/view_model/case_discussion_view_model.dart';
@@ -80,6 +81,7 @@ class AppContent extends StatelessWidget {
         ),
         ChangeNotifierProvider(create: (context) => ClinicalReviewViewModel()),
         ChangeNotifierProvider(create: (context) => CaseDiscussionViewModel()),
+        ChangeNotifierProvider(create: (context) => PatientAccessViewModel()),
       ],
       builder: (context, child) {
         return ShadApp(
