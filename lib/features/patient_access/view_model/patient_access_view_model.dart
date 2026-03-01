@@ -108,13 +108,17 @@ class PatientAccessViewModel extends ChangeNotifier {
                 (doc) => {"id": doc.id, ...doc.data() as Map<String, dynamic>},
               )
               .toList();
-
-      
     } catch (err) {
       Fluttertoast.showToast(msg: "Error: $err", backgroundColor: Colors.red);
     } finally {
       isPatientsListLoading = false;
       notifyListeners();
     }
+  }
+
+  // -------------------------------
+  void clearPatients() {
+    patientList = [];
+    notifyListeners();
   }
 }

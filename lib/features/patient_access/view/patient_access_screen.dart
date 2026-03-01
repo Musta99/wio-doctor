@@ -107,35 +107,121 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                       ],
                     ),
                     const SizedBox(height: 14),
-                    TextField(
-                      onChanged: (value) async{
-                        print(value);
+                    Column(
+                      children: [
+                        TextField(
+                          onChanged: (value) async {
+                            print(value);
+                            if (value.trim().isEmpty) {
+                              Provider.of<PatientAccessViewModel>(
+                                context,
+                                listen: false,
+                              ).clearPatients();
+                              return;
+                            }
+                            await Provider.of<PatientAccessViewModel>(
+                              context,
+                              listen: false,
+                            ).findPatient(value);
+                          },
+                          style: GoogleFonts.exo(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          decoration: AppDecorations.inputDec(
+                            "Search by name, mobile, email or WIO ID",
+                            LucideIcons.search,
+                            isDark,
+                          ),
+                        ),
 
-                        await Provider.of<PatientAccessViewModel>(context, listen: false).findPatient(value);
-                      },
-                      style: GoogleFonts.exo(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      decoration: AppDecorations.inputDec(
-                        "Search by name, mobile, email or WIO ID",
-                        LucideIcons.search,
-                        isDark,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ShadButton(
-                      width: double.infinity,
-                      backgroundColor: Colors.teal,
-                      pressedBackgroundColor: Colors.teal,
-                      onPressed: () {
-                        // TODO: perform search
-                        FocusScope.of(context).unfocus();
-                      },
-                      child: Text(
-                        "Search",
-                        style: GoogleFonts.exo(fontWeight: FontWeight.w900),
-                      ),
+                        // Patient List Dropdown
+                        Consumer<PatientAccessViewModel>(
+                          builder: (context, vm, _) {
+                            if (vm.isPatientsListLoading) {
+                              return const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
+                            if (vm.patientList.isEmpty)
+                              return const SizedBox.shrink();
+
+                            return Container(
+                              height: 250,
+                              decoration: BoxDecoration(
+                                color: isDark ? Colors.grey[900] : Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color:
+                                      isDark
+                                          ? Colors.grey[700]!
+                                          : Colors.grey[300]!,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: ListView.separated(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4,
+                                ),
+                                itemCount: vm.patientList.length,
+                                separatorBuilder:
+                                    (_, __) => Divider(
+                                      height: 1,
+                                      color:
+                                          isDark
+                                              ? Colors.grey[700]
+                                              : Colors.grey[300],
+                                    ),
+                                itemBuilder: (context, index) {
+                                  final patient = vm.patientList[index];
+                                  return ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundColor: Colors.blue.withOpacity(
+                                        0.1,
+                                      ),
+                                      child: Text(
+                                        (patient['name'] ?? '?')[0]
+                                            .toUpperCase(),
+                                        style: const TextStyle(
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      patient['name'] ?? 'Unknown',
+                                      style: GoogleFonts.exo(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      patient['email'] ?? '',
+                                      style: GoogleFonts.exo(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      // Handle patient selection
+                                      print("Selected: ${patient['id']}");
+                                    },
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
