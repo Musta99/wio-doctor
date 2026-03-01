@@ -320,7 +320,6 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                                         height: 14,
                                                         width: 14,
                                                         child: CircularProgressIndicator(
-                                                          // ✅ Better than Icon for loading
                                                           strokeWidth: 2,
                                                           color:
                                                               patient['accessStatus'] ==
@@ -471,47 +470,25 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: ShadButton(
-                                  backgroundColor:
-                                      isDark
-                                          ? Colors.white.withOpacity(0.06)
-                                          : const Color(0xFFF3F4F8),
-                                  onPressed: () {
-                                    // TODO: copy WIO ID
-                                  },
-                                  child: Text(
-                                    "Copy ID",
-                                    style: GoogleFonts.exo(
-                                      fontWeight: FontWeight.w900,
-                                      color:
-                                          isDark
-                                              ? Colors.white.withOpacity(0.9)
-                                              : Colors.black.withOpacity(0.85),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: ShadButton(
-                                  backgroundColor: Colors.teal,
-                                  onPressed: () {
-                                    // TODO: share QR / open QR full screen
-                                  },
-                                  child: Text(
-                                    "Download",
-                                    style: GoogleFonts.exo(
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Row(
+                          //   children: [
+                          //     Expanded(
+                          //       child: ShadButton(
+                          //         backgroundColor: Colors.teal,
+                          //         onPressed: () {
+                          //           // TODO: share QR / open QR full screen
+                          //         },
+                          //         child: Text(
+                          //           "Download",
+                          //           style: GoogleFonts.exo(
+                          //             fontWeight: FontWeight.w900,
+                          //             color: Colors.white,
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                     ),
