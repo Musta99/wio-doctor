@@ -27,7 +27,7 @@ class PatientAccessViewModel extends ChangeNotifier {
 
       /// same as buildAccessDocId(patientId, doctorId)
       final docId = "${patientId}_$doctorId";
-      final docRef = firestore.collection("access_requests").doc(docId);
+      final docRef = firestore.collection("patientAccess").doc(docId);
       final snapshot = await docRef.get();
       final now = FieldValue.serverTimestamp();
 
@@ -44,6 +44,16 @@ class PatientAccessViewModel extends ChangeNotifier {
           "updatedAt": now,
         });
 
+        // Notify the patient
+        await createNotification(
+          recipientId: patientId,
+          titleKey: "access_request_received",
+          descriptionKey: "access_request_received_desc",
+          type: "access_request",
+          patientId: patientId,
+          doctorId: doctorId,
+        );
+
         Fluttertoast.showToast(msg: "Access request sent");
         return;
       }
@@ -54,12 +64,18 @@ class PatientAccessViewModel extends ChangeNotifier {
       final data = snapshot.data() as Map<String, dynamic>? ?? {};
 
       if (data["status"] == "granted") {
-        Fluttertoast.showToast(msg: "Access already granted");
+        Fluttertoast.showToast(
+          msg: "Access already granted",
+          backgroundColor: Colors.orange,
+        );
         return;
       }
 
       if (data["status"] == "pending" && data["requestedBy"] == "doctor") {
-        Fluttertoast.showToast(msg: "Request already pending");
+        Fluttertoast.showToast(
+          msg: "Request already pending",
+          backgroundColor: Colors.yellowAccent,
+        );
         return;
       }
 
@@ -74,7 +90,20 @@ class PatientAccessViewModel extends ChangeNotifier {
         "updatedAt": now,
       });
 
-      Fluttertoast.showToast(msg: "Access request updated");
+      // ✅ Notify the patient
+      await createNotification(
+        recipientId: patientId,
+        titleKey: "access_request_received",
+        descriptionKey: "access_request_updated_desc",
+        type: "access_request",
+        patientId: patientId,
+        doctorId: doctorId,
+      );
+
+      Fluttertoast.showToast(
+        msg: "Access request updated",
+        backgroundColor: Colors.green,
+      );
     } catch (err) {
       Fluttertoast.showToast(msg: "Error: $err", backgroundColor: Colors.red);
     } finally {
@@ -120,5 +149,35 @@ class PatientAccessViewModel extends ChangeNotifier {
   void clearPatients() {
     patientList.clear();
     notifyListeners();
+  }
+
+  // ----------------- Add to Notification Collection --------------------
+  Future<void> createNotification({
+    required String recipientId,
+    required String titleKey,
+    String? descriptionKey,
+    String? type,
+    String? link,
+    String? patientId,
+    String? doctorId,
+    Map<String, dynamic>? metadata,
+  }) async {
+    final collectionRef = FirebaseFirestore.instance
+        .collection("notifications")
+        .doc(recipientId)
+        .collection("items");
+
+    await collectionRef.add({
+      "titleKey": titleKey,
+      if (descriptionKey != null) "descriptionKey": descriptionKey,
+      if (type != null) "type": type,
+      if (link != null) "link": link,
+      if (patientId != null) "patientId": patientId,
+      if (doctorId != null) "doctorId": doctorId,
+      if (metadata != null) "metadata": metadata,
+      "status": "unread",
+      "createdAt": FieldValue.serverTimestamp(),
+      "updatedAt": FieldValue.serverTimestamp(),
+    });
   }
 }
