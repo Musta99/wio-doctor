@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -30,7 +31,7 @@ class _VirtualWioCardState extends State<VirtualWioCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _flipController;
   late Animation<double> _flipAnimation;
-  // bool _isFlipped = false;
+  bool _isFlipped = false;
   bool _copied = false;
 
   @override
@@ -120,10 +121,10 @@ class _VirtualWioCardState extends State<VirtualWioCard>
                 onPressed: () async {
                   await Clipboard.setData(ClipboardData(text: widget.wioId!));
 
-                  // Fluttertoast.showToast(
-                  //   msg: "Copied to clipboard",
-                  //   backgroundColor: Colors.green,
-                  // );
+                  Fluttertoast.showToast(
+                    msg: "Copied to clipboard",
+                    backgroundColor: Colors.green,
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

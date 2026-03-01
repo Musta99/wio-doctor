@@ -314,21 +314,37 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                                           : Colors.blue,
                                                 ),
                                               ),
-                                              child: Text(
-                                                patient['accessStatus'] ==
-                                                        'granted'
-                                                    ? 'Revoke Access'
-                                                    : 'Request Access',
-                                                style: GoogleFonts.exo(
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w600,
-                                                  color:
-                                                      patient['accessStatus'] ==
-                                                              'granted'
-                                                          ? Colors.red
-                                                          : Colors.blue,
-                                                ),
-                                              ),
+                                              child:
+                                                  vm.isSendingRequest
+                                                      ? SizedBox(
+                                                        height: 14,
+                                                        width: 14,
+                                                        child: CircularProgressIndicator(
+                                                          // ✅ Better than Icon for loading
+                                                          strokeWidth: 2,
+                                                          color:
+                                                              patient['accessStatus'] ==
+                                                                      'granted'
+                                                                  ? Colors.red
+                                                                  : Colors.blue,
+                                                        ),
+                                                      )
+                                                      : Text(
+                                                        patient['accessStatus'] ==
+                                                                'granted'
+                                                            ? 'Revoke Access'
+                                                            : 'Request Access',
+                                                        style: GoogleFonts.exo(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color:
+                                                              patient['accessStatus'] ==
+                                                                      'granted'
+                                                                  ? Colors.red
+                                                                  : Colors.blue,
+                                                        ),
+                                                      ),
                                             ),
                                           ),
                                         ],
