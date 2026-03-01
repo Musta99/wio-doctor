@@ -218,7 +218,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                             ),
                             child: PrettyQrView.data(
                               data: doctorId,
-                              decoration: PrettyQrDecoration(
+                              decoration: const PrettyQrDecoration(
                                 shape: PrettyQrSmoothSymbol(
                                   color: Colors.black,
                                 ),
