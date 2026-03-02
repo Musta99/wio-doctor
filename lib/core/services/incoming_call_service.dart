@@ -46,6 +46,7 @@ class IncomingCallService {
     _callSubscription = FirebaseFirestore.instance
         .collection('telemedicine_signals')
         .where('status', isEqualTo: 'pending')
+        .where('doctorId', isEqualTo: user.uid)
         .snapshots()
         .listen(
           (snapshot) {

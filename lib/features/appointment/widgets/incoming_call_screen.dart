@@ -20,9 +20,19 @@ class _IncomingCallScreenState extends State<IncomingCallScreen>
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
 
+  // String get callerName {
+  //   final initiatedBy = widget.callData['initiatedBy'] ?? 'patient';
+  //   if (initiatedBy == 'patient') {
+  //     return widget.callData['patientName'] ?? 'Patient';
+  //   } else {
+  //     return widget.callData['doctorName'] ?? 'Doctor';
+  //   }
+  // }
+
   String get callerName {
-    final initiatedBy = widget.callData['initiatedBy'] ?? 'patient';
-    if (initiatedBy == 'patient') {
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+
+    if (currentUserId == widget.callData['doctorId']) {
       return widget.callData['patientName'] ?? 'Patient';
     } else {
       return widget.callData['doctorName'] ?? 'Doctor';
@@ -98,7 +108,7 @@ class _IncomingCallScreenState extends State<IncomingCallScreen>
                   patientId: patientId,
                   doctorName: callerName,
                   doctorPhotoURL: callerPhoto,
-                  isPatient: user.uid == patientId,
+                  isPatient: false,
                   userAccount: user.uid,
                 ),
           ),

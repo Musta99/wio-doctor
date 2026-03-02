@@ -59,7 +59,7 @@ class AgoraService {
     String? consultationType,
     String? patientPhotoURL,
     String? doctorPhotoURL,
-    String initiatedBy = 'patient',
+    String initiatedBy = 'doctor',
   }) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -75,7 +75,7 @@ class AgoraService {
         },
         body: jsonEncode({
           'patientId': patientId,
-          'doctorId': doctorId,
+          'doctorId': user.uid,
           'channelName': channelName,
           if (patientName != null) 'patientName': patientName,
           if (doctorName != null) 'doctorName': doctorName,

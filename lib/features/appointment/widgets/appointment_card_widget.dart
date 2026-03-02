@@ -1,12 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/core/services/agora_services.dart';
 import 'package:wio_doctor/core/services/time_formate_service.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
-import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/appointment/view_model/appointment_view_model.dart';
+import 'package:wio_doctor/features/appointment/widgets/video_call_screen.dart';
 import 'package:wio_doctor/widgets/avatar_circle_widget.dart';
 import 'package:wio_doctor/widgets/pill_chip_widget.dart';
 
@@ -21,6 +23,81 @@ class AppointmentCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ------------------------- STart Video Call Function --------------------------
+    Future<void> startDoctorCall(BuildContext context) async {
+      try {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) return;
+
+        final doctorId = user.uid;
+        final patientId = appointment["patientId"];
+
+        if (patientId == null) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("Patient ID missing")));
+          return;
+        }
+
+        /// 1️⃣ generate unique channel
+        final channelName =
+            "call_${doctorId}_${patientId}_${DateTime.now().millisecondsSinceEpoch}";
+
+        /// 2️⃣ create call signal (doctor → patient)
+        final signal = await AgoraService.createCallSignal(
+          patientId: patientId,
+          doctorId: doctorId,
+          channelName: channelName,
+          patientName: appointment["patientName"],
+          doctorName: user.displayName,
+          consultationType: appointment["consultationType"],
+          appointmentId: appointment["id"],
+          initiatedBy: "doctor", // ⭐ IMPORTANT --------------
+        );
+
+        if (signal == null) {
+          throw Exception("Failed to create call signal");
+        }
+
+        final signalId = signal["signalId"] ?? signal["id"];
+
+        /// 3️⃣ get Agora token
+        final tokenResponse = await AgoraService.getAgoraToken(
+          channelName: channelName,
+          uid: user.uid,
+          userEmail: user.email ?? "",
+        );
+
+        if (tokenResponse == null) {
+          throw Exception("Failed to get Agora token");
+        }
+
+        final agoraToken = tokenResponse["token"];
+
+        /// 4️⃣ navigate to video call
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder:
+                (_) => VideoCallScreen(
+                  channelName: channelName,
+                  agoraToken: agoraToken,
+                  signalId: signalId,
+                  doctorId: doctorId,
+                  patientId: patientId,
+                  doctorName: user.displayName!,
+                  isPatient: false,
+                  userAccount: user.uid,
+                ),
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Call failed: $e")));
+      }
+    }
+
     // -----------------------------------------------------------------
     final status = (appointment["status"] ?? "").toString();
     final payment = (appointment["payment"] ?? "").toString();
