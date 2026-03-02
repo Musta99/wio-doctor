@@ -105,7 +105,6 @@
 //   }
 // }
 
-
 // --------------------------- 22222222222222222222222222 --------------------------------------
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -113,7 +112,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-
+import 'package:wio_doctor/features/appointment/widgets/incoming_call_screen.dart';
 
 // Auth + Core
 import 'package:wio_doctor/view_model/auth_provider.dart';
@@ -143,12 +142,10 @@ import 'package:wio_doctor/core/services/fcm_notification_handler.dart';
 import 'package:wio_doctor/core/services/fcm_token_service.dart';
 import 'package:wio_doctor/core/services/incoming_call_service.dart';
 import 'package:wio_doctor/core/services/local_notification_service.dart';
-
+import 'package:wio_doctor/view_model/incoming_call_provider.dart';
+import 'package:wio_doctor/view_model/video_call_provider.dart';
 
 // TELEMEDICINE PROVIDERS
-import 'package:wio_doctor/features/telemedicine/view_model/incoming_call_provider.dart';
-import 'package:wio_doctor/features/telemedicine/view_model/video_call_provider.dart';
-import 'package:wio_doctor/features/telemedicine/view/incoming_call_screen.dart';
 
 /// ============================================
 /// GLOBAL NAVIGATOR KEY (for showing calls globally)
@@ -174,9 +171,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  FirebaseMessaging.onBackgroundMessage(
-    _firebaseMessagingBackgroundHandler,
-  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   await LocalNotificationService.init();
   await FCMNotificationHandler.initialize();
@@ -205,9 +200,7 @@ class AppContent extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AuthenticationProvider()..init(),
-        ),
+        ChangeNotifierProvider(create: (_) => AuthenticationProvider()..init()),
         ChangeNotifierProvider(create: (_) => SignupViewModel()),
         ChangeNotifierProvider(create: (_) => LoginViewmodel()),
         ChangeNotifierProvider(create: (_) => DashboardViewModel()),
