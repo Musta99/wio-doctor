@@ -114,6 +114,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
+
 // Auth + Core
 import 'package:wio_doctor/view_model/auth_provider.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
@@ -138,10 +139,11 @@ import 'package:wio_doctor/features/wio_case_discussion/view_model/case_discussi
 import 'package:wio_doctor/view_model/date_picker_view_model.dart';
 
 // TELEMEDICINE SERVICES (same as patient app structure)
-import 'package:wio_doctor/services/local_notification_service.dart';
-import 'package:wio_doctor/services/fcm_notification_handler.dart';
-import 'package:wio_doctor/services/fcm_token_service.dart';
-import 'package:wio_doctor/services/incoming_call_service.dart';
+import 'package:wio_doctor/core/services/fcm_notification_handler.dart';
+import 'package:wio_doctor/core/services/fcm_token_service.dart';
+import 'package:wio_doctor/core/services/incoming_call_service.dart';
+import 'package:wio_doctor/core/services/local_notification_service.dart';
+
 
 // TELEMEDICINE PROVIDERS
 import 'package:wio_doctor/features/telemedicine/view_model/incoming_call_provider.dart';
