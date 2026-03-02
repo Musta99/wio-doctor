@@ -31,6 +31,12 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+         // ← Added: fixes undefined C++ stdlib symbols with NDK 27
+        externalNativeBuild {
+            cmake {
+                arguments("-DANDROID_STL=c++_shared")
+            }
+        }
     }
 
     buildTypes {
@@ -38,6 +44,12 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+    // ← Added: ensures native .so libs are packaged correctly
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
         }
     }
 }

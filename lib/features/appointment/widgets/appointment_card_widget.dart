@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -33,9 +34,10 @@ class AppointmentCardWidget extends StatelessWidget {
         final patientId = appointment["patientId"];
 
         if (patientId == null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("Patient ID missing")));
+          Fluttertoast.showToast(
+            msg: "Patient ID missing",
+            backgroundColor: Colors.red,
+          );
           return;
         }
 
@@ -284,7 +286,10 @@ class AppointmentCardWidget extends StatelessWidget {
                           ),
                         ),
                         backgroundColor: Colors.blue.withOpacity(0.06),
-                        onPressed: () {},
+                        onPressed: () async {
+                          print("--------- Start Call ----------------");
+                          await startDoctorCall(context);
+                        },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
