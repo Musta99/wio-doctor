@@ -42,8 +42,7 @@ class AppointmentCardWidget extends StatelessWidget {
         }
 
         /// 1️⃣ generate unique channel
-        final channelName =
-            "call_${doctorId}_${patientId}_${DateTime.now().millisecondsSinceEpoch}";
+        final channelName = "test_channel";
 
         /// 2️⃣ create call signal (doctor → patient)
         final signal = await AgoraService.createCallSignal(
@@ -51,17 +50,27 @@ class AppointmentCardWidget extends StatelessWidget {
           doctorId: doctorId,
           channelName: channelName,
           patientName: appointment["patientName"],
-          doctorName: user.displayName,
+          doctorName: appointment["doctorName"],
           consultationType: appointment["consultationType"],
           appointmentId: appointment["id"],
           initiatedBy: "doctor", // ⭐ IMPORTANT --------------
         );
 
-        if (signal == null) {
+        if (signal == null || signal["success"] != true) {
           throw Exception("Failed to create call signal");
         }
 
-        final signalId = signal["signalId"] ?? signal["id"];
+        // ← FIX: ID is nested inside "call" object
+        final callData = signal["call"];
+        final signalId = callData?["id"] ?? callData?["sessionId"];
+
+        // ← ADD THIS to see all keys returned
+        print("📦 Full signal response: $signal");
+        print("📦 Signal keys: ${signal.keys.toList()}");
+
+        print(
+          " ******Call signal created with ID: $signalId and channel: $channelName",
+        );
 
         /// 3️⃣ get Agora token
         final tokenResponse = await AgoraService.getAgoraToken(
@@ -87,16 +96,19 @@ class AppointmentCardWidget extends StatelessWidget {
                   signalId: signalId,
                   doctorId: doctorId,
                   patientId: patientId,
-                  doctorName: user.displayName!,
+                  doctorName: appointment["doctorName"] ?? "Doctor",
+                  doctorPhotoURL: appointment["doctorPhotoURL"],
                   isPatient: false,
                   userAccount: user.uid,
                 ),
           ),
         );
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text("Call failed: $e")));
+        Navigator.pop(context); // Close any loading dialog if open
+        Fluttertoast.showToast(
+          msg: "Error starting call: $e",
+          backgroundColor: Colors.red,
+        );
       }
     }
 

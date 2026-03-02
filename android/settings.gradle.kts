@@ -25,4 +25,13 @@ plugins {
     id("org.jetbrains.kotlin.android") version "2.1.20" apply false
 }
 
+// ← ADD THIS BLOCK
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 include(":app")
