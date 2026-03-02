@@ -59,13 +59,15 @@ dependencies:
   #Image Picker
   image_picker: ^1.2.1
   #Agora RTC Engine
-  agora_rtc_engine:
-    ^6.5.3
-    #FCM
-  firebase_messaging:
-    ^16.1.0
-    #Permission Handler
+  agora_rtc_engine: ^6.5.3
+  #FCM
+  firebase_messaging: ^16.1.0
+  #Permission Handler
   permission_handler: ^12.0.1
+  #device info plus
+  device_info_plus: ^12.3.0
+  #flutter local notifications
+  flutter_local_notifications: ^19.5.0
 
 dev_dependencies:
   flutter_test:
