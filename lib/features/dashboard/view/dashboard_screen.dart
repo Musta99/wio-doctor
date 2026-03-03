@@ -75,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final themeProvider = ThemeProvider.of(context);
+    final themeProvider = context.read<ThemeViewModel>();
 
     final palette = _paletteForNow(isDark);
 

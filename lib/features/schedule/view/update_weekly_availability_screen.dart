@@ -1032,7 +1032,6 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
 
-/// ✅ FULL Provider-based screen (NO setState for slots)
 /// ✅ Slots managed inside ScheduleViewModel
 /// ✅ Removed DatePickerProvider (uses scheduleVM.pickDate)
 class UpdateWeeklyAvailabilityScreen extends StatefulWidget {
@@ -1047,7 +1046,8 @@ class _UpdateWeeklyAvailabilityScreenState
     extends State<UpdateWeeklyAvailabilityScreen> {
   @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider.of(context);
+    final themeProvider = context.read<ThemeViewModel>();
+    ;
     final isDark = themeProvider.isDarkMode;
 
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
@@ -1238,18 +1238,6 @@ class _UpdateWeeklyAvailabilityScreenState
       appBar: AppBar(
         title: Text('Update Weekly Availability', style: titleStyle(18)),
         centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: isDark ? "Switch to light" : "Switch to dark",
-            icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon),
-            onPressed: () {
-              themeProvider.setThemeMode(
-                isDark ? ThemeMode.light : ThemeMode.dark,
-              );
-            },
-          ),
-          const SizedBox(width: 6),
-        ],
       ),
       body: SafeArea(
         child: Container(

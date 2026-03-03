@@ -34,7 +34,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider.of(context);
+    final themeProvider = context.read<ThemeViewModel>();
     final isDark = themeProvider.isDarkMode;
 
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
@@ -154,22 +154,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
 
     return Scaffold(
+      backgroundColor: bgBottom,
       appBar: AppBar(
         title: Text('Availability', style: titleStyle(20)),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            tooltip: isDark ? "Switch to light" : "Switch to dark",
-            icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon),
-            onPressed: () {
-              themeProvider.setThemeMode(
-                isDark ? ThemeMode.light : ThemeMode.dark,
-              );
-            },
-          ),
-          const SizedBox(width: 6),
-        ],
       ),
       body: Consumer<ScheduleViewModel>(
         builder: (context, scheduleVM, child) {
@@ -326,34 +315,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                   ),
                                 ),
                                 const Spacer(),
-                                // Quick demo toggle (optional)
-                                // PopupMenuButton<String>(
-                                //   tooltip: "Change status",
-                                //   icon: Icon(
-                                //     LucideIcons.chevronsUpDown,
-                                //     size: 18,
-                                //     color:
-                                //         isDark
-                                //             ? Colors.white.withOpacity(0.75)
-                                //             : Colors.black.withOpacity(0.65),
-                                //   ),
-                                //   onSelected: (v) => setState(() => status = v),
-                                //   itemBuilder:
-                                //       (_) => const [
-                                //         PopupMenuItem(
-                                //           value: "Online",
-                                //           child: Text("Online"),
-                                //         ),
-                                //         PopupMenuItem(
-                                //           value: "Appointment only",
-                                //           child: Text("Appointment only"),
-                                //         ),
-                                //         PopupMenuItem(
-                                //           value: "Offline",
-                                //           child: Text("Offline"),
-                                //         ),
-                                //       ],
-                                // ),
                               ],
                             ),
 

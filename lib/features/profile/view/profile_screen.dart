@@ -94,7 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider.of(context);
+    final themeProvider = context.read<ThemeViewModel>();
     final isDark = themeProvider.isDarkMode;
 
     return Scaffold(
@@ -102,18 +102,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: Text("Profile", style: AppTextStyles.title(20)),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            tooltip: isDark ? "Switch to light" : "Switch to dark",
-            icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon),
-            onPressed: () {
-              themeProvider.setThemeMode(
-                isDark ? ThemeMode.light : ThemeMode.dark,
-              );
-            },
-          ),
-          const SizedBox(width: 6),
-        ],
       ),
       body: Container(
         decoration: BoxDecoration(

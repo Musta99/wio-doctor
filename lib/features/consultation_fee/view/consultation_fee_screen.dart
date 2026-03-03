@@ -14,8 +14,6 @@ class ConsultationFeeScreen extends StatefulWidget {
 }
 
 class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
-
-
   bool isSaving = false;
 
   Widget _buildFeeRow(
@@ -78,25 +76,13 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final themeProvider = ThemeProvider.of(context);
+    final themeProvider = context.read<ThemeViewModel>();
     final vm = Provider.of<ConsultationFeeViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Consultation Fee", style: AppTextStyles.title(20)),
         centerTitle: true,
         automaticallyImplyLeading: true,
-        actions: [
-          IconButton(
-            tooltip: isDark ? "Switch to light" : "Switch to dark",
-            icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon),
-            onPressed: () {
-              themeProvider.setThemeMode(
-                isDark ? ThemeMode.light : ThemeMode.dark,
-              );
-            },
-          ),
-          const SizedBox(width: 6),
-        ],
       ),
 
       body: Padding(

@@ -49,7 +49,7 @@ class _AllAppointmentListState extends State<AllAppointmentList> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider.of(context);
+    final themeProvider = context.read<ThemeViewModel>();
     final isDark = themeProvider.isDarkMode;
 
     return Scaffold(

@@ -92,7 +92,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider.of(context);
+    final themeProvider = context.read<ThemeViewModel>();
     final isDark = themeProvider.isDarkMode;
 
     final bgTop = isDark ? const Color(0xFF0B1220) : const Color(0xFFF7F8FC);
@@ -282,18 +282,6 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
       appBar: AppBar(
         title: Text("Patient Details", style: titleStyle(20)),
         centerTitle: true,
-        actions: [
-          IconButton(
-            tooltip: isDark ? "Switch to light" : "Switch to dark",
-            icon: Icon(isDark ? LucideIcons.sun : LucideIcons.moon),
-            onPressed: () {
-              themeProvider.setThemeMode(
-                isDark ? ThemeMode.light : ThemeMode.dark,
-              );
-            },
-          ),
-          const SizedBox(width: 6),
-        ],
       ),
       body: Consumer<PatientViewModel>(
         builder: (context, patientLoadingVM, child) {
