@@ -274,13 +274,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                               ],
                             ),
                             const SizedBox(height: 14),
-                            // TextField(
-                            //   controller: _searchController,
-                            //   onChanged: (_) => setState(() {}),
-                            //   decoration: searchDecoration(),
-                            //   style: bodyStyle(14),
-                            // ),
-                            // const SizedBox(height: 14),
 
                             // Stats in COLUMN (as you asked)
                             Container(

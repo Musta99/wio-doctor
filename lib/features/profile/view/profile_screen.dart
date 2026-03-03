@@ -6,7 +6,6 @@ import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/core/theme/app_text_styles.dart';
 import 'package:wio_doctor/core/theme/theme_provider.dart';
-import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/profile/view_model/profile_view_model.dart';
 import 'package:wio_doctor/features/profile/widget/header_card_widget.dart';
 import 'package:wio_doctor/features/profile/widget/section_widget.dart';
