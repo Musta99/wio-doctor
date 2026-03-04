@@ -460,17 +460,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               isDark ? Colors.white : const Color(0xFF1F2937),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "See All",
-                          style: GoogleFonts.exo(
-                            fontSize: 14,
-                            color: const Color(0xFF0D9488),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
+                      // TextButton(
+                      //   onPressed: () {},
+                      //   child: Text(
+                      //     "See All",
+                      //     style: GoogleFonts.exo(
+                      //       fontSize: 14,
+                      //       color: const Color(0xFF0D9488),
+                      //       fontWeight: FontWeight.w600,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
 
