@@ -68,10 +68,19 @@ dependencies:
   device_info_plus: ^12.3.0
   #flutter local notifications
   flutter_local_notifications: ^19.5.0
+  #icon_launcher
+  icons_launcher: ^3.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+icons_launcher:
+  image_path: "assets/icons/app_logo.png"
+  platforms:
+    android:
+      enable: true
+    ios:
+      enable: true
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
