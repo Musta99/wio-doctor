@@ -744,12 +744,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         "New here? ",
                         style: bodyStyle(13).copyWith(color: subtleText),
                       ),
-                      InkWell(
+                      GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const SignupScreen(),
+                              builder: (context) => SignupScreen(),
                             ),
                           );
                         },
