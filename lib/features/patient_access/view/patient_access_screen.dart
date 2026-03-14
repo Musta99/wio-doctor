@@ -6,6 +6,8 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:wio_doctor/core/theme/app_colors.dart';
 import 'package:wio_doctor/core/theme/app_decoration.dart';
 import 'package:wio_doctor/features/patient_access/view_model/patient_access_view_model.dart';
+import 'package:wio_doctor/features/profile/view_model/profile_view_model.dart';
+import 'package:wio_doctor/features/profile/widget/virtual_wio_card.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class PatientAccessScreen extends StatefulWidget {
@@ -19,11 +21,22 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
   final _searchCtrl = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ProfileViewModel>(context, listen: false).fetchDoctorData();
+    });
+  }
+
+  @override
   void dispose() {
     _searchCtrl.dispose();
     super.dispose();
   }
 
+  @override
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -51,7 +64,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Search section
+              // ── Search section ────────────────────────────────
               Container(
                 decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
@@ -110,7 +123,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                     Column(
                       children: [
                         TextField(
-                          controller: _searchCtrl, // ✅ Add controller
+                          controller: _searchCtrl,
                           onChanged: (value) async {
                             if (value.trim().isEmpty) {
                               Provider.of<PatientAccessViewModel>(
@@ -135,13 +148,11 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                           ).copyWith(
                             suffixIcon: Consumer<PatientAccessViewModel>(
                               builder: (context, vm, _) {
-                                // ✅ Show clear button when there's text
                                 return _searchCtrl.text.isNotEmpty
                                     ? IconButton(
                                       icon: const Icon(Icons.close, size: 18),
                                       onPressed: () {
-                                        _searchCtrl
-                                            .clear(); // ✅ Clears the field
+                                        _searchCtrl.clear();
                                         Provider.of<PatientAccessViewModel>(
                                           context,
                                           listen: false,
@@ -165,7 +176,6 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                 ),
                               );
                             }
-
                             if (vm.patientList.isEmpty)
                               return const SizedBox.shrink();
 
@@ -214,7 +224,6 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                       ),
                                       child: Row(
                                         children: [
-                                          // Patient Image
                                           CircleAvatar(
                                             radius: 24,
                                             backgroundImage:
@@ -239,10 +248,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                                     )
                                                     : null,
                                           ),
-
                                           const SizedBox(width: 12),
-
-                                          // Name & Email
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
@@ -266,24 +272,18 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                                               ],
                                             ),
                                           ),
-
                                           const SizedBox(width: 8),
-
-                                          // Request / Revoke Button
                                           GestureDetector(
                                             onTap: () async {
                                               if (patient['accessStatus'] ==
                                                   'granted') {
-                                                // Call revoke function
                                                 print(
                                                   "Revoke access for ${patient['id']}",
                                                 );
                                               } else {
-                                                // Call request function
                                                 print(
                                                   "Request access for ${patient['id']}",
                                                 );
-
                                                 await vm.sendAccessRequest(
                                                   context,
                                                   patient['id'],
@@ -363,7 +363,19 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
 
               const SizedBox(height: 14),
 
-              // Doctor QR / WIO section
+              // ── Virtual Wio Card ──────────────────────────────
+              Consumer<ProfileViewModel>(
+                builder: (context, profileVM, _) {
+                  return VirtualWioCard(
+                    name: profileVM.fullNameC.text,
+                    wioId: profileVM.wioId,
+                  );
+                },
+              ),
+
+              const SizedBox(height: 14),
+
+              // ── Doctor QR / WIO section ───────────────────────
               Container(
                 decoration: AppDecorations.card(isDark),
                 padding: const EdgeInsets.all(16),
@@ -419,8 +431,6 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                       ],
                     ),
                     const SizedBox(height: 14),
-
-                    // QR placeholder (replace with qr_flutter later)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -452,7 +462,7 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            "DoctorId ID: ${doctorId}",
+                            "DoctorId ID: $doctorId",
                             style: GoogleFonts.exo(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
@@ -470,25 +480,6 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          // Row(
-                          //   children: [
-                          //     Expanded(
-                          //       child: ShadButton(
-                          //         backgroundColor: Colors.teal,
-                          //         onPressed: () {
-                          //           // TODO: share QR / open QR full screen
-                          //         },
-                          //         child: Text(
-                          //           "Download",
-                          //           style: GoogleFonts.exo(
-                          //             fontWeight: FontWeight.w900,
-                          //             color: Colors.white,
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
                         ],
                       ),
                     ),

@@ -75,8 +75,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final themeProvider = context.read<ThemeViewModel>();
-
     final palette = _paletteForNow(isDark);
 
     final bg = isDark ? Colors.black : const Color(0xFFF8FAFC);
@@ -87,13 +85,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       backgroundColor: bg,
-
       extendBodyBehindAppBar: true,
       endDrawerEnableOpenDragGesture: false,
-
       // ✅ END DRAWER
       endDrawer: _DashboardEndDrawer(isDark: isDark),
-
       // ✅ bKash-like top header (AppBar background changes by time)
       appBar: AppBar(
         toolbarHeight: 150,

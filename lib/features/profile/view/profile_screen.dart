@@ -127,11 +127,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     // Virtual Wio Card
-                    VirtualWioCard(
-                      name: profileVM.fullNameC.text,
-                      wioId: profileVM.wioId,
-                    ),
-                    const SizedBox(height: 14),
+                    // VirtualWioCard(
+                    //   name: profileVM.fullNameC.text,
+                    //   wioId: profileVM.wioId,
+                    // ),
+                    // const SizedBox(height: 14),
                     HeaderCardWidget(
                       isDark: isDark,
                       fullName: profileVM.fullNameC.text,
