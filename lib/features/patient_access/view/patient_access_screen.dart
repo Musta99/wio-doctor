@@ -369,6 +369,8 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                   return VirtualWioCard(
                     name: profileVM.fullNameC.text,
                     wioId: profileVM.wioId,
+                    address: profileVM.clinicAddressC.text,
+                    bloodType: profileVM.specialityC.text,
                   );
                 },
               ),

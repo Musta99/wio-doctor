@@ -9,7 +9,6 @@ import 'package:wio_doctor/core/theme/theme_provider.dart';
 import 'package:wio_doctor/features/profile/view_model/profile_view_model.dart';
 import 'package:wio_doctor/features/profile/widget/header_card_widget.dart';
 import 'package:wio_doctor/features/profile/widget/section_widget.dart';
-import 'package:wio_doctor/features/profile/widget/virtual_wio_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

@@ -100,12 +100,11 @@ class _VirtualWioCardState extends State<VirtualWioCard>
             children: [
               ElevatedButton.icon(
                 onPressed: () {
-                  // if (profileVM.isCardFlipped) {
-                  //   _flipController.reverse();
-                  // } else {
-                  //   _flipController.forward();
-                  // }
-                  // profileVM.toggleCardFlip();
+                  if (_flipController.isCompleted) {
+                    _flipController.reverse();
+                  } else {
+                    _flipController.forward();
+                  }
                 },
                 icon: Icon(LucideIcons.rotateCcw, size: 16),
                 label: Text('Flip Card'),
@@ -467,9 +466,8 @@ class _VirtualWioCardState extends State<VirtualWioCard>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.cardType == "doctor"
-                            ? 'SPECIALTY'
-                            : 'BLOOD GROUP',
+                        'SPECIALTY',
+
                         style: GoogleFonts.exo(
                           color: const Color(0xFF99F6E4), // teal-100
                           fontSize: 14,
