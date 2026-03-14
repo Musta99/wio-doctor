@@ -210,22 +210,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           isDarkHeader: true,
                         ),
                         const SizedBox(width: 10),
-                        _CircleIconButton(
-                          onTap: () {
-                            themeProvider.setThemeMode(
-                              themeProvider.isDarkMode
-                                  ? ThemeMode.light
-                                  : ThemeMode.dark,
-                            );
-                          },
-                          icon:
-                              themeProvider.isDarkMode
-                                  ? LucideIcons.sun
-                                  : LucideIcons.moon,
-                          isDarkHeader: true,
-                        ),
-                        const SizedBox(width: 10),
 
+                        // _CircleIconButton(
+                        //   onTap: () {
+                        //     themeProvider.setThemeMode(
+                        //       themeProvider.isDarkMode
+                        //           ? ThemeMode.light
+                        //           : ThemeMode.dark,
+                        //     );
+                        //   },
+                        //   icon:
+                        //       themeProvider.isDarkMode
+                        //           ? LucideIcons.sun
+                        //           : LucideIcons.moon,
+                        //   isDarkHeader: true,
+                        // ),
+                        // const SizedBox(width: 10),
                         Builder(
                           builder:
                               (context) => _CircleIconButton(
@@ -651,6 +651,7 @@ class _DashboardEndDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Top
+              // Top
               Row(
                 children: [
                   Expanded(
@@ -662,6 +663,45 @@ class _DashboardEndDrawer extends StatelessWidget {
                       ),
                     ),
                   ),
+                  // ── Theme toggle ──────────────────────────────
+                  Consumer<ThemeViewModel>(
+                    builder: (context, themeProvider, _) {
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(999),
+                        onTap: () {
+                          themeProvider.setThemeMode(
+                            themeProvider.isDarkMode
+                                ? ThemeMode.light
+                                : ThemeMode.dark,
+                          );
+                        },
+                        child: Container(
+                          height: 38,
+                          width: 38,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.06)
+                                    : Colors.black.withOpacity(0.04),
+                            border: Border.all(color: borderColor),
+                          ),
+                          child: Icon(
+                            themeProvider.isDarkMode
+                                ? LucideIcons.sun
+                                : LucideIcons.moon,
+                            size: 18,
+                            color:
+                                isDark
+                                    ? Colors.white.withOpacity(0.85)
+                                    : Colors.black.withOpacity(0.8),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // ─────────────────────────────────────────────
+                  const SizedBox(width: 8),
                   InkWell(
                     borderRadius: BorderRadius.circular(999),
                     onTap: () => Navigator.pop(context),
