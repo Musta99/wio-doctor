@@ -413,6 +413,7 @@ class ProfileViewModel extends ChangeNotifier {
         (route) => false, // removes all previous routes
       );
     } catch (err) {
+      print("Logout error: $err");
       Fluttertoast.showToast(
         msg: "Error occured: $err",
         backgroundColor: Colors.red,

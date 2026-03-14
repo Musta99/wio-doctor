@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:945647869344:android:0a81e4ed4843d3125b98c5",
+        "mobilesdk_app_id": "1:945647869344:android:47c2f5132ac6181d5b98c5",
         "android_client_info": {
-          "package_name": "com.mobile.wio_doctor"
+          "package_name": "com.mobile.wioDoctor"
         }
       },
       "oauth_client": [
@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "945647869344-p58k550p2outp99j2udh5e4p8hpe96sp.apps.googleusercontent.com",
+              "client_id": "945647869344-0pdmf69co021irnd165v8cojj8hi36tq.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.wiocare"
+                "bundle_id": "com.example.wioDoctor"
               }
             }
           ]
@@ -75,10 +75,10 @@
               "client_type": 3
             },
             {
-              "client_id": "945647869344-p58k550p2outp99j2udh5e4p8hpe96sp.apps.googleusercontent.com",
+              "client_id": "945647869344-0pdmf69co021irnd165v8cojj8hi36tq.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.wiocare"
+                "bundle_id": "com.example.wioDoctor"
               }
             }
           ]

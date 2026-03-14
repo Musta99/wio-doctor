@@ -706,8 +706,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             context,
                           );
 
-                          emailCtrl.clear();
-                          passCtrl.clear();
+                          // emailCtrl.clear();
+                          // passCtrl.clear();
                         },
                         child:
                             loginVM.isLoginLoading

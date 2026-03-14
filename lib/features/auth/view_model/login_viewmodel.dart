@@ -61,7 +61,7 @@ class LoginViewmodel extends ChangeNotifier {
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("doctorId", cred.user!.uid);
-      
+
       // Navigate to home screen if login successful
       Navigator.pushReplacement(
         context,
@@ -89,6 +89,7 @@ class LoginViewmodel extends ChangeNotifier {
         msg: "Something went wrong. Please try again.$err",
         fontSize: 16,
       );
+      print("Login error: $err");
       _setError("Something went wrong. Please try again.");
     } finally {
       _setLoading(false);

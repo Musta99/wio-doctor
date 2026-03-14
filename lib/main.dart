@@ -230,6 +230,7 @@ import 'package:wio_doctor/features/patient_access/view_model/patient_access_vie
 import 'package:wio_doctor/features/profile/view_model/profile_view_model.dart';
 import 'package:wio_doctor/features/schedule/view_model/schedule_view_model.dart';
 import 'package:wio_doctor/features/wio_case_discussion/view_model/case_discussion_view_model.dart';
+import 'package:wio_doctor/firebase_options.dart';
 
 // Auth + Core
 import 'package:wio_doctor/view_model/auth_provider.dart';

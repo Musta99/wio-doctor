@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA33lHWWCwNO2ReP1my_EEeu5kNd9b1xuU',
-    appId: '1:945647869344:android:0a81e4ed4843d3125b98c5',
+    appId: '1:945647869344:android:47c2f5132ac6181d5b98c5',
     messagingSenderId: '945647869344',
     projectId: 'wio-care',
     storageBucket: 'wio-care.firebasestorage.app',
@@ -59,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAlcg4SHQdWyKwBsKN8FRC_834aZVLCoUA',
-    appId: '1:945647869344:ios:220dedc16666788a5b98c5',
+    appId: '1:945647869344:ios:a62533aec0d017305b98c5',
     messagingSenderId: '945647869344',
     projectId: 'wio-care',
     storageBucket: 'wio-care.firebasestorage.app',
     androidClientId: '945647869344-5kjir07a1cg361cfmktreiu70f79d3jl.apps.googleusercontent.com',
-    iosClientId: '945647869344-0pdmf69co021irnd165v8cojj8hi36tq.apps.googleusercontent.com',
-    iosBundleId: 'com.example.wioDoctor',
+    iosClientId: '945647869344-bmf8ek5af4kr7hv4sg4b4hk48ltb3mhe.apps.googleusercontent.com',
+    iosBundleId: 'com.mobile.wioDoctor',
   );
 }

@@ -385,56 +385,56 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                         ],
                                       ),
                                       const SizedBox(height: 10),
-                                      Consumer<PatientViewModel>(
-                                        builder: (context, vm, child) {
-                                          return ShadButton(
-                                            width: double.infinity,
-                                            backgroundColor: Colors.teal,
-                                            onPressed: () async {
-                                              await vm
-                                                  .synthasizeHealthOverview();
-                                            },
-                                            child:
-                                                vm.isSynthasizingHealthOverview
-                                                    ? Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        SizedBox(
-                                                          height: 16,
-                                                          width: 16,
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                                color:
-                                                                    Colors
-                                                                        .white,
-                                                                strokeWidth: 2,
-                                                              ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 8,
-                                                        ),
-                                                        Text(
-                                                          "Synthasizing...",
-                                                          style:
-                                                              GoogleFonts.exo(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w900,
-                                                              ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                    : Text(
-                                                      "Manage",
-                                                      style: GoogleFonts.exo(
-                                                        fontWeight:
-                                                            FontWeight.w900,
-                                                      ),
-                                                    ),
-                                          );
-                                        },
-                                      ),
+                                      // Consumer<PatientViewModel>(
+                                      //   builder: (context, vm, child) {
+                                      //     return ShadButton(
+                                      //       width: double.infinity,
+                                      //       backgroundColor: Colors.teal,
+                                      //       onPressed: () async {
+                                      //         await vm
+                                      //             .synthasizeHealthOverview();
+                                      //       },
+                                      //       child:
+                                      //           vm.isSynthasizingHealthOverview
+                                      //               ? Row(
+                                      //                 mainAxisSize:
+                                      //                     MainAxisSize.min,
+                                      //                 children: [
+                                      //                   SizedBox(
+                                      //                     height: 16,
+                                      //                     width: 16,
+                                      //                     child:
+                                      //                         CircularProgressIndicator(
+                                      //                           color:
+                                      //                               Colors
+                                      //                                   .white,
+                                      //                           strokeWidth: 2,
+                                      //                         ),
+                                      //                   ),
+                                      //                   const SizedBox(
+                                      //                     width: 8,
+                                      //                   ),
+                                      //                   Text(
+                                      //                     "Synthasizing...",
+                                      //                     style:
+                                      //                         GoogleFonts.exo(
+                                      //                           fontWeight:
+                                      //                               FontWeight
+                                      //                                   .w900,
+                                      //                         ),
+                                      //                   ),
+                                      //                 ],
+                                      //               )
+                                      //               : Text(
+                                      //                 "Manage",
+                                      //                 style: GoogleFonts.exo(
+                                      //                   fontWeight:
+                                      //                       FontWeight.w900,
+                                      //                 ),
+                                      //               ),
+                                      //     );
+                                      //   },
+                                      // ),
                                     ],
                                   ),
                                 ),

@@ -261,7 +261,7 @@ class _VirtualWioCardState extends State<VirtualWioCard>
             child: Opacity(
               opacity: 0.2,
               child: Image.asset(
-                'assets/icons/wio_logo.png', // Replace with your logo path
+                'assets/icons/app_logo.png', // Replace with your logo path
                 width: 200,
                 height: 200,
                 fit: BoxFit.contain,
@@ -447,7 +447,7 @@ class _VirtualWioCardState extends State<VirtualWioCard>
             child: Opacity(
               opacity: 0.2,
               child: Image.asset(
-                'assets/icons/wio_logo.png', // Replace with your logo path
+                'assets/icons/app_logo.png', // Replace with your logo path
                 width: 200,
                 height: 200,
                 fit: BoxFit.contain,
