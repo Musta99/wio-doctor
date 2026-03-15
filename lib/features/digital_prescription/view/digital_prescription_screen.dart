@@ -655,7 +655,8 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                       builder: (context, vm, child) {
                         return ShadButton(
                           width: double.infinity,
-                          backgroundColor: Colors.teal,
+                          backgroundColor: Color(0xFF14c7eb),
+                          pressedBackgroundColor: Color(0xFF14c7eb),
                           onPressed: () async {
                             await vm.createPrescription(
                               context,

@@ -110,7 +110,8 @@ class WioCaseDiscussionScreen extends StatelessWidget {
                     /// ============ Submit Button ============
                     ShadButton(
                       width: double.infinity,
-                      backgroundColor: Colors.teal,
+                      backgroundColor: Color(0xFF14c7eb),
+                      pressedBackgroundColor: Color(0xFF14c7eb),
                       onPressed:
                           vm.isLoadingCaseDiscussion
                               ? null

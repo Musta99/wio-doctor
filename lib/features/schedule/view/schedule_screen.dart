@@ -374,7 +374,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                             ShadButton(
                               width: double.infinity,
                               height: 46,
-                              backgroundColor: Colors.teal,
+                              pressedBackgroundColor: Color(0xFF14c7eb),
+                              backgroundColor: Color(0xFF14c7eb),
                               onPressed: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(

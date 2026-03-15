@@ -422,8 +422,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: double.infinity,
                             backgroundColor:
                                 profileVM.isProfileChanged
-                                    ? Colors.teal
+                                    ? Color(0xFF14c7eb)
                                     : Colors.grey,
+                            pressedBackgroundColor: Color(0xFF14c7eb),
                             onPressed:
                                 !profileVM.isProfileChanged ||
                                         profileVM.isUpdatingData

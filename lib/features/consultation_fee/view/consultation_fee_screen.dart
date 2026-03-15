@@ -193,7 +193,8 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
                 await vm.updateConsultationFee(context);
               },
               width: double.infinity,
-              backgroundColor: Colors.teal,
+              pressedBackgroundColor: Color(0xFF14c7eb),
+              backgroundColor: Color(0xFF14c7eb),
               child:
                   vm.isConsultationFeeUpdating
                       ? Icon(LucideIcons.loader, size: 22)

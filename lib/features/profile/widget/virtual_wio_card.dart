@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gal/gal.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class VirtualWioCard extends StatefulWidget {
@@ -31,8 +33,9 @@ class _VirtualWioCardState extends State<VirtualWioCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _flipController;
   late Animation<double> _flipAnimation;
-  bool _isFlipped = false;
   bool _copied = false;
+
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -69,28 +72,35 @@ class _VirtualWioCardState extends State<VirtualWioCard>
       constraints: const BoxConstraints(maxWidth: 448),
       child: Column(
         children: [
-          AnimatedBuilder(
-            animation: _flipAnimation,
-            builder: (context, child) {
-              final angle = _flipAnimation.value * 3.14159; // π radians
-              final isFrontVisible = angle < 1.5708; // π/2
+          Screenshot(
+            child: AnimatedBuilder(
+              animation: _flipAnimation,
+              builder: (context, child) {
+                final angle = _flipAnimation.value * 3.14159; // π radians
+                final isFrontVisible = angle < 1.5708; // π/2
 
-              return Transform(
-                alignment: Alignment.center,
-                transform:
-                    Matrix4.identity()
-                      ..setEntry(3, 2, 0.001)
-                      ..rotateY(angle),
-                child:
-                    isFrontVisible
-                        ? _buildFrontCard(displayId, name)
-                        : Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.identity()..rotateY(3.14159),
-                          child: _buildBackCard(displayId, bloodGroup, address),
-                        ),
-              );
-            },
+                return Transform(
+                  alignment: Alignment.center,
+                  transform:
+                      Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateY(angle),
+                  child:
+                      isFrontVisible
+                          ? _buildFrontCard(displayId, name)
+                          : Transform(
+                            alignment: Alignment.center,
+                            transform: Matrix4.identity()..rotateY(3.14159),
+                            child: _buildBackCard(
+                              displayId,
+                              bloodGroup,
+                              address,
+                            ),
+                          ),
+                );
+              },
+            ),
+            controller: _screenshotController,
           ),
           SizedBox(height: 6),
 
@@ -144,53 +154,60 @@ class _VirtualWioCardState extends State<VirtualWioCard>
             pressedBackgroundColor: Color(0xFF14c7eb),
             onPressed: () async {
               try {
-                // Show loading dialog
+                // ✅ Request permission first
+                final hasAccess = await Gal.hasAccess();
+                if (!hasAccess) {
+                  final granted = await Gal.requestAccess();
+                  if (!granted) {
+                    Fluttertoast.showToast(
+                      msg: "Gallery permission denied",
+                      backgroundColor: Colors.red,
+                    );
+                    return;
+                  }
+                }
+
+                if (!context.mounted) return;
+
                 showDialog(
                   context: context,
                   barrierDismissible: false,
                   builder:
-                      (BuildContext dialogContext) =>
-                          const Center(child: CircularProgressIndicator()),
+                      (_) => const Center(child: CircularProgressIndicator()),
                 );
 
-                // await CardPdfGenerator.downloadCard(
-                //   displayId: widget.wioId ?? widget.uid ?? 'N/A',
-                //   name: widget.name ?? 'N/A',
-                //   bloodGroup: widget.bloodType ?? 'N/A',
-                //   address:
-                //       widget.address ??
-                //       (widget.cardType == "doctor"
-                //           ? "No clinic address provided"
-                //           : "No address provided"),
-                //   cardType: widget.cardType,
-                // );
+                final Uint8List? imageBytes = await _screenshotController
+                    .capture(pixelRatio: 3.0);
 
-                // Close loading dialog
-                Navigator.of(context).pop();
+                if (imageBytes == null) {
+                  if (context.mounted) Navigator.of(context).pop();
+                  Fluttertoast.showToast(
+                    msg: "Failed to capture card",
+                    backgroundColor: Colors.red,
+                  );
+                  return;
+                }
 
-                // Show success toast using ShadToaster
-                ShadToaster.of(context).show(
-                  ShadToast(
-                    description: Text(
-                      // langaugeVM.translate(
-                      //   'Card downloaded successfully!',
-                      //   'কার্ডটি সফলভাবে ডাউনলোড হয়েছে!',
-                      // ),
-                      "Card downloaded successfully!",
-                    ),
-                  ),
-                );
+                await Gal.putImageBytes(imageBytes);
+
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  Fluttertoast.showToast(
+                    msg: "Card saved to gallery successfully!",
+                    backgroundColor: Colors.green,
+                  );
+                }
               } catch (e) {
-                // Close loading dialog
-                Navigator.of(context).pop();
+                if (context.mounted) {
+                  Navigator.of(context).pop();
 
-                // Show error toast
-                ShadToaster.of(
-                  context,
-                ).show(ShadToast(description: Text('Error: $e')));
+                  Fluttertoast.showToast(
+                    msg: "Error saving card: $e",
+                    backgroundColor: Colors.red,
+                  );
+                }
               }
             },
-
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -467,7 +484,6 @@ class _VirtualWioCardState extends State<VirtualWioCard>
                     children: [
                       Text(
                         'SPECIALTY',
-
                         style: GoogleFonts.exo(
                           color: const Color(0xFF99F6E4), // teal-100
                           fontSize: 14,

@@ -31,32 +31,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: "Good Morning",
         colors:
             isDark
-                ? const [Color(0xFF0B2B4A), Color(0xFF0B7B7A)]
-                : const [Color(0xFF79C2FF), Color(0xFF1FD1C3)],
+                ? const [Color(0xFF14c7eb), Color(0xFF14c7eb)]
+                : const [Color(0xFF14c7eb), Color(0xFF14c7eb)],
       );
     } else if (hour >= 12 && hour <= 15) {
       return _HeaderPalette(
         title: "Good Afternoon",
         colors:
             isDark
-                ? const [Color(0xFF0A2447), Color(0xFF0F766E)]
-                : const [Color(0xFF7DE7F5), Color(0xFF16A34A)],
+                ? const [Color(0xFF14c7eb), Color(0xFF14c7eb)]
+                : const [Color(0xFF14c7eb), Color(0xFF14c7eb)],
       );
     } else if (hour >= 16 && hour <= 19) {
       return _HeaderPalette(
         title: "Good Evening",
         colors:
             isDark
-                ? const [Color(0xFF1B163B), Color(0xFF0F766E)]
-                : const [Color(0xFFFFB37A), Color(0xFF3BB2B8)],
+                ? const [Color(0xFF14c7eb), Color(0xFF14c7eb)]
+                : const [Color(0xFF14c7eb), Color(0xFF14c7eb)],
       );
     } else {
       return _HeaderPalette(
         title: "Good Night",
         colors:
             isDark
-                ? const [Color(0xFF050A12), Color(0xFF0F172A)]
-                : const [Color(0xFF2B5876), Color(0xFF4E4376)],
+                ? const [Color(0xFF14c7eb), Color(0xFF14c7eb)]
+                : const [Color(0xFF14c7eb), Color(0xFF14c7eb)],
       );
     }
   }

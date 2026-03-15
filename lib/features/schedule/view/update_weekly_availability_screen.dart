@@ -1850,7 +1850,8 @@ class _UpdateWeeklyAvailabilityScreenState
                   ShadButton(
                     width: double.infinity,
                     height: 46,
-                    backgroundColor: Colors.teal,
+                    backgroundColor: Color(0xFF14c7eb),
+                    pressedBackgroundColor: Color(0xFF14c7eb),
                     onPressed: () async {
                       scheduleVM.printAllData();
                       await scheduleVM.updateWeeklyAvailability(context);

@@ -98,12 +98,7 @@ class PatientCard extends StatelessWidget {
                           Colors.white.withOpacity(0.03),
                         ]
                         : [
-                          const Color.fromARGB(
-                            255,
-                            19,
-                            102,
-                            102,
-                          ), // light glass base (slightly gray)
+                          Color(0xFF14c7eb), // light glass base (slightly gray)
                           const Color.fromARGB(
                             255,
                             193,
@@ -186,7 +181,7 @@ class PatientCard extends StatelessWidget {
 
           /// Action button
           ShadButton(
-            backgroundColor: Colors.teal,
+            backgroundColor: Color(0xFF14c7eb),
             onPressed: onPressed,
             child: Text(
               "View",
