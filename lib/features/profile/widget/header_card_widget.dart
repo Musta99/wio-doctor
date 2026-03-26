@@ -78,7 +78,7 @@ class HeaderCardWidget extends StatelessWidget {
                                 width: 24,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: Colors.teal,
+                                  color: Color(0xFF14c7eb),
                                 ),
                               ),
                             ),
@@ -103,7 +103,7 @@ class HeaderCardWidget extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.teal,
+                        color: Color(0xFF14c7eb),
                         borderRadius: BorderRadius.circular(999),
                         border: Border.all(
                           color: Colors.white.withOpacity(0.25),

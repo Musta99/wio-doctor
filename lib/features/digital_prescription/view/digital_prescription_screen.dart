@@ -54,7 +54,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
       required IconData icon,
       required String title,
       required String subtitle,
-      Color accent = Colors.teal,
+      Color accent = const Color(0xFF14c7eb),
     }) {
       return Row(
         children: [
@@ -106,14 +106,14 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
             borderRadius: BorderRadius.circular(999),
             color:
                 active
-                    ? Colors.teal.withOpacity(isDark ? 0.22 : 0.16)
+                    ? Color(0xFF14c7eb).withOpacity(isDark ? 0.22 : 0.16)
                     : (isDark
                         ? Colors.white.withOpacity(0.04)
                         : const Color(0xFFF3F4F8)),
             border: Border.all(
               color:
                   active
-                      ? Colors.teal.withOpacity(isDark ? 0.55 : 0.40)
+                      ? Color(0xFF14c7eb).withOpacity(isDark ? 0.55 : 0.40)
                       : AppColors.border(isDark),
             ),
           ),
@@ -229,7 +229,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                       icon: LucideIcons.user,
                       title: "Patient Information",
                       subtitle: "Select a patient to create a prescription.",
-                      accent: Colors.teal,
+                      accent: Color(0xFF14c7eb),
                     ),
                     const SizedBox(height: 14),
                     Consumer<DigitalPrescriptionViewModel>(
@@ -427,7 +427,7 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                                       const Padding(
                                         padding: EdgeInsets.all(8),
                                         child: LinearProgressIndicator(
-                                          color: Colors.teal,
+                                          color: Color(0xFF14c7eb),
                                         ),
                                       ),
 

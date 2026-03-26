@@ -193,7 +193,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             if (appointmentVM.isLoadingAppointmentsFetch &&
                 appointmentVM.appointmentsList.isEmpty) {
               return Center(
-                child: CircularProgressIndicator(color: Colors.teal),
+                child: CircularProgressIndicator(color: Color(0xFF14c7eb)),
               );
             }
             if (!appointmentVM.isLoadingAppointmentsFetch &&
@@ -341,7 +341,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                             "See All",
                             style: GoogleFonts.exo(
                               fontWeight: FontWeight.bold,
-                              color: Colors.teal,
+                              color: Color(0xFF14c7eb),
                             ),
                           ),
                         ),

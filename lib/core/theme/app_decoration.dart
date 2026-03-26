@@ -45,7 +45,7 @@ class AppDecorations {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: Colors.teal.withOpacity(0.6)),
+        borderSide: BorderSide(color: Color(0xFF14c7eb).withOpacity(0.6)),
       ),
     );
   }

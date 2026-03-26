@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class ProfileViewModel extends ChangeNotifier {
@@ -214,6 +215,13 @@ class ProfileViewModel extends ChangeNotifier {
   // ----------------- Profile picture update ------------------
   bool isUploadingPhoto = false;
   Future pickAndUploadProfileImage(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
     try {
       final picker = ImagePicker();
 
@@ -244,8 +252,10 @@ class ProfileViewModel extends ChangeNotifier {
       /// Create multipart request
       final request = http.MultipartRequest(
         "POST",
-        Uri.parse("https://www.wiocare.com/api/upload-profile-image"),
+        Uri.parse("${ApiServices.baseUrl}api/upload-profile-image"),
       );
+
+      request.headers["Authorization"] = "Bearer $idToken";
 
       /// If your API requires token
       try {

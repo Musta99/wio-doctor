@@ -388,7 +388,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         const Icon(
                           LucideIcons.activity,
                           size: 18,
-                          color: Colors.teal,
+                          color: Color(0xFF14c7eb),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
@@ -612,12 +612,12 @@ class _DashboardEndDrawer extends StatelessWidget {
                 width: 36,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: Colors.teal.withOpacity(isDark ? 0.14 : 0.10),
+                  color: Color(0xFF14c7eb).withOpacity(isDark ? 0.14 : 0.10),
                   border: Border.all(
-                    color: Colors.teal.withOpacity(isDark ? 0.25 : 0.18),
+                    color: Color(0xFF14c7eb).withOpacity(isDark ? 0.25 : 0.18),
                   ),
                 ),
-                child: Icon(icon, size: 22, color: Colors.teal),
+                child: Icon(icon, size: 22, color: Color(0xFF14c7eb)),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -638,6 +638,7 @@ class _DashboardEndDrawer extends StatelessWidget {
 
     return Drawer(
       width: 320,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
       backgroundColor: cardColor,
       child: SafeArea(
         child: Padding(

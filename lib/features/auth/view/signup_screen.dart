@@ -459,7 +459,7 @@ class _SignupScreenState extends State<SignupScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide(
-            color: Colors.teal.withOpacity(0.65),
+            color: Color(0xFF14c7eb).withOpacity(0.65),
             width: 1.4,
           ),
         ),
@@ -477,7 +477,7 @@ class _SignupScreenState extends State<SignupScreen> {
               width: 170,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.teal.withOpacity(isDark ? 0.16 : 0.12),
+                color: Color(0xFF14c7eb).withOpacity(isDark ? 0.16 : 0.12),
               ),
             ),
           ),
@@ -501,7 +501,7 @@ class _SignupScreenState extends State<SignupScreen> {
               width: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.tealAccent.withOpacity(isDark ? 0.08 : 0.08),
+                color: Color(0xFF14c7eb).withOpacity(isDark ? 0.08 : 0.08),
               ),
             ),
           ),
@@ -518,19 +518,19 @@ class _SignupScreenState extends State<SignupScreen> {
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: [
-                  Colors.teal.withOpacity(isDark ? 0.22 : 0.14),
+                  Color(0xFF14c7eb).withOpacity(isDark ? 0.22 : 0.14),
                   Colors.cyanAccent.withOpacity(isDark ? 0.10 : 0.08),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               border: Border.all(
-                color: Colors.teal.withOpacity(isDark ? 0.35 : 0.18),
+                color: Color(0xFF14c7eb).withOpacity(isDark ? 0.35 : 0.18),
                 width: 1.1,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.teal.withOpacity(isDark ? 0.22 : 0.10),
+                  color: Color(0xFF14c7eb).withOpacity(isDark ? 0.22 : 0.10),
                   blurRadius: 30,
                   spreadRadius: 2,
                   offset: const Offset(0, 10),
@@ -558,23 +558,27 @@ class _SignupScreenState extends State<SignupScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
             decoration: BoxDecoration(
-              color: Colors.teal.withOpacity(isDark ? 0.14 : 0.09),
+              color: Color(0xFF14c7eb).withOpacity(isDark ? 0.14 : 0.09),
               borderRadius: BorderRadius.circular(30),
               border: Border.all(
-                color: Colors.teal.withOpacity(isDark ? 0.25 : 0.14),
+                color: Color(0xFF14c7eb).withOpacity(isDark ? 0.25 : 0.14),
               ),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(LucideIcons.userPlus, size: 15, color: Colors.teal),
+                const Icon(
+                  LucideIcons.userPlus,
+                  size: 15,
+                  color: Color(0xFF14c7eb),
+                ),
                 const SizedBox(width: 8),
                 Text(
                   "Create Doctor Account",
                   style: GoogleFonts.exo(
                     fontSize: 12,
                     fontWeight: FontWeight.w800,
-                    color: Colors.teal,
+                    color: Color(0xFF14c7eb),
                     letterSpacing: 0.2,
                   ),
                 ),
@@ -707,7 +711,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       width: double.infinity,
                       child: ShadButton(
                         height: 52,
-                        backgroundColor: Colors.teal,
+                        backgroundColor: Color(0xFF14c7eb),
                         onPressed: () async {
                           if (nameCtrl.text.isEmpty ||
                               emailCtrl.text.isEmpty ||
@@ -795,7 +799,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           style: GoogleFonts.exo(
                             fontSize: 13,
                             fontWeight: FontWeight.w800,
-                            color: Colors.teal,
+                            color: Color(0xFF14c7eb),
                           ),
                         ),
                       ),

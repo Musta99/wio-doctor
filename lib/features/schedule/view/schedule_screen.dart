@@ -166,7 +166,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           if (scheduleVM.isScheduleFetchLoading &&
               scheduleVM.scheduleData.isEmpty) {
             return const Center(
-              child: CircularProgressIndicator(color: Colors.teal),
+              child: CircularProgressIndicator(color: Color(0xFF14c7eb)),
             );
           }
 

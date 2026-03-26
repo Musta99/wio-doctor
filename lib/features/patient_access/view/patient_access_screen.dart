@@ -78,19 +78,19 @@ class _PatientAccessScreenState extends State<PatientAccessScreen> {
                           width: 40,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14),
-                            color: Colors.teal.withOpacity(
-                              isDark ? 0.14 : 0.10,
-                            ),
+                            color: Color(
+                              0xFF14c7eb,
+                            ).withOpacity(isDark ? 0.14 : 0.10),
                             border: Border.all(
-                              color: Colors.teal.withOpacity(
-                                isDark ? 0.25 : 0.18,
-                              ),
+                              color: Color(
+                                0xFF14c7eb,
+                              ).withOpacity(isDark ? 0.25 : 0.18),
                             ),
                           ),
                           child: const Icon(
                             LucideIcons.search,
                             size: 18,
-                            color: Colors.teal,
+                            color: Color(0xFF14c7eb),
                           ),
                         ),
                         const SizedBox(width: 10),

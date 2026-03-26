@@ -169,7 +169,7 @@ class WioCaseDiscussionScreen extends StatelessWidget {
           decoration: AppDecorations.card(isDark),
           child: Column(
             children: [
-              Icon(LucideIcons.imagePlus, color: Colors.teal),
+              Icon(LucideIcons.imagePlus, color: Color(0xFF14c7eb)),
               const SizedBox(height: 6),
               Text("Tap to attach image", style: AppTextStyles.body(13)),
             ],
@@ -200,7 +200,9 @@ class WioCaseDiscussionScreen extends StatelessWidget {
     if (vm.isLoadingCaseDiscussion) {
       return const Padding(
         padding: EdgeInsets.all(20),
-        child: Center(child: CircularProgressIndicator(color: Colors.teal)),
+        child: Center(
+          child: CircularProgressIndicator(color: Color(0xFF14c7eb)),
+        ),
       );
     }
 

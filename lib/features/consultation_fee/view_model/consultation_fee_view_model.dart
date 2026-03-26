@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class ConsultationFeeViewModel extends ChangeNotifier {
@@ -36,7 +37,7 @@ class ConsultationFeeViewModel extends ChangeNotifier {
       if (doctorId == null || token == null) return;
 
       final response = await http.get(
-        Uri.parse("https://www.wiocare.com/api/doctor/fees?doctorId=$doctorId"),
+        Uri.parse("${ApiServices.baseUrl}api/doctor/fees?doctorId=$doctorId"),
         headers: {"Authorization": "Bearer $token"},
       );
 
@@ -105,7 +106,7 @@ class ConsultationFeeViewModel extends ChangeNotifier {
       };
 
       final response = await http.put(
-        Uri.parse("https://www.wiocare.com/api/doctor/fees?doctorId=$doctorId"),
+        Uri.parse("${ApiServices.baseUrl}api/doctor/fees?doctorId=$doctorId"),
         headers: {
           "Authorization": "Bearer $token",
           "Content-Type": "application/json",

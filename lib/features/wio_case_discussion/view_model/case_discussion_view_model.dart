@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class CaseDiscussionViewModel extends ChangeNotifier {
@@ -70,7 +71,7 @@ class CaseDiscussionViewModel extends ChangeNotifier {
         throw Exception("User not authenticated");
       }
 
-      final url = Uri.parse("https://www.wiocare.com/api/wio-discuss");
+      final url = Uri.parse("${ApiServices.baseUrl}api/wio-discuss");
 
       final body = {
         "caseTitle": caseTitleC.text.trim(),

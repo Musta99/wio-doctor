@@ -30,7 +30,7 @@ class _ConsultationFeeScreenState extends State<ConsultationFeeScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.teal.withOpacity(0.4),
+              color: Color(0xFF14c7eb).withOpacity(0.4),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: Colors.white),

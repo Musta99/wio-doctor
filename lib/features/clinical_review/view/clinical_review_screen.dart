@@ -240,7 +240,7 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                 height: 100,
                                 child: Center(
                                   child: CircularProgressIndicator(
-                                    color: Colors.teal,
+                                    color: Color(0xFF14c7eb),
                                   ),
                                 ),
                               ),
@@ -290,13 +290,13 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                           borderRadius: BorderRadius.circular(
                                             14,
                                           ),
-                                          color: Colors.teal.withOpacity(
-                                            isDark ? 0.14 : 0.10,
-                                          ),
+                                          color: Color(
+                                            0xFF14c7eb,
+                                          ).withOpacity(isDark ? 0.14 : 0.10),
                                           border: Border.all(
-                                            color: Colors.teal.withOpacity(
-                                              isDark ? 0.25 : 0.18,
-                                            ),
+                                            color: Color(
+                                              0xFF14c7eb,
+                                            ).withOpacity(isDark ? 0.25 : 0.18),
                                           ),
                                         ),
                                         child: Icon(
@@ -304,9 +304,10 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                                           size: 18,
                                           color:
                                               isDark
-                                                  ? Colors.tealAccent
-                                                      .withOpacity(0.9)
-                                                  : Colors.teal,
+                                                  ? Color(
+                                                    0xFF14c7eb,
+                                                  ).withOpacity(0.9)
+                                                  : Color(0xFF14c7eb),
                                         ),
                                       ),
                                       const SizedBox(width: 10),
@@ -361,8 +362,8 @@ class _ClinicalReviewScreenState extends State<ClinicalReviewScreen> {
                         Consumer<ClinicalReviewViewModel>(
                           builder: (context, clinicalVM, child) {
                             return ShadButton(
-                              backgroundColor: Colors.teal,
-                              pressedBackgroundColor: Colors.teal,
+                              backgroundColor: Color(0xFF14c7eb),
+                              pressedBackgroundColor: Color(0xFF14c7eb),
                               width: double.infinity,
                               onPressed: () async {
                                 await clinicalVM.analyzingReports(

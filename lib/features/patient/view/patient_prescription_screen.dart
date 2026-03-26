@@ -72,7 +72,7 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
       required IconData icon,
       required String title,
       required String subtitle,
-      Color accent = Colors.teal,
+      Color accent = const Color(0xFF14c7eb),
     }) {
       return Row(
         children: [
@@ -120,7 +120,7 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
         builder: (context, vm, child) {
           if (vm.isLoadingPrescriptionFetch) {
             return const Center(
-              child: CircularProgressIndicator(color: Colors.teal),
+              child: CircularProgressIndicator(color: Color(0xFF14c7eb)),
             );
           }
 
@@ -361,7 +361,7 @@ class _PatientPrescriptionScreenState extends State<PatientPrescriptionScreen> {
                                 const Icon(
                                   Icons.check_circle,
                                   size: 18,
-                                  color: Colors.teal,
+                                  color: Color(0xFF14c7eb),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(child: Text(t, style: bodyStyle(13))),

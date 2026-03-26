@@ -77,7 +77,7 @@ class _AddVitalsScreenState extends State<AddVitalsScreen> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(color: Colors.teal.withOpacity(0.6)),
+          borderSide: BorderSide(color: Color(0xFF14c7eb).withOpacity(0.6)),
         ),
       );
     }
@@ -235,7 +235,7 @@ class _AddVitalsScreenState extends State<AddVitalsScreen> {
                       builder: (context, patientVM, child) {
                         return ShadButton(
                           width: double.infinity,
-                          backgroundColor: Colors.teal,
+                          backgroundColor: Color(0xFF14c7eb),
                           onPressed: () async {
                             final selectedDate =
                                 Provider.of<DatePickerProvider>(

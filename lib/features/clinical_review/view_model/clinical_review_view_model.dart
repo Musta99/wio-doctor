@@ -1,8 +1,10 @@
 import 'dart:convert';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:wio_doctor/shared/services/api_service.dart';
 
 class ClinicalReviewViewModel extends ChangeNotifier {
   // ---------------- Load all the reports of that patient -----------------------
@@ -11,13 +13,23 @@ class ClinicalReviewViewModel extends ChangeNotifier {
   Future fetchPatientReports(String patientId) async {
     reportsList.clear();
     notifyListeners();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
     try {
       isReportFetchLoading = true;
       notifyListeners();
       final patientReportsFetchRoute =
-          "https://www.wiocare.com/api/patient-data?patientId=${patientId}&dataType=reports&page=1&pageSize=10";
+          "${ApiServices.baseUrl}api/patient-data?patientId=${patientId}&dataType=reports&page=1&pageSize=10";
 
-      final response = await http.get(Uri.parse(patientReportsFetchRoute));
+      final response = await http.get(
+        Uri.parse(patientReportsFetchRoute),
+        headers: {"Authorization": "Bearer $idToken"},
+      );
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         reportsList = data["data"];
@@ -44,15 +56,24 @@ class ClinicalReviewViewModel extends ChangeNotifier {
   Map? clinicalReviewData;
   Future analyzingReports(List reports) async {
     try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        print('User not authenticated');
+        return null;
+      }
+
+      final idToken = await user.getIdToken();
       isReportAnalyzing = true;
       notifyListeners();
 
-      final reportsAnalyzingRoute =
-          "https://www.wiocare.com/api/clinical-review";
+      final reportsAnalyzingRoute = "${ApiServices.baseUrl}api/clinical-review";
 
       final response = await http.post(
         Uri.parse(reportsAnalyzingRoute),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": "Bearer $idToken",
+        },
         body: jsonEncode({'reports': reports}),
       );
       final data = jsonDecode(response.body);

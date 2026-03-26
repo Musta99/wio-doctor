@@ -316,6 +316,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 /// =======================
@@ -376,7 +377,7 @@ class ScheduleViewModel extends ChangeNotifier {
       }
 
       final scheduleFetchRoute =
-          "https://www.wiocare.com/api/doctor/availability?doctorId=$doctorId";
+          "${ApiServices.baseUrl}api/doctor/availability?doctorId=$doctorId";
 
       final response = await http.get(
         Uri.parse(scheduleFetchRoute),
@@ -669,7 +670,7 @@ class ScheduleViewModel extends ChangeNotifier {
 
       // ----- 8) Call API -----
       final url =
-          "https://www.wiocare.com/api/doctor/availability?doctorId=$doctorId";
+          "${ApiServices.baseUrl}api/doctor/availability?doctorId=$doctorId";
 
       final response = await http.put(
         Uri.parse(url),

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:wio_doctor/shared/services/api_service.dart';
 
 class SignupViewModel extends ChangeNotifier {
   bool isSignupLoading = false;
@@ -21,12 +22,13 @@ class SignupViewModel extends ChangeNotifier {
       if (user.user!.uid == null) {
         throw Exception("User ID is null");
       } else {
-        final String signUpEndPoint = "https://www.wiocare.com/api/auth/signup";
+        final String signUpEndPoint = "${ApiServices.baseUrl}api/auth/signup";
         final response = await http.post(
           Uri.parse(signUpEndPoint),
           headers: {
             "Content-Type": "application/json",
             "Accept": "application/json",
+            "Authorization": "Bearer ${user.user!.getIdToken()}",
           },
           body: jsonEncode({
             "uid": user.user!.uid,

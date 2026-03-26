@@ -195,10 +195,12 @@
 
 // ---------------------------- 2222222222222222222222222222222 ---------------------------
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 
 class PatientViewModel extends ChangeNotifier {
   // ===============================
@@ -210,16 +212,26 @@ class PatientViewModel extends ChangeNotifier {
   Future<void> fetchPatientDetails(String patientId) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? doctorId = prefs.getString("doctorId");
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
 
     try {
       isLoadingPatientDetails = true;
       notifyListeners();
 
       final patientDetailsRoute =
-          "https://www.wiocare.com/api/patient-data"
+          "${ApiServices.baseUrl}api/patient-data"
           "?patientId=$patientId&doctorId=$doctorId&dataType=all";
 
-      final response = await http.get(Uri.parse(patientDetailsRoute));
+      final response = await http.get(
+        Uri.parse(patientDetailsRoute),
+        headers: {"Authorization": "Bearer $idToken"},
+      );
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
@@ -249,15 +261,25 @@ class PatientViewModel extends ChangeNotifier {
   Map<String, dynamic> reportDetails = {};
 
   Future<void> fetchReportDetails(String patientId, String reportId) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
     try {
       isLoadingReportFetch = true;
       notifyListeners();
 
       final reportFetchRoute =
-          "https://www.wiocare.com/api/patient-data"
+          "${ApiServices.baseUrl}api/patient-data"
           "?patientId=$patientId&dataType=reports&reportId=$reportId";
 
-      final response = await http.get(Uri.parse(reportFetchRoute));
+      final response = await http.get(
+        Uri.parse(reportFetchRoute),
+        headers: {"Authorization": "Bearer $idToken"},
+      );
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
@@ -286,15 +308,25 @@ class PatientViewModel extends ChangeNotifier {
     String patientId,
     String prescriptionId,
   ) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
     try {
       isLoadingPrescriptionFetch = true;
       notifyListeners();
 
       final prescriptionFetchRoute =
-          "https://www.wiocare.com/api/patient-data"
+          "${ApiServices.baseUrl}api/patient-data"
           "?patientId=$patientId&dataType=prescriptions&prescriptionId=$prescriptionId";
 
-      final response = await http.get(Uri.parse(prescriptionFetchRoute));
+      final response = await http.get(
+        Uri.parse(prescriptionFetchRoute),
+        headers: {"Authorization": "Bearer $idToken"},
+      );
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
@@ -326,18 +358,26 @@ class PatientViewModel extends ChangeNotifier {
     String date,
     String? note,
   ) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
     try {
       isPatientVitalsAddLoading = true;
       notifyListeners();
 
       final String patientVitalsAddRoute =
-          "https://www.wiocare.com/api/patient-data?patientId=$patientId&dataType=vitals";
+          "${ApiServices.baseUrl}api/patient-data?patientId=$patientId&dataType=vitals";
 
       final response = await http.post(
         Uri.parse(patientVitalsAddRoute),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
+          "Authorization": "Bearer $idToken",
         },
         body: jsonEncode({
           "bp": bp,
@@ -377,6 +417,13 @@ class PatientViewModel extends ChangeNotifier {
   Future<void> synthasizeHealthOverview(
     // required dynamic medicationAdherence,
   ) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
     try {
       isSynthasizingHealthOverview = true;
       healthOverviewData = {};
@@ -393,11 +440,14 @@ class PatientViewModel extends ChangeNotifier {
 
       // 3) POST request (same as your web)
       final String healthOverviewRoute =
-          "https://www.wiocare.com/api/synthesize-patient-data";
+          "${ApiServices.baseUrl}api/synthesize-patient-data";
 
       final response = await http.post(
         Uri.parse(healthOverviewRoute),
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $idToken",
+        },
         body: jsonEncode({
           "vitals": jsonEncode(
             vitals,

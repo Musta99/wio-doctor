@@ -287,7 +287,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
         builder: (context, patientLoadingVM, child) {
           if (patientLoadingVM.isLoadingPatientDetails) {
             return const Center(
-              child: CircularProgressIndicator(color: Colors.teal),
+              child: CircularProgressIndicator(color: Color(0xFF14c7eb)),
             );
           }
           return Container(
@@ -782,7 +782,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                           ),
 
                                           ShadButton(
-                                            backgroundColor: Colors.teal,
+                                            backgroundColor: Color(0xFF14c7eb),
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
@@ -916,7 +916,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                           ),
 
                                           ShadButton(
-                                            backgroundColor: Colors.teal,
+                                            backgroundColor: Color(0xFF14c7eb),
                                             onPressed: () {
                                               print(r["id"]);
                                               Navigator.push(
@@ -961,7 +961,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                       children: [
                         Text("Patient trackers", style: sectionStyle(18)),
                         ShadButton(
-                          backgroundColor: Colors.teal,
+                          backgroundColor: Color(0xFF14c7eb),
                           onPressed: () {
                             Navigator.push(
                               context,

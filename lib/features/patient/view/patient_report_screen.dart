@@ -74,7 +74,7 @@ class _PatientHealthDashboardScreenState
       required IconData icon,
       required String title,
       required String subtitle,
-      Color accent = Colors.teal,
+      Color accent = const Color(0xFF14c7eb),
     }) {
       return Row(
         children: [
@@ -132,10 +132,6 @@ class _PatientHealthDashboardScreenState
 
     // Demo content
 
- 
-
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Patient Health Dashboard", style: titleStyle(17)),
@@ -145,7 +141,7 @@ class _PatientHealthDashboardScreenState
         builder: (context, patientDetailsVM, child) {
           if (patientDetailsVM.isLoadingReportFetch) {
             return const Center(
-              child: CircularProgressIndicator(color: Colors.teal),
+              child: CircularProgressIndicator(color: Color(0xFF14c7eb)),
             );
           }
 
@@ -188,7 +184,7 @@ class _PatientHealthDashboardScreenState
                               "Patient A",
                           subtitle:
                               "${patientDetailsVM.reportDetails?["analysis"]?["doctorName"] ?? "Doctor"} • ${patientDetailsVM.reportDetails?["analysis"]?["reportDate"] ?? "Date"}",
-                          accent: Colors.teal,
+                          accent: Color(0xFF14c7eb),
                         ),
                         const SizedBox(height: 14),
                         Container(
@@ -383,7 +379,7 @@ class _PatientHealthDashboardScreenState
                           icon: LucideIcons.flaskConical,
                           title: "Lab Results",
                           subtitle: "Test name, value, unit & reference range.",
-                          accent: Colors.teal,
+                          accent: Color(0xFF14c7eb),
                         ),
                         const SizedBox(height: 12),
                         Container(
@@ -634,7 +630,7 @@ class _PatientHealthDashboardScreenState
                           icon: LucideIcons.utensils,
                           title: "Dietary Suggestion",
                           subtitle: "Foods to favor and foods to limit.",
-                          accent: Colors.teal,
+                          accent: Color(0xFF14c7eb),
                         ),
                         const SizedBox(height: 12),
 
@@ -678,7 +674,7 @@ class _PatientHealthDashboardScreenState
                                         const Icon(
                                           LucideIcons.circleCheck,
                                           size: 18,
-                                          color: Colors.teal,
+                                          color: Color(0xFF14c7eb),
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(

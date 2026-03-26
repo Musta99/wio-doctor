@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:wio_doctor/features/profile/view_model/profile_view_model.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class DigitalPrescriptionViewModel extends ChangeNotifier {
@@ -62,12 +64,20 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
   bool isLoadingMedicinesList = false;
   List medicinesList = [];
   Future getMedicinesList(String medicineName) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
     try {
       isLoadingMedicinesList = true;
       notifyListeners();
 
       final response = await http.get(
-        Uri.parse("https://www.wiocare.com/api/medicines?q=${medicineName}"),
+        Uri.parse("${ApiServices.baseUrl}api/medicines?q=${medicineName}"),
+        headers: {"Authorization": "Bearer $idToken"},
       );
 
       final data = jsonDecode(response.body);
@@ -183,8 +193,11 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
       };
 
       final response = await http.post(
-        Uri.parse("https://www.wiocare.com/api/create-prescription"),
-        headers: {"Content-Type": "application/json"},
+        Uri.parse("${ApiServices.baseUrl}api/create-prescription"),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token",
+        },
         body: jsonEncode(bodyData),
       );
 
@@ -231,8 +244,6 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
 
     /// Clear medicine search list
     medicinesList = [];
-
-
 
     notifyListeners();
   }

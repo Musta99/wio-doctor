@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 import 'package:wio_doctor/view_model/auth_provider.dart';
 
 class AppointmentViewModel extends ChangeNotifier {
@@ -31,7 +32,7 @@ class AppointmentViewModel extends ChangeNotifier {
       }
 
       final appointmentsFetchRoute =
-          "https://www.wiocare.com/api/doctor/appointments?doctorId=${doctorId}";
+          "${ApiServices.baseUrl}/api/doctor/appointments?doctorId=${doctorId}";
       final response = await http.get(
         Uri.parse(appointmentsFetchRoute),
         headers: {"Authorization": "Bearer $token"},
@@ -101,7 +102,7 @@ class AppointmentViewModel extends ChangeNotifier {
       }
 
       final url =
-          "https://www.wiocare.com/api/doctor/appointments"
+          "${ApiServices.baseUrl}api/doctor/appointments"
           "?doctorId=$doctorId"
           "&search=$currentQuery"
           "&page=$currentPage"
@@ -176,7 +177,7 @@ class AppointmentViewModel extends ChangeNotifier {
 
       final response = await http.post(
         Uri.parse(
-          "https://www.wiocare.com/api/appointments/$appointmentId/status",
+          "${ApiServices.baseUrl}api/appointments/$appointmentId/status",
         ),
         headers: {"Authorization": "Bearer $token"},
         body: jsonEncode({"status": status}),
