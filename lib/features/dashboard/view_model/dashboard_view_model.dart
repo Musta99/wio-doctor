@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wio_doctor/shared/services/api_service.dart';
 
 class DashboardViewModel extends ChangeNotifier {
   String? nidNumber;
@@ -30,6 +33,28 @@ class DashboardViewModel extends ChangeNotifier {
   Future fetchDoctorData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? doctorId = prefs.getString("doctorId");
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User not authenticated');
+      return null;
+    }
+
+    final idToken = await user.getIdToken();
+
+    final String healthOverviewRoute =
+        "${ApiServices.baseUrl}api/dashboard-summary";
+
+    final response = await http.get(
+      Uri.parse(healthOverviewRoute),
+      headers: {"Authorization": "Bearer $idToken"},
+    );
+
+    if (response.statusCode == 200) {
+      print("Dashboard summary fetched successfully: ${response.body}");
+    } else {
+      print("Failed to fetch dashboard summary: ${response.statusCode}");
+    }
 
     if (doctorId == null) {
       Fluttertoast.showToast(
@@ -90,6 +115,7 @@ class DashboardViewModel extends ChangeNotifier {
           await FirebaseFirestore.instance
               .collection("patientAccess")
               .where("doctorId", isEqualTo: doctorId)
+              .where("status", isEqualTo: "granted")
               .get();
 
       print("Roastered Patient: ${querySnapshot.docs}");
