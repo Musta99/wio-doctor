@@ -318,47 +318,62 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 children: [
                   // Statistics Cards (kept as-is)
-                  Row(
-                    children: [
-                      Expanded(
-                        child: AppointmentStateCard(
-                          icon: Icons.people_outline,
-                          count: "1,256",
-                          label: "Total Patients",
-                          color: const Color(0xFF8B5CF6),
-                          lightColor:
-                              isDark
-                                  ? const Color(0xFF312E81)
-                                  : const Color(0xFFF3E8FF),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: AppointmentStateCard(
-                          icon: Icons.event_available,
-                          count: "12",
-                          label: "Today",
-                          color: const Color(0xFF0D9488),
-                          lightColor:
-                              isDark
-                                  ? const Color(0xFF134E4A)
-                                  : const Color(0xFFCCFBF1),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: AppointmentStateCard(
-                          icon: Icons.priority_high,
-                          count: "4",
-                          label: "Critical",
-                          color: const Color(0xFFEF4444),
-                          lightColor:
-                              isDark
-                                  ? const Color(0xFF7F1D1D)
-                                  : const Color(0xFFFEE2E2),
-                        ),
-                      ),
-                    ],
+                  Consumer<DashboardViewModel>(
+                    builder: (context, dashboardVM, child) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: AppointmentStateCard(
+                              icon: Icons.people_outline,
+                              count:
+                                  dashboardVM.dashboardSummary?["totalAccess"]
+                                      ?.toString() ??
+                                  "0",
+                              label: "Total Access",
+                              color: const Color(0xFF8B5CF6),
+                              lightColor:
+                                  isDark
+                                      ? const Color(0xFF312E81)
+                                      : const Color(0xFFF3E8FF),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: AppointmentStateCard(
+                              icon: Icons.event_available,
+                              count:
+                                  dashboardVM
+                                      .dashboardSummary?["grantedAccessCount"]
+                                      ?.toString() ??
+                                  "0",
+                              label: "Granted Access",
+                              color: const Color(0xFF0D9488),
+                              lightColor:
+                                  isDark
+                                      ? const Color(0xFF134E4A)
+                                      : const Color(0xFFCCFBF1),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: AppointmentStateCard(
+                              icon: Icons.priority_high,
+                              count:
+                                  dashboardVM
+                                      .dashboardSummary?["pendingAccessCount"]
+                                      ?.toString() ??
+                                  "0",
+                              label: "Pending Access",
+                              color: const Color(0xFFEF4444),
+                              lightColor:
+                                  isDark
+                                      ? const Color(0xFF7F1D1D)
+                                      : const Color(0xFFFEE2E2),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
 
                   const SizedBox(height: 14),

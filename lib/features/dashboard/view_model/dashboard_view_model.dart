@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +31,7 @@ class DashboardViewModel extends ChangeNotifier {
   String? name;
   String? educationDegree;
   String? specialization;
+  Map<String, dynamic>? dashboardSummary;
 
   Future fetchDoctorData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,7 +53,11 @@ class DashboardViewModel extends ChangeNotifier {
       headers: {"Authorization": "Bearer $idToken"},
     );
 
+    final dashboardData = jsonDecode(response.body);
+
     if (response.statusCode == 200) {
+      dashboardSummary = dashboardData;
+      notifyListeners();
       print("Dashboard summary fetched successfully: ${response.body}");
     } else {
       print("Failed to fetch dashboard summary: ${response.statusCode}");
@@ -71,7 +78,6 @@ class DashboardViewModel extends ChangeNotifier {
               .get();
 
       final data = snapshot.data() as Map<String, dynamic>?;
-
       nidNumber = data!["nidNumber"];
       clinicAddress = data["clinicAddress"];
       role = data["role"];
