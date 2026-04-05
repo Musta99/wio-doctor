@@ -358,14 +358,10 @@ class ScheduleViewModel extends ChangeNotifier {
   Map scheduleData = {};
 
   Future<void> fetchDoctorSchedule(BuildContext context) async {
+    final authProvider = context.read<AuthenticationProvider>();
     try {
       isScheduleFetchLoading = true;
       notifyListeners();
-
-      final authProvider = Provider.of<AuthenticationProvider>(
-        context,
-        listen: false,
-      );
 
       // Always request fresh token
       final String? token = await authProvider.getFreshToken();
@@ -414,7 +410,7 @@ class ScheduleViewModel extends ChangeNotifier {
   int durationMinutes = 30;
 
   // ---------- Status ----------
-  String status = "Offline";
+  String status = "offline";
 
   // ---------- Timezone ----------
   String timeZone = "Asia/Dhaka";
@@ -665,7 +661,7 @@ class ScheduleViewModel extends ChangeNotifier {
         "availableDays": availableDays,
         "nextAvailable": nextAvailable,
         "timezone": timeZone,
-        "durationMinutes": durationMinutes, // ✅ include if your API supports it
+        // "durationMinutes": durationMinutes, // ✅ include if your API supports it
       };
 
       // ----- 8) Call API -----

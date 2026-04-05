@@ -279,6 +279,7 @@ class ProfileViewModel extends ChangeNotifier {
       /// Send request
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
+      final responseData = jsonDecode(response.body);
 
       print("Upload status: ${response.statusCode}");
       print("Upload response: ${response.body}");
@@ -308,6 +309,11 @@ class ProfileViewModel extends ChangeNotifier {
         }
       } else {
         print("Upload failed: ${response.body}");
+        Fluttertoast.showToast(
+          msg:
+              "Failed to upload image: ${responseData["error"] ?? 'Unknown error'}",
+          backgroundColor: Colors.red,
+        );
       }
     } catch (err) {
       Fluttertoast.showToast(
@@ -324,6 +330,18 @@ class ProfileViewModel extends ChangeNotifier {
   // --------------------- Update Profile data -----------------------
   bool isUpdatingData = false;
   Future updateProfileData() async {
+    // Check email verification first
+    await FirebaseAuth.instance.currentUser?.reload();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && !user.emailVerified) {
+      Fluttertoast.showToast(
+        msg: "Please verify your email before updating your profile.",
+        backgroundColor: Colors.red,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 3,
+      );
+      return;
+    }
     try {
       /// Prevent unnecessary update
       if (!isProfileChanged) return;
@@ -407,25 +425,29 @@ class ProfileViewModel extends ChangeNotifier {
 
   // -------------------- Logout function -------------------
   bool isLogoutLoading = false;
+
   Future userLogout(BuildContext context) async {
+    // Capture navigator and read provider BEFORE any async gap
+    final navigator = Navigator.of(context);
+    final authProvider = context.read<AuthenticationProvider>();
+
     try {
       isLogoutLoading = true;
       notifyListeners();
+
       await FirebaseAuth.instance.signOut();
+      await authProvider.clearCredentials();
 
-      await context.read<AuthenticationProvider>().clearCredentials();
-
-      // Remove all screens and go to login
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
-        (route) => false, // removes all previous routes
+      navigator.pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        (route) => false,
       );
     } catch (err) {
       print("Logout error: $err");
       Fluttertoast.showToast(
-        msg: "Error occured: $err",
+        msg: "Error occurred: $err",
         backgroundColor: Colors.red,
+        timeInSecForIosWeb: 4,
       );
     } finally {
       isLogoutLoading = false;

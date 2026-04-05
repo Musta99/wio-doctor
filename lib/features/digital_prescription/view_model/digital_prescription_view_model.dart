@@ -144,6 +144,25 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ---------------- Validation----------
+  // Add this validation method above createPrescription
+  String? validatePrescription(String testsText) {
+    if (selectedPatient == null) {
+      return "Please select a patient before saving.";
+    }
+
+    if (meds.isEmpty) {
+      return "Please add at least one medicine.";
+    }
+
+    final hasEmptyMed = meds.any((m) => m.name.text.trim().isEmpty);
+    if (hasEmptyMed) {
+      return "Please fill in all medicine names.";
+    }
+
+    return null; // null means valid
+  }
+
   // --------------------- Create a Prescription ---------------------
   bool isLoadingCreation = false;
   Future createPrescription(
@@ -153,24 +172,23 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
     String suggestionCtrl,
     String patientName,
   ) async {
+    // Capture before any await
+    final authProvider = context.read<AuthenticationProvider>();
+    final doctorName = context.read<ProfileViewModel>().fullNameC.text;
+
     try {
       isLoadingCreation = true;
       notifyListeners();
 
-      final authProvider = Provider.of<AuthenticationProvider>(
-        context,
-        listen: false,
-      );
-
-      String? token = await authProvider.getFreshToken();
-      String? doctorId = authProvider.userId;
+      final String? token = await authProvider.getFreshToken();
+      final String? doctorId = authProvider.userId;
 
       if (doctorId == null || token == null) return;
 
       final medicinesJson = meds.map((e) => e.toJson()).toList();
 
       final prescriptionDate =
-          "${DateTime.now().year.toString()}-${DateTime.now().month.toString()}-${DateTime.now().day.toString()}";
+          "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
 
       final bodyData = {
         "fileInfo": null,
@@ -181,11 +199,7 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
           "tests": testC.split(",").map((e) => e.trim()).toList(),
           "suggestions": suggestionCtrl,
           "doctorId": doctorId,
-          "doctorName":
-              Provider.of<ProfileViewModel>(
-                context,
-                listen: false,
-              ).fullNameC.text,
+          "doctorName": doctorName, // ✅ captured before await
           "patientName": patientName,
           "prescriptionDate": prescriptionDate,
           "language": "en",
@@ -201,26 +215,23 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
         body: jsonEncode(bodyData),
       );
 
-      print("STATUS: ${response.statusCode}");
-      print("BODY: ${response.body}");
-
       if (response.statusCode == 200) {
-        print(response.body);
-
-        clearAllFields(); // ⭐ reset everything
-
+        clearAllFields();
         Fluttertoast.showToast(
-          msg: "Prescription created succesfully",
+          msg: "Prescription created successfully",
           backgroundColor: Colors.green,
         );
       } else {
-        print(response.statusCode);
-        print(response.body);
+        debugPrint("Error: ${response.statusCode} - ${response.body}");
+        Fluttertoast.showToast(
+          msg: "Failed to create prescription. Please try again.",
+          backgroundColor: Colors.red,
+        );
       }
     } catch (err) {
-      print(err.toString());
+      debugPrint(err.toString());
       Fluttertoast.showToast(
-        msg: "Error occured: $err",
+        msg: "Error occurred: $err",
         backgroundColor: Colors.red,
       );
     } finally {

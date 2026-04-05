@@ -354,7 +354,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:wio_doctor/features/auth/view/email_verification_screen.dart';
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
+import 'package:wio_doctor/features/auth/view_model/email_verification_view_model.dart';
 import 'package:wio_doctor/features/auth/view_model/signup_viewmodel.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -742,10 +744,26 @@ class _SignupScreenState extends State<SignupScreen> {
                             passCtrl.clear();
                             confirmCtrl.clear();
 
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => LoginScreen(),
+                            //   ),
+                            // );
+
+                            // Replace LoginScreen() navigation with:
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
+                                builder:
+                                    (_) => ChangeNotifierProvider(
+                                      create:
+                                          (_) => EmailVerificationViewModel(),
+                                      child: EmailVerificationScreen(
+                                        email: emailCtrl.text.trim(),
+                                        userName: nameCtrl.text.trim(),
+                                      ),
+                                    ),
                               ),
                             );
                           }

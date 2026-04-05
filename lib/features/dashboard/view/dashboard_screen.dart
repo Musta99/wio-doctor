@@ -9,6 +9,7 @@ import 'package:wio_doctor/features/consultation_fee/view/consultation_fee_scree
 import 'package:wio_doctor/features/dashboard/view_model/dashboard_view_model.dart';
 import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
+import 'package:wio_doctor/features/dashboard/widgets/unverified_banner.dart';
 import 'package:wio_doctor/features/digital_prescription/view/digital_prescription_screen.dart';
 import 'package:wio_doctor/features/patient/view/patient_details_screen.dart';
 import 'package:wio_doctor/features/patient_access/view/patient_access_screen.dart';
@@ -65,11 +66,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<DashboardViewModel>(context, listen: false).fetchDoctorData();
-    Provider.of<DashboardViewModel>(
-      context,
-      listen: false,
-    ).fetchPatientRoaster();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DashboardViewModel>(context, listen: false).fetchDoctorData();
+      Provider.of<DashboardViewModel>(
+        context,
+        listen: false,
+      ).fetchPatientRoaster();
+    });
   }
 
   @override
@@ -295,6 +298,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Unverified Baneer
+            const UnverifiedBanner(),
             // A white rounded sheet like bKash (makes the header look premium)
             Container(
               padding: const EdgeInsets.all(14),

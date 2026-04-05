@@ -18,6 +18,8 @@ class SignupViewModel extends ChangeNotifier {
         email: email,
         password: password,
       );
+      // Send email verification:
+      await user.user?.sendEmailVerification();
 
       if (user.user!.uid == null) {
         throw Exception("User ID is null");

@@ -36,6 +36,67 @@ class LoginViewmodel extends ChangeNotifier {
     }
   }
 
+  // Future login(String email, String password, BuildContext context) async {
+  //   if (email.trim().isEmpty || password.isEmpty) {
+  //     Fluttertoast.showToast(
+  //       backgroundColor: Colors.red,
+  //       gravity: ToastGravity.CENTER,
+  //       msg: "Please enter both email and password.",
+  //       fontSize: 16,
+  //     );
+  //     return;
+  //   }
+
+  //   try {
+  //     _setLoading(true);
+  //     _setError(null);
+  //     final cred = await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: email.trim(),
+  //       password: password,
+  //     );
+
+  //     if (cred.user!.uid == null) {
+  //       throw Exception("User ID is null");
+  //     }
+
+  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     await prefs.setString("doctorId", cred.user!.uid);
+
+  //     // Navigate to home screen if login successful
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (_) => BottomNavBar()),
+  //     );
+
+  //     Fluttertoast.showToast(
+  //       msg: "Login successful",
+  //       backgroundColor: Colors.green,
+  //       gravity: ToastGravity.CENTER,
+  //     );
+
+  //     print("Login successful: ${cred.user?.uid}");
+  //   } on FirebaseAuthException catch (e) {
+  //     print("FirebaseAuthException -----: ${e.code} - ${e.message}");
+  //     Fluttertoast.showToast(
+  //       backgroundColor: Colors.red,
+  //       gravity: ToastGravity.CENTER,
+  //       msg: _friendlyFirebaseError(e),
+  //       fontSize: 16,
+  //     );
+  //   } catch (err) {
+  //     print("Login error------: $err");
+  //     Fluttertoast.showToast(
+  //       backgroundColor: Colors.red,
+  //       gravity: ToastGravity.CENTER,
+  //       msg: "Something went wrong. Please try again.$err",
+  //       fontSize: 16,
+  //     );
+  //     print("Login error: $err");
+  //     _setError("Something went wrong. Please try again.");
+  //   } finally {
+  //     _setLoading(false);
+  //   }
+  // }
   Future login(String email, String password, BuildContext context) async {
     if (email.trim().isEmpty || password.isEmpty) {
       Fluttertoast.showToast(
@@ -47,24 +108,23 @@ class LoginViewmodel extends ChangeNotifier {
       return;
     }
 
+    // Capture navigator BEFORE any async gap
+    final navigator = Navigator.of(context);
+
     try {
       _setLoading(true);
       _setError(null);
+
       final cred = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
 
-      if (cred.user!.uid == null) {
-        throw Exception("User ID is null");
-      }
-
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString("doctorId", cred.user!.uid);
 
-      // Navigate to home screen if login successful
-      Navigator.pushReplacement(
-        context,
+      // Safe — using captured navigator, not context
+      navigator.pushReplacement(
         MaterialPageRoute(builder: (_) => BottomNavBar()),
       );
 
@@ -76,6 +136,7 @@ class LoginViewmodel extends ChangeNotifier {
 
       print("Login successful: ${cred.user?.uid}");
     } on FirebaseAuthException catch (e) {
+      print("FirebaseAuthException: ${e.code} - ${e.message}");
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         gravity: ToastGravity.CENTER,
@@ -83,14 +144,14 @@ class LoginViewmodel extends ChangeNotifier {
         fontSize: 16,
       );
     } catch (err) {
+      print("Login error: $err");
+      _setError("Something went wrong. Please try again.");
       Fluttertoast.showToast(
         backgroundColor: Colors.red,
         gravity: ToastGravity.CENTER,
-        msg: "Something went wrong. Please try again.$err",
+        msg: "Something went wrong. Please try again.",
         fontSize: 16,
       );
-      print("Login error: $err");
-      _setError("Something went wrong. Please try again.");
     } finally {
       _setLoading(false);
     }

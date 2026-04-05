@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -630,48 +631,73 @@ class _DigitalPrescriberScreenState extends State<DigitalPrescriberScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    ShadButton(
-                      width: double.infinity,
-                      backgroundColor:
-                          isDark
-                              ? Colors.white.withOpacity(0.06)
-                              : const Color(0xFFF3F4F8),
-                      onPressed: () {
-                        // TODO: Preview prescription as PDF/Image
-                      },
-                      child: Text(
-                        "Preview",
-                        style: GoogleFonts.exo(
-                          fontWeight: FontWeight.w900,
-                          color:
-                              isDark
-                                  ? Colors.white.withOpacity(0.9)
-                                  : Colors.black.withOpacity(0.85),
-                        ),
-                      ),
-                    ),
+                    // ShadButton(
+                    //   width: double.infinity,
+                    //   backgroundColor:
+                    //       isDark
+                    //           ? Colors.white.withOpacity(0.06)
+                    //           : const Color(0xFFF3F4F8),
+                    //   onPressed: () {
+                    //     // TODO: Preview prescription as PDF/Image
+                    //   },
+                    //   child: Text(
+                    //     "Preview",
+                    //     style: GoogleFonts.exo(
+                    //       fontWeight: FontWeight.w900,
+                    //       color:
+                    //           isDark
+                    //               ? Colors.white.withOpacity(0.9)
+                    //               : Colors.black.withOpacity(0.85),
+                    //     ),
+                    //   ),
+                    // ),
                     const SizedBox(height: 10),
                     Consumer<DigitalPrescriptionViewModel>(
                       builder: (context, vm, child) {
                         return ShadButton(
                           width: double.infinity,
-                          backgroundColor: Color(0xFF14c7eb),
-                          pressedBackgroundColor: Color(0xFF14c7eb),
-                          onPressed: () async {
-                            await vm.createPrescription(
-                              context,
-                              vm.selectedPatient!["id"],
-                              testsCtrl.text,
-                              suggestionCtrl.text,
-                              vm.selectedPatient!["name"],
-                            );
+                          backgroundColor: const Color(0xFF14c7eb),
+                          pressedBackgroundColor: const Color(0xFF14c7eb),
+                          onPressed:
+                              vm.isLoadingCreation
+                                  ? null
+                                  : () async {
+                                    // ✅ Validate first — no crash on null patient
+                                    final error = vm.validatePrescription(
+                                      testsCtrl.text,
+                                    );
+                                    if (error != null) {
+                                      Fluttertoast.showToast(
+                                        msg: error,
+                                        backgroundColor: Colors.orange,
+                                        gravity: ToastGravity.CENTER,
+                                      );
+                                      return;
+                                    }
 
-                            testsCtrl.clear();
-                            suggestionCtrl.clear();
-                          },
+                                    await vm.createPrescription(
+                                      context,
+                                      vm.selectedPatient!["id"],
+                                      testsCtrl.text,
+                                      suggestionCtrl.text,
+                                      vm.selectedPatient!["name"],
+                                    );
+
+                                    testsCtrl.clear();
+                                    suggestionCtrl.clear();
+                                  },
                           child:
                               vm.isLoadingCreation
-                                  ? Icon(LucideIcons.loader, size: 22)
+                                  ? const SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
+                                  )
                                   : Text(
                                     "Save",
                                     style: GoogleFonts.exo(

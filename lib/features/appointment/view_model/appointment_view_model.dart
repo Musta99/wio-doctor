@@ -47,6 +47,11 @@ class AppointmentViewModel extends ChangeNotifier {
       } else {
         print(response.statusCode);
         print(response.body);
+        Fluttertoast.showToast(
+          msg:
+              "Failed to load appointments: ${data["error"] ?? 'Unknown error'}",
+          backgroundColor: Colors.red,
+        );
       }
     } catch (err) {
       print(err.toString());

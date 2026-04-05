@@ -1,5 +1,145 @@
-import 'dart:convert';
+// import 'dart:convert';
 
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/material.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:http/http.dart' as http;
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:wio_doctor/shared/services/api_service.dart';
+
+// class DashboardViewModel extends ChangeNotifier {
+//   String? nidNumber;
+//   String? clinicAddress;
+//   String? role;
+//   String? gender;
+//   bool? isVerified;
+//   bool? isBlocked;
+//   String? bmdcRegistrationNumber;
+//   String? bio;
+//   String? experience;
+//   String? uid;
+//   List? qualifications;
+//   String? hospital;
+//   String? availableDays;
+//   String? email;
+//   String? currentPosition;
+//   String? wioId;
+//   String? mobile;
+//   String? photo;
+//   String? dob;
+//   String? name;
+//   String? educationDegree;
+//   String? specialization;
+//   Map<String, dynamic>? dashboardSummary;
+
+//   Future fetchDoctorData() async {
+//     final SharedPreferences prefs = await SharedPreferences.getInstance();
+//     String? doctorId = prefs.getString("doctorId");
+
+//     final user = FirebaseAuth.instance.currentUser;
+//     if (user == null) {
+//       print('User not authenticated');
+//       return null;
+//     }
+
+//     final idToken = await user.getIdToken();
+
+//     final String healthOverviewRoute =
+//         "${ApiServices.baseUrl}api/dashboard-summary";
+
+//     final response = await http.get(
+//       Uri.parse(healthOverviewRoute),
+//       headers: {"Authorization": "Bearer $idToken"},
+//     );
+
+//     final dashboardData = jsonDecode(response.body);
+
+//     if (response.statusCode == 200) {
+//       dashboardSummary = dashboardData;
+//       notifyListeners();
+//       print("Dashboard summary fetched successfully: ${response.body}");
+//     } else {
+//       print("Failed to fetch dashboard summary: ${response.statusCode}");
+//     }
+
+//     if (doctorId == null) {
+//       Fluttertoast.showToast(
+//         msg: "No doctorId found",
+//         backgroundColor: Colors.red,
+//         gravity: ToastGravity.BOTTOM,
+//       );
+//     }
+//     try {
+//       final DocumentSnapshot snapshot =
+//           await FirebaseFirestore.instance
+//               .collection("doctors")
+//               .doc(doctorId)
+//               .get();
+
+//       final data = snapshot.data() as Map<String, dynamic>?;
+//       nidNumber = data!["nidNumber"];
+//       clinicAddress = data["clinicAddress"];
+//       role = data["role"];
+//       gender = data["gender"];
+//       isVerified = data["isVerified"];
+//       isBlocked = data["isBlocked"];
+//       bmdcRegistrationNumber = data["bmdcRegistrationNumber"];
+//       bio = data["bio"];
+//       experience = data["experience"];
+//       uid = data["uid"];
+//       qualifications = data["qualifications"];
+//       hospital = data["hospital"];
+//       availableDays = data["availableDays"];
+//       email = data["email"];
+//       currentPosition = data["currentPosition"];
+//       wioId = data["wioId"];
+//       mobile = data["mobile"];
+//       photo = data["photo"];
+//       dob = data["dob"];
+//       educationDegree = data["educationDegree"];
+//       name = data["name"];
+//       notifyListeners();
+
+//       print("Dashboard data fetched : ${data}");
+//     } catch (err) {
+//     } finally {}
+//   }
+
+//   //  Patient Roaster
+//   bool isLoadingPatientRoaster = false;
+//   List roasterPatients = [];
+//   Future fetchPatientRoaster() async {
+//     final SharedPreferences prefs = await SharedPreferences.getInstance();
+//     String? doctorId = prefs.getString("doctorId");
+
+//     try {
+//       isLoadingPatientRoaster = true;
+//       notifyListeners();
+
+//       final QuerySnapshot querySnapshot =
+//           await FirebaseFirestore.instance
+//               .collection("patientAccess")
+//               .where("doctorId", isEqualTo: doctorId)
+//               .where("status", isEqualTo: "granted")
+//               .get();
+
+//       print("Roastered Patient: ${querySnapshot.docs}");
+//       roasterPatients =
+//           querySnapshot.docs
+//               .map((doc) => doc.data() as Map<String, dynamic>)
+//               .toList();
+//       notifyListeners();
+//     } catch (err) {
+//     } finally {
+//       isLoadingPatientRoaster = false;
+//       notifyListeners();
+//     }
+//   }
+// }
+
+// ---------------------------- 222222222222222222222 ----------------------------
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -33,28 +173,49 @@ class DashboardViewModel extends ChangeNotifier {
   String? specialization;
   Map<String, dynamic>? dashboardSummary;
 
+  // ── Email verification banner ──────────────────────────
+  bool isEmailVerified = false;
+  bool isRefreshingVerification = false;
+
+  void _syncEmailVerificationStatus() {
+    final user = FirebaseAuth.instance.currentUser;
+    isEmailVerified = user?.emailVerified ?? false;
+    notifyListeners();
+  }
+
+  Future<void> refreshEmailVerification() async {
+    isRefreshingVerification = true;
+    notifyListeners();
+    try {
+      await FirebaseAuth.instance.currentUser?.reload();
+      _syncEmailVerificationStatus();
+    } catch (_) {
+    } finally {
+      isRefreshingVerification = false;
+      notifyListeners();
+    }
+  }
+  // ───────────────────────────────────────────────────────
+
   Future fetchDoctorData() async {
+    // Sync verification status on every dashboard load
+    _syncEmailVerificationStatus();
+
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? doctorId = prefs.getString("doctorId");
-
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       print('User not authenticated');
       return null;
     }
-
     final idToken = await user.getIdToken();
-
     final String healthOverviewRoute =
         "${ApiServices.baseUrl}api/dashboard-summary";
-
     final response = await http.get(
       Uri.parse(healthOverviewRoute),
       headers: {"Authorization": "Bearer $idToken"},
     );
-
     final dashboardData = jsonDecode(response.body);
-
     if (response.statusCode == 200) {
       dashboardSummary = dashboardData;
       notifyListeners();
@@ -62,7 +223,6 @@ class DashboardViewModel extends ChangeNotifier {
     } else {
       print("Failed to fetch dashboard summary: ${response.statusCode}");
     }
-
     if (doctorId == null) {
       Fluttertoast.showToast(
         msg: "No doctorId found",
@@ -76,7 +236,6 @@ class DashboardViewModel extends ChangeNotifier {
               .collection("doctors")
               .doc(doctorId)
               .get();
-
       final data = snapshot.data() as Map<String, dynamic>?;
       nidNumber = data!["nidNumber"];
       clinicAddress = data["clinicAddress"];
@@ -100,30 +259,27 @@ class DashboardViewModel extends ChangeNotifier {
       educationDegree = data["educationDegree"];
       name = data["name"];
       notifyListeners();
-
       print("Dashboard data fetched : ${data}");
     } catch (err) {
     } finally {}
   }
 
-  //  Patient Roaster
+  // ── Patient Roaster ────────────────────────────────────
   bool isLoadingPatientRoaster = false;
   List roasterPatients = [];
+
   Future fetchPatientRoaster() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? doctorId = prefs.getString("doctorId");
-
     try {
       isLoadingPatientRoaster = true;
       notifyListeners();
-
       final QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance
               .collection("patientAccess")
               .where("doctorId", isEqualTo: doctorId)
               .where("status", isEqualTo: "granted")
               .get();
-
       print("Roastered Patient: ${querySnapshot.docs}");
       roasterPatients =
           querySnapshot.docs
