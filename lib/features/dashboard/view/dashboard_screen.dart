@@ -492,7 +492,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ///  Case 1 → Loading + empty
                       if (dashboardVM.isLoadingPatientRoaster &&
                           patients.isEmpty) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: CircularProgressIndicator(
+                              color: Color(0xFF14c7eb),
+                            ),
+                          ),
+                        );
                       }
 
                       ///  Case 2 → Not loading + empty

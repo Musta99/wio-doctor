@@ -113,7 +113,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Consumer<ProfileViewModel>(
           builder: (context, profileVM, child) {
             if (profileVM.isLoadingDoctor) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(color: Color(0xFF14c7eb)),
+              );
             }
 
             // if (!profileVM.hasDoctorData) {
