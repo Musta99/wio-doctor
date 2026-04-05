@@ -215,6 +215,7 @@ import 'package:wio_doctor/features/appointment/widgets/incoming_call_screen.dar
 
 // Screens
 import 'package:wio_doctor/features/auth/view/login_screen.dart';
+import 'package:wio_doctor/features/auth/view_model/email_verification_view_model.dart';
 import 'package:wio_doctor/features/bottom_nav_bar/view/bottom_nav_bar.dart';
 
 // ViewModels
@@ -295,6 +296,7 @@ class MyApp extends StatelessWidget {
         /// FEATURE VIEWMODELS
         ChangeNotifierProvider(create: (_) => SignupViewModel()),
         ChangeNotifierProvider(create: (_) => LoginViewmodel()),
+        ChangeNotifierProvider(create: (_) => EmailVerificationViewModel()),
         ChangeNotifierProvider(create: (_) => DashboardViewModel()),
         ChangeNotifierProvider(create: (_) => PatientViewModel()),
         ChangeNotifierProvider(create: (_) => ScheduleViewModel()),
