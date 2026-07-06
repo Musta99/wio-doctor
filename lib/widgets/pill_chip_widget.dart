@@ -7,7 +7,6 @@ class PillChipWidget extends StatelessWidget {
   final IconData icon;
   final String statusKey;
   final bool isDark;
-
   const PillChipWidget({
     super.key,
     required this.text,
@@ -30,12 +29,16 @@ class PillChipWidget extends StatelessWidget {
         children: [
           Icon(icon, size: 14, color: StatusStyles.chipText(statusKey, isDark)),
           const SizedBox(width: 6),
-          Text(
-            text,
-            style: GoogleFonts.exo(
-              fontWeight: FontWeight.w800,
-              fontSize: 12,
-              color: StatusStyles.chipText(statusKey, isDark),
+          Expanded(
+            child: Text(
+              text,
+
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.exo(
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
+                color: StatusStyles.chipText(statusKey, isDark),
+              ),
             ),
           ),
         ],

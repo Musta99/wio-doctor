@@ -22,49 +22,45 @@ class IncomingCallProvider extends ChangeNotifier {
   Future<void> acceptCall({
     required BuildContext context,
     required Map<String, dynamic> callData,
-    required Function(String agoraToken) onSuccess, // ✅ Changed to pass token
+    required Function(String agoraToken, String agoraAccount)
+    onSuccess, // ✅ now passes both
     required Function(String error) onError,
   }) async {
     if (_isProcessing) return;
-
     _isProcessing = true;
     notifyListeners();
-
     _timeoutTimer?.cancel();
-
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) throw Exception('Not authenticated');
-
       final signalId = callData['signalId'] ?? callData['id'];
       final channelName = callData['channelName'];
-
       print('✅ Accepting call: $signalId');
-
       await IncomingCallService.instance.acceptCall(signalId);
-
       final tokenResponse = await AgoraService.getAgoraToken(
         channelName: channelName,
         uid: user.uid,
         userEmail: user.email ?? '',
       );
-
       if (tokenResponse == null) {
         throw Exception('Failed to get Agora token');
       }
-
       final agoraToken = tokenResponse['token'] as String?;
+      final agoraAccount = tokenResponse['account'] as String?; // ✅ add this
 
       if (agoraToken == null || agoraToken.isEmpty) {
         throw Exception('Invalid Agora token received');
       }
+      if (agoraAccount == null || agoraAccount.isEmpty) {
+        throw Exception('Invalid Agora account received'); // ✅ add this
+      }
 
       print('✅ Got Agora token: ${agoraToken.substring(0, 20)}...');
+      print('✅ Got Agora account: $agoraAccount'); // optional debug line
 
       _isProcessing = false;
       notifyListeners();
-
-      onSuccess(agoraToken); // ✅ Pass the token to callback
+      onSuccess(agoraToken, agoraAccount); // ✅ pass both to callback
     } catch (e) {
       print('❌ Error accepting call: $e');
       _isProcessing = false;

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +24,7 @@ class AppointmentScreen extends StatefulWidget {
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
   final _searchController = TextEditingController();
+  Timer? _pollTimer; // add this
 
   // Demo data (replace with Provider/API)
   final List<Map<String, dynamic>> _latestAppointments = [
@@ -81,10 +85,23 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         listen: false,
       ).fetchDoctorsAppointments(context);
     });
+
+    // Poll every 15s while this screen is visible, so a payment confirmed
+    // by the patient (auto-updated on the backend) shows up without the
+    // doctor needing to manually refresh or navigate away and back.
+    _pollTimer = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (mounted) {
+        Provider.of<AppointmentViewModel>(
+          context,
+          listen: false,
+        ).fetchDoctorsAppointments(context);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _pollTimer?.cancel(); // add this
     _searchController.dispose();
     super.dispose();
   }
@@ -198,216 +215,237 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
             }
             if (!appointmentVM.isLoadingAppointmentsFetch &&
                 appointmentVM.appointmentsList.isEmpty) {
-              return Center(child: Text("You don't have any appointments"));
+              return RefreshIndicator(
+                // wrap even the empty state so pull works
+                color: const Color(0xFF14c7eb),
+                onRefresh:
+                    () => appointmentVM.fetchDoctorsAppointments(context),
+                child: ListView(
+                  children: const [
+                    SizedBox(height: 200),
+                    Center(child: Text("You don't have any appointments")),
+                  ],
+                ),
+              );
             }
 
             List appointmentsList = (appointmentVM.appointmentsList ?? []);
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // =========================================================
-                    // 1) Booked Appointments (header + search + stats column-wise)
-                    // =========================================================
-                    Container(
-                      decoration: AppDecorations.card(isDark),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(14),
-                                    color:
-                                        isDark
-                                            ? Colors.white.withOpacity(0.06)
-                                            : Colors.black.withOpacity(0.04),
-                                  ),
-                                  child: Icon(
-                                    LucideIcons.clipboardList,
-                                    size: 18,
-                                    color:
-                                        isDark
-                                            ? Colors.white.withOpacity(0.88)
-                                            : Colors.black.withOpacity(0.82),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Booked Appointments",
-                                        style: AppTextStyles.section(18),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        "View and manage all your confirmed and pending appointments.",
-                                        style: AppTextStyles.body(13).copyWith(
-                                          color: AppColors.subtleText(isDark),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 14),
+            return RefreshIndicator(
+              color: const Color(0xFF14c7eb),
+              onRefresh: () => appointmentVM.fetchDoctorsAppointments(context),
 
-                            // Stats in COLUMN (as you asked)
-                            Container(
-                              decoration: BoxDecoration(
-                                color:
-                                    isDark
-                                        ? Colors.white.withOpacity(0.04)
-                                        : const Color(0xFFF3F4F8),
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(
-                                  color: AppColors.border(isDark),
-                                ),
-                              ),
-                              child: Column(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // =========================================================
+                      // 1) Booked Appointments (header + search + stats column-wise)
+                      // =========================================================
+                      Container(
+                        decoration: AppDecorations.card(isDark),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  _StatRow(
-                                    isDark: isDark,
-                                    borderColor: AppColors.border(isDark),
-                                    subtleText: AppColors.subtleText(isDark),
-                                    title: "Total appointments",
-                                    value: appointmentsList.length.toString(),
-                                    icon: LucideIcons.layers,
-                                    accent: Colors.blue,
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color:
+                                          isDark
+                                              ? Colors.white.withOpacity(0.06)
+                                              : Colors.black.withOpacity(0.04),
+                                    ),
+                                    child: Icon(
+                                      LucideIcons.clipboardList,
+                                      size: 18,
+                                      color:
+                                          isDark
+                                              ? Colors.white.withOpacity(0.88)
+                                              : Colors.black.withOpacity(0.82),
+                                    ),
                                   ),
-                                  _DividerLine(
-                                    borderColor: AppColors.border(isDark),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Booked Appointments",
+                                          style: AppTextStyles.section(18),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          "View and manage all your confirmed and pending appointments.",
+                                          style: AppTextStyles.body(
+                                            13,
+                                          ).copyWith(
+                                            color: AppColors.subtleText(isDark),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  _StatRow(
-                                    isDark: isDark,
-                                    borderColor: AppColors.border(isDark),
-                                    subtleText: AppColors.subtleText(isDark),
-                                    title: "Pending approvals",
-                                    value: "$pending",
-                                    icon: LucideIcons.clock3,
-                                    accent: Colors.orange,
-                                  ),
-                                  // _DividerLine(borderColor: borderColor),
-                                  // _StatRow(
-                                  //   isDark: isDark,
-                                  //   borderColor: borderColor,
-                                  //   subtleText: subtleText,
-                                  //   title: "Expected revenue",
-                                  //   value: expectedRevenue,
-                                  //   icon: LucideIcons.badgeDollarSign,
-                                  //   accent: Colors.green,
-                                  // ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                              const SizedBox(height: 14),
 
-                    const SizedBox(height: 16),
-
-                    // =========================================================
-                    // 2) Latest Appointments (separate section)
-                    // =========================================================
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Latest appointments",
-                          style: AppTextStyles.section(18),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AllAppointmentList(),
+                              // Stats in COLUMN (as you asked)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      isDark
+                                          ? Colors.white.withOpacity(0.04)
+                                          : const Color(0xFFF3F4F8),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: AppColors.border(isDark),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    _StatRow(
+                                      isDark: isDark,
+                                      borderColor: AppColors.border(isDark),
+                                      subtleText: AppColors.subtleText(isDark),
+                                      title: "Total appointments",
+                                      value: appointmentsList.length.toString(),
+                                      icon: LucideIcons.layers,
+                                      accent: Colors.blue,
+                                    ),
+                                    _DividerLine(
+                                      borderColor: AppColors.border(isDark),
+                                    ),
+                                    _StatRow(
+                                      isDark: isDark,
+                                      borderColor: AppColors.border(isDark),
+                                      subtleText: AppColors.subtleText(isDark),
+                                      title: "Pending approvals",
+                                      value: "$pending",
+                                      icon: LucideIcons.clock3,
+                                      accent: Colors.orange,
+                                    ),
+                                    // _DividerLine(borderColor: borderColor),
+                                    // _StatRow(
+                                    //   isDark: isDark,
+                                    //   borderColor: borderColor,
+                                    //   subtleText: subtleText,
+                                    //   title: "Expected revenue",
+                                    //   value: expectedRevenue,
+                                    //   icon: LucideIcons.badgeDollarSign,
+                                    //   accent: Colors.green,
+                                    // ),
+                                  ],
+                                ),
                               ),
-                            );
-                          },
-                          child: Text(
-                            "See All",
-                            style: GoogleFonts.exo(
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF14c7eb),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // =========================================================
+                      // 2) Latest Appointments (separate section)
+                      // =========================================================
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Latest appointments",
+                            style: AppTextStyles.section(18),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AllAppointmentList(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "See All",
+                              style: GoogleFonts.exo(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF14c7eb),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+
+                      if (appointmentsList.isEmpty)
+                        Container(
+                          decoration: AppDecorations.card(isDark),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Text(
+                              "No appointments found for your search.",
+                              style: AppTextStyles.body(
+                                13,
+                              ).copyWith(color: AppColors.subtleText(isDark)),
                             ),
                           ),
                         ),
+
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: math.min(
+                          appointmentsList.length,
+                          6,
+                        ), // ✅ never exceeds actual length
+                        itemBuilder: (context, index) {
+                          return AppointmentCardWidget(
+                            appointment: appointmentsList[index],
+                            isDark: isDark,
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // =========================================================
+                      // 3) Video Call History (separate section)
+                      // =========================================================
+                      Text(
+                        "Video call history",
+                        style: AppTextStyles.section(18),
+                      ),
+                      const SizedBox(height: 10),
+
+                      if (_videoHistory.isEmpty)
+                        Container(
+                          decoration: AppDecorations.card(isDark),
+                          child: Padding(
+                            padding: const EdgeInsets.all(14),
+                            child: Text(
+                              "No video call history yet.",
+                              style: AppTextStyles.body(
+                                13,
+                              ).copyWith(color: AppColors.subtleText(isDark)),
+                            ),
+                          ),
+                        ),
+
+                      for (final v in _videoHistory) ...[
+                        videoCard(v),
+                        const SizedBox(height: 12),
                       ],
-                    ),
-                    const SizedBox(height: 10),
-
-                    if (appointmentsList.isEmpty)
-                      Container(
-                        decoration: AppDecorations.card(isDark),
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Text(
-                            "No appointments found for your search.",
-                            style: AppTextStyles.body(
-                              13,
-                            ).copyWith(color: AppColors.subtleText(isDark)),
-                          ),
-                        ),
-                      ),
-
-                    ListView.builder(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount:
-                          appointmentsList.length < 5
-                              ? appointmentsList.length
-                              : 6,
-                      itemBuilder: (context, index) {
-                        return AppointmentCardWidget(
-                          appointment: appointmentsList[index],
-                          isDark: isDark,
-                        );
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // =========================================================
-                    // 3) Video Call History (separate section)
-                    // =========================================================
-                    Text(
-                      "Video call history",
-                      style: AppTextStyles.section(18),
-                    ),
-                    const SizedBox(height: 10),
-
-                    if (_videoHistory.isEmpty)
-                      Container(
-                        decoration: AppDecorations.card(isDark),
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Text(
-                            "No video call history yet.",
-                            style: AppTextStyles.body(
-                              13,
-                            ).copyWith(color: AppColors.subtleText(isDark)),
-                          ),
-                        ),
-                      ),
-
-                    for (final v in _videoHistory) ...[
-                      videoCard(v),
-                      const SizedBox(height: 12),
                     ],
-                  ],
+                  ),
                 ),
               ),
             );

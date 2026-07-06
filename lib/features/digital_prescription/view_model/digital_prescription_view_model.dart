@@ -124,17 +124,17 @@ class DigitalPrescriptionViewModel extends ChangeNotifier {
 
   /// Toggle timing
   void toggleMorning(int index) {
-    meds[index].morning = meds[index].morning + 1;
+    meds[index].morning = meds[index].morning == 0 ? 1 : 0;
     notifyListeners();
   }
 
   void toggleNoon(int index) {
-    meds[index].noon = meds[index].noon + 1;
+    meds[index].noon = meds[index].noon == 0 ? 1 : 0;
     notifyListeners();
   }
 
   void toggleNight(int index) {
-    meds[index].night = meds[index].night + 1;
+    meds[index].night = meds[index].night == 0 ? 1 : 0;
     notifyListeners();
   }
 

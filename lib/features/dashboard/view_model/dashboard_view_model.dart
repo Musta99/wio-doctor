@@ -279,6 +279,7 @@ class DashboardViewModel extends ChangeNotifier {
               .collection("patientAccess")
               .where("doctorId", isEqualTo: doctorId)
               .where("status", isEqualTo: "granted")
+              .orderBy("createdAt", descending: true)
               .get();
       print("Roastered Patient: ${querySnapshot.docs}");
       roasterPatients =
@@ -287,6 +288,7 @@ class DashboardViewModel extends ChangeNotifier {
               .toList();
       notifyListeners();
     } catch (err) {
+      print("fetchPatientRoaster error: $err");
     } finally {
       isLoadingPatientRoaster = false;
       notifyListeners();

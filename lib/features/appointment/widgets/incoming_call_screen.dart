@@ -86,7 +86,7 @@ class _IncomingCallScreenState extends State<IncomingCallScreen>
     provider.acceptCall(
       context: context,
       callData: widget.callData,
-      onSuccess: (String agoraToken) {
+      onSuccess: (String agoraToken, String agoraAccount) {
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
           ScaffoldMessenger.of(
@@ -109,7 +109,8 @@ class _IncomingCallScreenState extends State<IncomingCallScreen>
                   doctorName: callerName,
                   doctorPhotoURL: callerPhoto,
                   isPatient: false,
-                  userAccount: user.uid,
+                  userAccount:
+                      agoraAccount, // ✅ pass the Agora account to the video call screen
                 ),
           ),
         );

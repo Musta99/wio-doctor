@@ -155,14 +155,74 @@ class AppointmentViewModel extends ChangeNotifier {
   bool isCancelLoading(String id) =>
       loadingAppointmentId == id && loadingIsApproved == false;
 
-  Future updateAppointmentStatus(
+  // Future updateAppointmentStatus(
+  //   BuildContext context,
+  //   String appointmentId, {
+  //   bool isApproved = true,
+  // }) async {
+  //   try {
+  //     loadingAppointmentId = appointmentId;
+  //     loadingIsApproved = isApproved;
+  //     notifyListeners();
+
+  //     final authProvider = Provider.of<AuthenticationProvider>(
+  //       context,
+  //       listen: false,
+  //     );
+
+  //     String? token = await authProvider.getFreshToken();
+  //     String? doctorId = authProvider.userId;
+
+  //     if (doctorId == null || token == null) {
+  //       print("DoctorId or token missing");
+  //       return;
+  //     }
+
+  //     final String status = isApproved ? "confirmed" : "canceled";
+
+  //     final response = await http.post(
+  //       Uri.parse(
+  //         "${ApiServices.baseUrl}api/appointments/$appointmentId/status",
+  //       ),
+  //       headers: {"Authorization": "Bearer $token"},
+  //       body: jsonEncode({"status": status}),
+  //     );
+
+  //     final data = jsonDecode(response.body);
+
+  //     if (response.statusCode == 200) {
+  //       print(data);
+  //       Fluttertoast.showToast(
+  //         msg:
+  //             isApproved
+  //                 ? "Appointment confirmed successfully"
+  //                 : "Appointment canceled successfully",
+  //         backgroundColor: isApproved ? Colors.green : Colors.red,
+  //       );
+
+  //       await fetchDoctorsAppointments(context);
+  //     } else {
+  //       print(response.statusCode);
+  //       print(response.body);
+  //     }
+  //   } catch (err) {
+  //     print("Error: $err");
+  //   } finally {
+  //     loadingAppointmentId = null;
+  //     loadingIsApproved = null;
+  //     notifyListeners();
+  //   }
+  // }
+
+  Future<bool> updateAppointmentStatus(
     BuildContext context,
     String appointmentId, {
-    bool isApproved = true,
+    required String status,
+    String? remarks,
   }) async {
     try {
       loadingAppointmentId = appointmentId;
-      loadingIsApproved = isApproved;
+      loadingIsApproved = status == "confirmed";
       notifyListeners();
 
       final authProvider = Provider.of<AuthenticationProvider>(
@@ -170,43 +230,48 @@ class AppointmentViewModel extends ChangeNotifier {
         listen: false,
       );
 
-      String? token = await authProvider.getFreshToken();
-      String? doctorId = authProvider.userId;
+      final token = await authProvider.getFreshToken();
 
-      if (doctorId == null || token == null) {
-        print("DoctorId or token missing");
-        return;
+      if (token == null) {
+        Fluttertoast.showToast(msg: "Authentication failed");
+        return false;
       }
-
-      final String status = isApproved ? "confirmed" : "canceled";
 
       final response = await http.post(
         Uri.parse(
           "${ApiServices.baseUrl}api/appointments/$appointmentId/status",
         ),
-        headers: {"Authorization": "Bearer $token"},
-        body: jsonEncode({"status": status}),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "status": status,
+          if (remarks != null && remarks.isNotEmpty) "remarks": remarks,
+        }),
       );
 
       final data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print(data);
         Fluttertoast.showToast(
-          msg:
-              isApproved
-                  ? "Appointment confirmed successfully"
-                  : "Appointment canceled successfully",
-          backgroundColor: isApproved ? Colors.green : Colors.red,
+          msg: "Appointment updated successfully",
+          backgroundColor: Colors.green,
         );
 
         await fetchDoctorsAppointments(context);
+        return true;
       } else {
-        print(response.statusCode);
-        print(response.body);
+        Fluttertoast.showToast(
+          msg: data["error"] ?? "Failed to update appointment",
+          backgroundColor: Colors.red,
+        );
+
+        return false;
       }
-    } catch (err) {
-      print("Error: $err");
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString(), backgroundColor: Colors.red);
+      return false;
     } finally {
       loadingAppointmentId = null;
       loadingIsApproved = null;
