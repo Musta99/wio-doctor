@@ -1,12 +1,213 @@
+// import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:shadcn_ui/shadcn_ui.dart';
+
+// class PatientCard extends StatelessWidget {
+//   final String name;
+//   final String sex;
+//   final String lastVisited;
+//   final String status;
+//   final VoidCallback onPressed;
+
+//   const PatientCard({
+//     super.key,
+//     required this.name,
+//     required this.sex,
+//     required this.lastVisited,
+//     required this.status,
+//     required this.onPressed,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+//     final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
+
+//     final borderColor =
+//         isDark
+//             ? Colors.white.withOpacity(0.08)
+//             : Colors.black.withOpacity(0.06);
+
+//     final subtleText =
+//         isDark
+//             ? Colors.white.withOpacity(0.72)
+//             : Colors.black.withOpacity(0.65);
+
+//     Widget infoChip(String text, IconData icon) {
+//       return Container(
+//         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+//         decoration: BoxDecoration(
+//           color:
+//               isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF3F4F8),
+//           borderRadius: BorderRadius.circular(999),
+//           border: Border.all(color: borderColor),
+//         ),
+//         child: Row(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             Icon(icon, size: 12, color: subtleText),
+//             const SizedBox(width: 6),
+//             Text(
+//               text,
+//               style: GoogleFonts.exo(
+//                 fontSize: 12,
+//                 fontWeight: FontWeight.w800,
+//                 color:
+//                     isDark
+//                         ? Colors.white.withOpacity(0.9)
+//                         : Colors.black.withOpacity(0.75),
+//               ),
+//             ),
+//           ],
+//         ),
+//       );
+//     }
+
+//     return Container(
+//       decoration: BoxDecoration(
+//         color: cardColor,
+//         borderRadius: BorderRadius.circular(20),
+//         border: Border.all(color: borderColor),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(isDark ? 0.35 : 0.06),
+//             blurRadius: 18,
+//             offset: const Offset(0, 10),
+//           ),
+//         ],
+//       ),
+//       padding: const EdgeInsets.all(16),
+//       child: Row(
+//         children: [
+//           /// Avatar block with glow
+//           Container(
+//             height: 60,
+//             width: 60,
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(16),
+
+//               // ✅ Better contrast glass (visible in light theme too)
+//               gradient: LinearGradient(
+//                 begin: Alignment.topLeft,
+//                 end: Alignment.bottomRight,
+//                 colors:
+//                     isDark
+//                         ? [
+//                           Colors.white.withOpacity(0.10),
+//                           Colors.white.withOpacity(0.03),
+//                         ]
+//                         : [
+//                           Color(0xFF14c7eb), // light glass base (slightly gray)
+//                           const Color.fromARGB(
+//                             255,
+//                             193,
+//                             214,
+//                             242,
+//                           ), // subtle depth
+//                         ],
+//               ),
+
+//               // ✅ Stronger border in light theme
+//               border: Border.all(
+//                 color:
+//                     isDark
+//                         ? Colors.white.withOpacity(0.18)
+//                         : Colors.black.withOpacity(0.08),
+//               ),
+
+//               boxShadow: [
+//                 // outer soft shadow (gives visibility in light theme)
+//                 BoxShadow(
+//                   color: Colors.black.withOpacity(isDark ? 0.40 : 0.10),
+//                   blurRadius: 16,
+//                   offset: const Offset(0, 8),
+//                 ),
+
+//                 // subtle highlight
+//                 BoxShadow(
+//                   color: Colors.white.withOpacity(isDark ? 0.05 : 0.65),
+//                   blurRadius: 10,
+//                   offset: const Offset(-2, -2),
+//                 ),
+//               ],
+//             ),
+//             child: Center(
+//               child: Text(
+//                 name.isNotEmpty ? name[0].toUpperCase() : "?",
+//                 style: GoogleFonts.exo(
+//                   fontSize: 24,
+//                   fontWeight: FontWeight.w900,
+//                   color: Colors.white,
+//                 ),
+//               ),
+//             ),
+//           ),
+
+//           const SizedBox(width: 14),
+
+//           /// Patient info
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 Text(
+//                   name,
+//                   maxLines: 1,
+//                   overflow: TextOverflow.ellipsis,
+//                   style: GoogleFonts.exo(
+//                     fontSize: 16,
+//                     fontWeight: FontWeight.w900,
+//                     color: isDark ? Colors.white : const Color(0xFF1F2937),
+//                   ),
+//                 ),
+
+//                 const SizedBox(height: 8),
+
+//                 Wrap(
+//                   spacing: 8,
+//                   runSpacing: 8,
+//                   children: [
+//                     // infoChip(sex, LucideIcons.user),
+//                     infoChip(lastVisited, LucideIcons.calendar),
+//                     infoChip(status, LucideIcons.heartPulse),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+
+//           const SizedBox(width: 10),
+
+//           /// Action button
+//           ShadButton(
+//             backgroundColor: Color(0xFF14c7eb),
+//             onPressed: onPressed,
+//             child: Text(
+//               "View",
+//               style: GoogleFonts.exo(
+//                 fontSize: 13,
+//                 fontWeight: FontWeight.w900,
+//                 color: Colors.white,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+// --------------------------- 22222222222222222222222222222222 -----------------------------
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
 
 class PatientCard extends StatelessWidget {
   final String name;
   final String sex;
   final String lastVisited;
   final String status;
+  final Color? statusColor; // Add this
   final VoidCallback onPressed;
 
   const PatientCard({
@@ -15,6 +216,7 @@ class PatientCard extends StatelessWidget {
     required this.sex,
     required this.lastVisited,
     required this.status,
+    this.statusColor, // Add this
     required this.onPressed,
   });
 
@@ -22,177 +224,86 @@ class PatientCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final cardColor = isDark ? const Color(0xFF0F172A) : Colors.white;
-
-    final borderColor =
-        isDark
-            ? Colors.white.withOpacity(0.08)
-            : Colors.black.withOpacity(0.06);
-
-    final subtleText =
-        isDark
-            ? Colors.white.withOpacity(0.72)
-            : Colors.black.withOpacity(0.65);
-
-    Widget infoChip(String text, IconData icon) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color:
-              isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFF3F4F8),
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: borderColor),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      color: isDark ? const Color(0xFF1E293B) : Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: isDark ? Colors.white12 : Colors.black.withOpacity(0.05),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 12, color: subtleText),
-            const SizedBox(width: 6),
-            Text(
-              text,
-              style: GoogleFonts.exo(
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                color:
-                    isDark
-                        ? Colors.white.withOpacity(0.9)
-                        : Colors.black.withOpacity(0.75),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Container(
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: borderColor),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.35 : 0.06),
-            blurRadius: 18,
-            offset: const Offset(0, 10),
-          ),
-        ],
       ),
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          /// Avatar block with glow
-          Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-
-              // ✅ Better contrast glass (visible in light theme too)
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors:
-                    isDark
-                        ? [
-                          Colors.white.withOpacity(0.10),
-                          Colors.white.withOpacity(0.03),
-                        ]
-                        : [
-                          Color(0xFF14c7eb), // light glass base (slightly gray)
-                          const Color.fromARGB(
-                            255,
-                            193,
-                            214,
-                            242,
-                          ), // subtle depth
-                        ],
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: const Color(0xFF14c7eb).withOpacity(0.1),
+                    child: Text(
+                      name.isNotEmpty ? name[0] : "?",
+                      style: GoogleFonts.exo(
+                        color: const Color(0xFF14c7eb),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: GoogleFonts.exo(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: isDark ? Colors.white : Colors.black87,
+                          ),
+                        ),
+                        Text(
+                          "Sex: $sex • Last Visit: $lastVisited",
+                          style: GoogleFonts.exo(
+                            fontSize: 12,
+                            color: isDark ? Colors.white60 : Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-
-              // ✅ Stronger border in light theme
-              border: Border.all(
-                color:
-                    isDark
-                        ? Colors.white.withOpacity(0.18)
-                        : Colors.black.withOpacity(0.08),
-              ),
-
-              boxShadow: [
-                // outer soft shadow (gives visibility in light theme)
-                BoxShadow(
-                  color: Colors.black.withOpacity(isDark ? 0.40 : 0.10),
-                  blurRadius: 16,
-                  offset: const Offset(0, 8),
-                ),
-
-                // subtle highlight
-                BoxShadow(
-                  color: Colors.white.withOpacity(isDark ? 0.05 : 0.65),
-                  blurRadius: 10,
-                  offset: const Offset(-2, -2),
-                ),
-              ],
-            ),
-            child: Center(
-              child: Text(
-                name.isNotEmpty ? name[0].toUpperCase() : "?",
-                style: GoogleFonts.exo(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 14),
-
-          /// Patient info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.exo(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: isDark ? Colors.white : const Color(0xFF1F2937),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: (statusColor ?? const Color(0xFF0D9488)).withOpacity(
+                    0.1,
+                  ),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: (statusColor ?? const Color(0xFF0D9488)).withOpacity(
+                      0.3,
+                    ),
                   ),
                 ),
-
-                const SizedBox(height: 8),
-
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    // infoChip(sex, LucideIcons.user),
-                    infoChip(lastVisited, LucideIcons.calendar),
-                    infoChip(status, LucideIcons.heartPulse),
-                  ],
+                child: Text(
+                  status,
+                  style: GoogleFonts.exo(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                    color: statusColor ?? const Color(0xFF0D9488),
+                  ),
                 ),
-              ],
-            ),
-          ),
-
-          const SizedBox(width: 10),
-
-          /// Action button
-          ShadButton(
-            backgroundColor: Color(0xFF14c7eb),
-            onPressed: onPressed,
-            child: Text(
-              "View",
-              style: GoogleFonts.exo(
-                fontSize: 13,
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

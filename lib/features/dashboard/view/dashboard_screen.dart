@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +12,10 @@ import 'package:wio_doctor/features/dashboard/widgets/appointment_state_card.dar
 import 'package:wio_doctor/features/dashboard/widgets/patient_card.dart';
 import 'package:wio_doctor/features/dashboard/widgets/unverified_banner.dart';
 import 'package:wio_doctor/features/digital_prescription/view/digital_prescription_screen.dart';
+import 'package:wio_doctor/features/earnings/view/earning_screen.dart';
 import 'package:wio_doctor/features/patient/view/patient_details_screen.dart';
 import 'package:wio_doctor/features/patient_access/view/patient_access_screen.dart';
+import 'package:wio_doctor/features/report-verification/view/report_verification_screen.dart';
 import 'package:wio_doctor/features/wio_case_discussion/view/wio_case_discussion_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -62,16 +65,70 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
+  String _formatLastVisit(dynamic value) {
+    if (value == null) return "New Visit";
+
+    // Firestore Timestamp support
+    if (value is Timestamp) {
+      return TimeFormateService().formatDate(value);
+    }
+
+    // DateTime support
+    if (value is DateTime) {
+      return _formatDateTime(value);
+    }
+
+    // String support from API
+    if (value is String) {
+      final trimmed = value.trim();
+
+      if (trimmed.isEmpty || trimmed == "N/A") {
+        return "New Visit";
+      }
+
+      final parsedDate = DateTime.tryParse(trimmed);
+      if (parsedDate != null) {
+        return _formatDateTime(parsedDate);
+      }
+
+      return trimmed;
+    }
+
+    return value.toString();
+  }
+
+  String _formatDateTime(DateTime date) {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    return "${months[date.month - 1]} ${date.day}, ${date.year}";
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DashboardViewModel>(context, listen: false).fetchDoctorData();
+      // Use new combined fetch method
       Provider.of<DashboardViewModel>(
         context,
         listen: false,
-      ).fetchPatientRoaster();
+      ).fetchDashboardData();
+      Provider.of<DashboardViewModel>(
+        context,
+        listen: false,
+      ).fetchDoctorProfile();
     });
   }
 
@@ -95,10 +152,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // ✅ bKash-like top header (AppBar background changes by time)
       appBar: AppBar(
         toolbarHeight: 150,
-        leading: const SizedBox.shrink(), // Add this
-        actions: const [
-          SizedBox.shrink(),
-        ], // Keep this but make it empty widget
+        leading: const SizedBox.shrink(),
+        actions: const [SizedBox.shrink()],
         elevation: 0,
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -155,7 +210,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 backgroundImage:
                                     dashboardVM.photo == null ||
                                             dashboardVM.photo!.isEmpty
-                                        ? AssetImage(
+                                        ? const AssetImage(
                                           "assets/icons/user-icon.png",
                                         )
                                         : NetworkImage(dashboardVM.photo!),
@@ -208,22 +263,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           isDarkHeader: true,
                         ),
                         const SizedBox(width: 10),
-
-                        // _CircleIconButton(
-                        //   onTap: () {
-                        //     themeProvider.setThemeMode(
-                        //       themeProvider.isDarkMode
-                        //           ? ThemeMode.light
-                        //           : ThemeMode.dark,
-                        //     );
-                        //   },
-                        //   icon:
-                        //       themeProvider.isDarkMode
-                        //           ? LucideIcons.sun
-                        //           : LucideIcons.moon,
-                        //   isDarkHeader: true,
-                        // ),
-                        // const SizedBox(width: 10),
                         Builder(
                           builder:
                               (context) => _CircleIconButton(
@@ -272,7 +311,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Consumer<DashboardViewModel>(
                             builder: (context, dashboardVm, child) {
                               return Text(
-                                "${dashboardVm.specialization == null || dashboardVm.specialization!.isEmpty ? "Cardiologist" : dashboardVm.wioId} • WIO ID: ${dashboardVm.wioId == null || dashboardVm.wioId!.isEmpty ? "XXXXXXX" : dashboardVm.wioId}",
+                                "${dashboardVm.specialization == null || dashboardVm.specialization!.isEmpty ? "Cardiologist" : dashboardVm.specialization} • WIO ID: ${dashboardVm.wioId == null || dashboardVm.wioId!.isEmpty ? "XXXXXXX" : dashboardVm.wioId}",
                                 style: GoogleFonts.exo(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w800,
@@ -298,8 +337,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Unverified Baneer
+            // Unverified Banner
             const UnverifiedBanner(),
+
             // A white rounded sheet like bKash (makes the header look premium)
             Container(
               padding: const EdgeInsets.all(14),
@@ -322,7 +362,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
               child: Column(
                 children: [
-                  // Statistics Cards (kept as-is)
+                  // Statistics Cards Row 1 (Original)
                   Consumer<DashboardViewModel>(
                     builder: (context, dashboardVM, child) {
                       return Row(
@@ -330,11 +370,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Expanded(
                             child: AppointmentStateCard(
                               icon: Icons.people_outline,
-                              count:
-                                  dashboardVM.dashboardSummary?["totalAccess"]
-                                      ?.toString() ??
-                                  "0",
-                              label: "Total Access",
+                              count: dashboardVM.totalPatients.toString(),
+                              label: "Total Patients",
                               color: const Color(0xFF8B5CF6),
                               lightColor:
                                   isDark
@@ -345,13 +382,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: AppointmentStateCard(
+                              icon: Icons.description_outlined,
+                              count:
+                                  dashboardVM.pendingReports?.toString() ?? "0",
+                              label: "Pending Reports",
+                              color: const Color(0xFFEF4444),
+                              lightColor:
+                                  isDark
+                                      ? const Color(0xFF7F1D1D)
+                                      : const Color(0xFFFEE2E2),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: AppointmentStateCard(
                               icon: Icons.event_available,
                               count:
-                                  dashboardVM
-                                      .dashboardSummary?["grantedAccessCount"]
-                                      ?.toString() ??
+                                  dashboardVM.consultationsToday?.toString() ??
                                   "0",
-                              label: "Granted Access",
+                              label: "Consultations Today",
                               color: const Color(0xFF0D9488),
                               lightColor:
                                   isDark
@@ -359,21 +408,101 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       : const Color(0xFFCCFBF1),
                             ),
                           ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 14),
+
+                  // Statistics Cards Row 2 (New - Consultation Details)
+                  Consumer<DashboardViewModel>(
+                    builder: (context, dashboardVM, child) {
+                      final remaining = dashboardVM.remainingToday ?? 0;
+                      final completed = dashboardVM.completedToday ?? 0;
+
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    isDark
+                                        ? const Color(0xFF1E293B)
+                                        : const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "$completed",
+                                    style: GoogleFonts.exo(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                      color: const Color(0xFF10B981),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Completed",
+                                    style: GoogleFonts.exo(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          isDark
+                                              ? Colors.white70
+                                              : Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
-                            child: AppointmentStateCard(
-                              icon: Icons.priority_high,
-                              count:
-                                  dashboardVM
-                                      .dashboardSummary?["pendingAccessCount"]
-                                      ?.toString() ??
-                                  "0",
-                              label: "Pending Access",
-                              color: const Color(0xFFEF4444),
-                              lightColor:
-                                  isDark
-                                      ? const Color(0xFF7F1D1D)
-                                      : const Color(0xFFFEE2E2),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    isDark
+                                        ? const Color(0xFF1E293B)
+                                        : const Color(0xFFF1F5F9),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "$remaining",
+                                    style: GoogleFonts.exo(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                      color:
+                                          remaining > 0
+                                              ? const Color(0xFFF59E0B)
+                                              : const Color(0xFF6B7280),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Remaining",
+                                    style: GoogleFonts.exo(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      color:
+                                          isDark
+                                              ? Colors.white70
+                                              : Colors.black54,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -412,16 +541,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(
-                            "Tip: Keep your availability updated for better bookings.",
-                            style: GoogleFonts.exo(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color:
-                                  isDark
-                                      ? Colors.white.withOpacity(0.84)
-                                      : Colors.black.withOpacity(0.72),
-                            ),
+                          child: Consumer<DashboardViewModel>(
+                            builder: (context, dashboardVM, child) {
+                              final remaining = dashboardVM.remainingToday ?? 0;
+                              return Text(
+                                remaining > 0
+                                    ? "You have $remaining consultations remaining today."
+                                    : "All consultations completed for today!",
+                                style: GoogleFonts.exo(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color:
+                                      isDark
+                                          ? Colors.white.withOpacity(0.84)
+                                          : Colors.black.withOpacity(0.72),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         Icon(
@@ -441,7 +577,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
             const SizedBox(height: 12),
 
-            // Section Header (kept as-is)
+            // Section Header (Patient Roster)
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
@@ -467,7 +603,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Today's Patient Roaster",
+                        "Patient Roster",
                         style: GoogleFonts.exo(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -475,77 +611,296 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               isDark ? Colors.white : const Color(0xFF1F2937),
                         ),
                       ),
-                      // TextButton(
-                      //   onPressed: () {},
-                      //   child: Text(
-                      //     "See All",
-                      //     style: GoogleFonts.exo(
-                      //       fontSize: 14,
-                      //       color: const Color(0xFF0D9488),
-                      //       fontWeight: FontWeight.w600,
-                      //     ),
-                      //   ),
-                      // ),
+                      Consumer<DashboardViewModel>(
+                        builder: (context, dashboardVM, child) {
+                          return Text(
+                            "${dashboardVM.roasterPatients.length} of ${dashboardVM.totalPatients}",
+                            style: GoogleFonts.exo(
+                              fontSize: 14,
+                              color: const Color(0xFF0D9488),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
 
-                  // Patient List -- Patient Roaster
+                  const SizedBox(height: 12),
+
+                  // Patient List -- Patient Roster
                   Consumer<DashboardViewModel>(
                     builder: (context, dashboardVM, child) {
                       final patients = dashboardVM.roasterPatients;
 
-                      ///  Case 1 → Loading + empty
+                      // Case 1 → Loading + empty (initial load)
                       if (dashboardVM.isLoadingPatientRoaster &&
                           patients.isEmpty) {
-                        return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 20),
-                            child: CircularProgressIndicator(
+                        return Column(
+                          children: [
+                            const SizedBox(height: 20),
+                            const CircularProgressIndicator(
                               color: Color(0xFF14c7eb),
                             ),
+                            const SizedBox(height: 12),
+                            Text(
+                              "Loading patient roster...",
+                              style: GoogleFonts.exo(
+                                color: isDark ? Colors.white70 : Colors.black54,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      // Case 2 → Not loading + empty
+                      if (!dashboardVM.isLoadingPatientRoaster &&
+                          patients.isEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Icon(
+                                LucideIcons.circleAlert,
+                                size: 48,
+                                color: isDark ? Colors.white38 : Colors.black26,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                "No patients found",
+                                style: GoogleFonts.exo(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      isDark ? Colors.white70 : Colors.black54,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Patients will appear here once they grant you access",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.exo(
+                                  fontSize: 13,
+                                  color:
+                                      isDark ? Colors.white60 : Colors.black45,
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }
 
-                      ///  Case 2 → Not loading + empty
-                      if (!dashboardVM.isLoadingPatientRoaster &&
-                          patients.isEmpty) {
-                        return Center(child: Text("No patients found"));
-                      }
+                      // Case 3 → List has data
+                      return Stack(
+                        children: [
+                          Column(
+                            children: [
+                              ListView.builder(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: patients.length,
+                                itemBuilder: (context, index) {
+                                  final patientDetails =
+                                      patients[index] as Map<String, dynamic>;
 
-                      ///  Case 3 → List has data
-                      return ListView.builder(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: patients.length,
-                        itemBuilder: (context, index) {
-                          final patientDetails =
-                              patients[index] as Map<String, dynamic>;
+                                  // Determine access status (matching web version)
+                                  final bool hasAccess =
+                                      patientDetails["hasAccess"] == true;
+                                  final String statusText =
+                                      hasAccess
+                                          ? "Full Access"
+                                          : "Last Visit Only";
+                                  final Color statusColor =
+                                      hasAccess
+                                          ? const Color(0xFF0D9488)
+                                          : Colors.grey;
 
-                          return PatientCard(
-                            name: patientDetails["patientName"] ?? "",
-                            sex: "F",
-                            lastVisited:
-                                patientDetails["lastVisitAt"] != null
-                                    ? TimeFormateService().formatDate(
-                                      patientDetails["lastVisitAt"],
-                                    )
-                                    : "New Visit",
-                            status: patientDetails["status"] ?? "",
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (_) => PatientDetailsScreen(
-                                        patientId: patientDetails["patientId"],
+                                  return PatientCard(
+                                    name:
+                                        patientDetails["name"] ??
+                                        patientDetails["patientName"] ??
+                                        "Unknown",
+                                    sex:
+                                        patientDetails["gender"] ??
+                                        patientDetails["sex"] ??
+                                        "N/A",
+                                    lastVisited: _formatLastVisit(
+                                      patientDetails["lastVisit"],
+                                    ),
+                                    status: statusText,
+                                    statusColor: statusColor,
+                                    onPressed: () {
+                                      if (hasAccess) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) => PatientDetailsScreen(
+                                                  patientId:
+                                                      patientDetails["id"] ??
+                                                      patientDetails["patientId"],
+                                                ),
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (_) =>
+                                                    const PatientAccessScreen(),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                  );
+                                },
+                              ),
+
+                              // Pagination Controls
+                              if (dashboardVM.totalPages > 1)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      _PaginationButton(
+                                        icon: LucideIcons.chevronLeft,
+                                        onPressed:
+                                            dashboardVM.currentPage > 1 &&
+                                                    !dashboardVM
+                                                        .isPaginationLoading
+                                                ? () => dashboardVM.goToPage(
+                                                  dashboardVM.currentPage - 1,
+                                                )
+                                                : null,
+                                        isDark: isDark,
                                       ),
+                                      const SizedBox(width: 12),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              isDark
+                                                  ? Colors.white.withOpacity(
+                                                    0.1,
+                                                  )
+                                                  : const Color(0xFFF3F4F6),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if (dashboardVM
+                                                .isPaginationLoading) ...[
+                                              SizedBox(
+                                                width: 14,
+                                                height: 14,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(
+                                                        isDark
+                                                            ? Colors.white
+                                                            : Colors.black87,
+                                                      ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                            ],
+                                            Text(
+                                              "Page ${dashboardVM.currentPage} of ${dashboardVM.totalPages}",
+                                              style: GoogleFonts.exo(
+                                                fontWeight: FontWeight.w700,
+                                                color:
+                                                    isDark
+                                                        ? Colors.white
+                                                        : Colors.black87,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      _PaginationButton(
+                                        icon: LucideIcons.chevronRight,
+                                        onPressed:
+                                            dashboardVM.currentPage <
+                                                        dashboardVM
+                                                            .totalPages &&
+                                                    !dashboardVM
+                                                        .isPaginationLoading
+                                                ? () => dashboardVM.goToPage(
+                                                  dashboardVM.currentPage + 1,
+                                                )
+                                                : null,
+                                        isDark: isDark,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              );
-                            },
-                          );
-                        },
+                            ],
+                          ),
+
+                          // Loading overlay during pagination
+                          if (dashboardVM.isPaginationLoading)
+                            Positioned.fill(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: (isDark ? Colors.black : Colors.white)
+                                      .withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color:
+                                          isDark
+                                              ? const Color(0xFF1E293B)
+                                              : Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.1),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const CircularProgressIndicator(
+                                          color: Color(0xFF14c7eb),
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Text(
+                                          "Loading page ${dashboardVM.currentPage}...",
+                                          style: GoogleFonts.exo(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color:
+                                                isDark
+                                                    ? Colors.white
+                                                    : Colors.black87,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       );
                     },
                   ),
@@ -595,6 +950,55 @@ class _CircleIconButton extends StatelessWidget {
   }
 }
 
+// Pagination Button Widget
+class _PaginationButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback? onPressed;
+  final bool isDark;
+
+  const _PaginationButton({
+    required this.icon,
+    required this.onPressed,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color:
+              onPressed != null
+                  ? (isDark
+                      ? Colors.white.withOpacity(0.1)
+                      : const Color(0xFFF3F4F6))
+                  : (isDark
+                      ? Colors.white.withOpacity(0.05)
+                      : Colors.grey.withOpacity(0.1)),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color:
+                isDark
+                    ? Colors.white.withOpacity(onPressed != null ? 0.2 : 0.1)
+                    : Colors.black.withOpacity(onPressed != null ? 0.1 : 0.05),
+          ),
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color:
+              onPressed != null
+                  ? (isDark ? Colors.white : Colors.black87)
+                  : (isDark ? Colors.white38 : Colors.black38),
+        ),
+      ),
+    );
+  }
+}
+
 class _DashboardEndDrawer extends StatelessWidget {
   final bool isDark;
   const _DashboardEndDrawer({required this.isDark});
@@ -639,12 +1043,16 @@ class _DashboardEndDrawer extends StatelessWidget {
                 width: 36,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
-                  color: Color(0xFF14c7eb).withOpacity(isDark ? 0.14 : 0.10),
+                  color: const Color(
+                    0xFF14c7eb,
+                  ).withOpacity(isDark ? 0.14 : 0.10),
                   border: Border.all(
-                    color: Color(0xFF14c7eb).withOpacity(isDark ? 0.25 : 0.18),
+                    color: const Color(
+                      0xFF14c7eb,
+                    ).withOpacity(isDark ? 0.25 : 0.18),
                   ),
                 ),
-                child: Icon(icon, size: 22, color: Color(0xFF14c7eb)),
+                child: Icon(icon, size: 22, color: const Color(0xFF14c7eb)),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -665,7 +1073,7 @@ class _DashboardEndDrawer extends StatelessWidget {
 
     return Drawer(
       width: 320,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+      shape: const RoundedRectangleBorder(),
       backgroundColor: cardColor,
       child: SafeArea(
         child: Padding(
@@ -673,7 +1081,6 @@ class _DashboardEndDrawer extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top
               // Top
               Row(
                 children: [
@@ -767,10 +1174,11 @@ class _DashboardEndDrawer extends StatelessWidget {
                 icon: LucideIcons.dollarSign,
                 title: "Consultation Fee",
                 onTap: () {
-                  // TODO: navigate
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ConsultationFeeScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const ConsultationFeeScreen(),
+                    ),
                   );
                 },
               ),
@@ -780,10 +1188,11 @@ class _DashboardEndDrawer extends StatelessWidget {
                 icon: LucideIcons.users,
                 title: "Patient Access",
                 onTap: () {
-                  // TODO: navigate
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => PatientAccessScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const PatientAccessScreen(),
+                    ),
                   );
                 },
               ),
@@ -792,11 +1201,10 @@ class _DashboardEndDrawer extends StatelessWidget {
                 icon: LucideIcons.fileText,
                 title: "Digital Prescriber",
                 onTap: () {
-                  // TODO: navigate
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => DigitalPrescriberScreen(),
+                      builder: (_) => const DigitalPrescriberScreen(),
                     ),
                   );
                 },
@@ -809,7 +1217,7 @@ class _DashboardEndDrawer extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ClinicalReviewScreen(),
+                      builder: (context) => const ClinicalReviewScreen(),
                     ),
                   );
                 },
@@ -819,11 +1227,36 @@ class _DashboardEndDrawer extends StatelessWidget {
                 icon: LucideIcons.messagesSquare,
                 title: "Case Discussion",
                 onTap: () {
-                  // TODO: navigate
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => WioCaseDiscussionScreen(),
+                      builder: (context) => const WioCaseDiscussionScreen(),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 10),
+              item(
+                icon: LucideIcons.dollarSign,
+                title: "Earning",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EarningScreen()),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 10),
+              item(
+                icon: LucideIcons.dollarSign,
+                title: "Report Verification",
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ReportVerificationScreen(),
                     ),
                   );
                 },
